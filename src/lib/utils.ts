@@ -1,56 +1,52 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { TOKEN } from '@/lib/constants';
+import type { TAuthToken } from '@/lib/types';
+import { clsx, type ClassValue } from 'clsx';
+import Cookies from 'js-cookie';
+import { lazy, type ComponentType } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 /**
- * Generates page numbers for pagination with ellipsis
- * @param currentPage - Current page number (1-based)
- * @param totalPages - Total number of pages
- * @returns Array of page numbers and ellipsis strings
- *
- * Examples:
- * - Small dataset (≤5 pages): [1, 2, 3, 4, 5]
- * - Near beginning: [1, 2, 3, 4, '...', 10]
- * - In middle: [1, '...', 4, 5, 6, '...', 10]
- * - Near end: [1, '...', 7, 8, 9, 10]
+ * @param factory - Hàm import()
+ * @param name - Tên của Component được export
  */
-export function getPageNumbers(currentPage: number, totalPages: number) {
-  const maxVisiblePages = 5 // Maximum number of page buttons to show
-  const rangeWithDots = []
-
-  if (totalPages <= maxVisiblePages) {
-    // If total pages is 5 or less, show all pages
-    for (let i = 1; i <= totalPages; i++) {
-      rangeWithDots.push(i)
-    }
-  } else {
-    // Always show first page
-    rangeWithDots.push(1)
-
-    if (currentPage <= 3) {
-      // Near the beginning: [1] [2] [3] [4] ... [10]
-      for (let i = 2; i <= 4; i++) {
-        rangeWithDots.push(i)
-      }
-      rangeWithDots.push("...", totalPages)
-    } else if (currentPage >= totalPages - 2) {
-      // Near the end: [1] ... [7] [8] [9] [10]
-      rangeWithDots.push("...")
-      for (let i = totalPages - 3; i <= totalPages; i++) {
-        rangeWithDots.push(i)
-      }
-    } else {
-      // In the middle: [1] ... [4] [5] [6] ... [10]
-      rangeWithDots.push("...")
-      for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-        rangeWithDots.push(i)
-      }
-      rangeWithDots.push("...", totalPages)
-    }
-  }
-
-  return rangeWithDots
+export function lazyNamedExport<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  T extends Record<string, ComponentType<any>>,
+  K extends keyof T,
+>(factory: () => Promise<T>, name: K) {
+  return lazy(() =>
+    factory().then(module => ({
+      default: module[name],
+    }))
+  );
 }
+
+/** Set application auth token
+ * @param tokenType
+ * @param token
+ * @param expiration chỉ truyền vào số giây
+ * */
+export const setAuthToken = (
+  tokenType: TAuthToken,
+  token: string,
+  expiration?: number
+) => {
+  Cookies.set(tokenType, token, {
+    expires: expiration ? (expiration - 60) / 3600 / 24 : 0,
+  });
+};
+
+export const getAuthToken = (tokenType: TAuthToken): string | null => {
+  const token = Cookies.get(tokenType);
+  if (!token) return null;
+  return token;
+};
+
+export const clearAuthToken = () => {
+  Cookies.remove(TOKEN.ACCESS_TOKEN);
+  Cookies.remove(TOKEN.REFRESH_TOKEN);
+};

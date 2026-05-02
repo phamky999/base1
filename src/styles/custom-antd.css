@@ -1,0 +1,41 @@
+@reference "tailwindcss";
+
+.ant-btn .ant-btn-icon {
+  @apply flex items-center justify-center;
+}
+
+.custom-ant-table {
+  @apply overflow-hidden rounded-lg border shadow-xs;
+}
+.custom-ant-table .ant-table {
+  @apply overflow-hidden rounded-t-lg;
+}
+.custom-ant-table .ant-table-thead th.ant-table-cell {
+  @apply text-sm;
+}
+.custom-ant-table .ant-table-thead th.ant-table-cell::before {
+  @apply hidden;
+}
+
+.custom-ant-table .ant-pagination {
+  @apply px-4;
+}
+
+.ant-form-item-explain-error {
+  @apply text-xs;
+}
+
+.ant-form-item-label {
+  @apply pb-0;
+}
+.ant-form-item-label label {
+  @apply text-sm;
+}
+
+.ant-pagination-item-link {
+  @apply inline-flex items-center justify-center;
+}
+
+.ant-btn {
+  @apply shadow-none;
+}

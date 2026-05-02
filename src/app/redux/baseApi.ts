@@ -1,0 +1,116 @@
+import { TOKEN } from '@/lib/constants';
+import type { ObjectType } from '@/lib/types';
+import { clearAuthToken, getAuthToken, setAuthToken } from '@/lib/utils';
+import type {
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+} from '@reduxjs/toolkit/query';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { Mutex } from 'async-mutex';
+import { toast } from 'sonner';
+
+const baseApiURL = import.meta.env.VITE_APP_API_URL;
+const refreshTokenAPIEndpoint = '/UserAuth/Refresh';
+const RTKRefreshTokenEndpoint = 'refreshAuthToken';
+
+// create a new mutex
+const mutex = new Mutex();
+
+const baseQuery = fetchBaseQuery({
+  baseUrl: baseApiURL,
+  prepareHeaders: (headers, { endpoint }) => {
+    const accessToken = getAuthToken(TOKEN.ACCESS_TOKEN);
+    if (accessToken && endpoint !== RTKRefreshTokenEndpoint) {
+      headers.set('Authorization', `Bearer ${accessToken}`);
+    }
+    return headers;
+  },
+});
+
+const baseQueryWithInterceptor: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+  await mutex.waitForUnlock();
+
+  let result = await baseQuery(args, api, extraOptions);
+  if (result.error) {
+    if (result.error.status === 401) {
+      if (!mutex.isLocked()) {
+        const release = await mutex.acquire();
+        try {
+          const refresh_token = getAuthToken(TOKEN.REFRESH_TOKEN);
+
+          if (!refresh_token) {
+            clearAuthToken();
+            window.location.href = '/auth/login';
+            return result;
+          }
+
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const refreshResult: any = await baseQuery(
+            {
+              url: refreshTokenAPIEndpoint,
+              method: 'POST',
+              body: { refreshToken: refresh_token },
+            },
+            api,
+            extraOptions
+          );
+
+          if (refreshResult.error) {
+            clearAuthToken();
+            window.location.href = '/auth/login';
+            return refreshResult;
+          }
+
+          const {
+            accessToken,
+            refreshToken,
+            expireInSeconds,
+            refreshTokenExpireIn,
+          } = refreshResult.data || {};
+
+          if (accessToken && refreshToken) {
+            setAuthToken(TOKEN.ACCESS_TOKEN, accessToken, expireInSeconds);
+            setAuthToken(
+              TOKEN.REFRESH_TOKEN,
+              refreshToken,
+              refreshTokenExpireIn
+            );
+
+            result = await baseQuery(args, api, extraOptions);
+          } else {
+            clearAuthToken();
+            window.location.href = '/auth/login';
+          }
+
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+          console.error('API Error: ', error);
+        } finally {
+          // release must be called once the mutex should be released again.
+          release();
+        }
+      } else {
+        // wait until the mutex is available without locking it
+        await mutex.waitForUnlock();
+        result = await baseQuery(args, api, extraOptions);
+      }
+    } else {
+      void toast.error(
+        (result?.error?.data as ObjectType)?.message ||
+          'Có lỗi xảy ra, vui lòn thử lại sau.'
+      );
+      return result;
+    }
+  }
+  return result;
+};
+
+export const baseApi = createApi({
+  baseQuery: baseQueryWithInterceptor,
+  endpoints: () => ({}),
+});

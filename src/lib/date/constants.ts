@@ -1,0 +1,17 @@
+export const DEFAULT_DATE_FORMAT = 'DD/MM/YYYY';
+export const DEFAULT_DATE_TIME_FORMAT = 'DD/MM/YYYY, HH:mm';
+export const DEFAULT_SHORT_DATE_FORMAT = 'D/M/YYYY';
+export const DEFAULT_LONG_DATE_FORMAT = `ddd, ${DEFAULT_DATE_FORMAT}`;
+export const EMPTY_DATE_TIME_PLACEHOLDER = '--/--/---- --:--';
+export const DEFAULT_FULL_DATE_TIME_FORMAT = 'DD/MM/YYYY HH:mm:ss';
+export const COMPACT_DATE_FORMAT = 'DDMMYYYY';
+export const DEFAULT_TIME_FORMAT = 'HH:mm';
+export const DEFAULT_MONTH_YEAR_FORMAT = 'MM/YYYY';
+export const ISO_8601_DATE_FORMAT = 'YYYY-MM-DD';
+
+export const DEFAULT_DATE_FORMATS = [
+  DEFAULT_DATE_FORMAT,
+  DEFAULT_SHORT_DATE_FORMAT,
+  'D/MM/YYYY',
+  'DD/M/YYYY',
+];

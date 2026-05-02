@@ -1,11 +1,15 @@
 {
   "endOfLine": "lf",
-  "semi": false,
-  "singleQuote": false,
+  "semi": true,
+  "singleQuote": true,
   "tabWidth": 2,
   "trailingComma": "es5",
+  "useTabs": false,
+  "bracketSpacing": true,
+  "arrowParens": "avoid",
+  "bracketSameLine": false,
   "printWidth": 80,
   "plugins": ["prettier-plugin-tailwindcss"],
-  "tailwindStylesheet": "src/index.css",
+  "tailwindStylesheet": "src/styles/index.css",
   "tailwindFunctions": ["cn", "cva"]
 }

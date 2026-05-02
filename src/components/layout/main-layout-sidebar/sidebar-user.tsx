@@ -33,7 +33,7 @@ export function SidebarUser({
   }
   showInHeader?: boolean
 }) {
-  const { isMobile } = useSidebar()
+  const { isMobile, open } = useSidebar()
 
   return (
     <SidebarMenu className={cn(showInHeader && "w-fit")}>
@@ -51,11 +51,15 @@ export function SidebarUser({
                     <AvatarFallback>SN</AvatarFallback>
                   </Avatar>
                 </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
-                </div>
-                <ChevronsUpDownIcon className="ml-auto size-4" />
+                {open && (
+                  <>
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                      <span className="truncate font-medium">{user.name}</span>
+                      <span className="truncate text-xs">{user.email}</span>
+                    </div>
+                    <ChevronsUpDownIcon className="ml-auto size-4" />
+                  </>
+                )}
               </SidebarMenuButton>
             ) : (
               <div className="relative h-8 w-8 cursor-pointer overflow-hidden rounded-full">

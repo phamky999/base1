@@ -1,16 +1,16 @@
-import { useTheme } from "@/context/theme"
-import { Button } from "@/components/ui/button"
+import { useTheme } from '@/context/theme';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { cn } from "@/lib/utils"
-import { Check, Moon, Sun } from "lucide-react"
+} from '@/components/ui/dropdown-menu';
+import { cn } from '@/lib/utils';
+import { Check, Moon, Sun } from 'lucide-react';
 
 export function HeaderThemeSwitch() {
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme } = useTheme();
 
   return (
     <DropdownMenu modal={false}>
@@ -22,28 +22,28 @@ export function HeaderThemeSwitch() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
-          Light{" "}
+        <DropdownMenuItem onClick={() => setTheme('light')}>
+          Light Mode{' '}
           <Check
             size={14}
-            className={cn("ms-auto", theme !== "light" && "hidden")}
+            className={cn('ms-auto', theme !== 'light' && 'hidden')}
           />
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Dark
+        <DropdownMenuItem onClick={() => setTheme('dark')}>
+          Dark Mode
           <Check
             size={14}
-            className={cn("ms-auto", theme !== "dark" && "hidden")}
+            className={cn('ms-auto', theme !== 'dark' && 'hidden')}
           />
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
+        <DropdownMenuItem onClick={() => setTheme('system')}>
           System
           <Check
             size={14}
-            className={cn("ms-auto", theme !== "system" && "hidden")}
+            className={cn('ms-auto', theme !== 'system' && 'hidden')}
           />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }
