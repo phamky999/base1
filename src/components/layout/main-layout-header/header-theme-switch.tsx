@@ -9,7 +9,7 @@ import {
 import { cn } from '@/lib/utils';
 import { Check, Moon, Sun } from 'lucide-react';
 
-export function HeaderThemeSwitch() {
+export const HeaderThemeSwitch = () => {
   const { theme, setTheme } = useTheme();
 
   return (
@@ -46,4 +46,4 @@ export function HeaderThemeSwitch() {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+};

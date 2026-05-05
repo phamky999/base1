@@ -1,17 +1,18 @@
 import { AppBreadcrumbs } from '@/components/app-breadcrumbs';
 import { HeaderThemeSwitch } from '@/components/layout/main-layout-header/header-theme-switch';
 import { HeaderCommandSearch } from '@/components/layout/main-layout-header/heaser-command-search';
+import { sidebarData } from '@/components/layout/main-layout-sidebar/constants';
 import { SidebarUser } from '@/components/layout/main-layout-sidebar/sidebar-user';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useSidebar } from '@/components/ui/sidebar';
 import { SidebarIcon } from 'lucide-react';
 
-export function MainLayoutHeader() {
+export const MainLayoutHeader = () => {
   const { toggleSidebar } = useSidebar();
 
   return (
-    <header className="sticky top-0 z-50 flex w-full items-center border-b bg-background py-3">
+    <header className="sticky top-0 z-50 flex w-full items-center border-b bg-sidebar py-3">
       <div className="flex h-(--header-height) w-full items-center gap-2 px-4">
         <Button
           className="h-8 w-8"
@@ -32,15 +33,8 @@ export function MainLayoutHeader() {
         </div>
 
         <HeaderThemeSwitch />
-        <SidebarUser
-          showInHeader
-          user={{
-            name: 'shadcn',
-            email: 'm@example.com',
-            avatar: '/avatars/shadcn.jpg',
-          }}
-        />
+        <SidebarUser showInHeader user={sidebarData?.user} />
       </div>
     </header>
   );
-}
+};

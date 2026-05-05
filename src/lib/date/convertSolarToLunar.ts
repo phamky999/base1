@@ -182,7 +182,7 @@ function findLunarDate(jd: number, ly: LunarDate[]) {
   );
 }
 
-export function getLunarDate(dd: number, mm: number, yyyy: number) {
+export const getLunarDate = (dd: number, mm: number, yyyy: number) => {
   let ly: LunarDate[];
   // eslint-disable-next-line no-empty
   if (yyyy < 1800 || 2199 < yyyy) {
@@ -193,4 +193,4 @@ export function getLunarDate(dd: number, mm: number, yyyy: number) {
     ly = getYearInfo(yyyy - 1);
   }
   return findLunarDate(jd, ly);
-}
+};

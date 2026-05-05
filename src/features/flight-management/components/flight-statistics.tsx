@@ -1,7 +1,7 @@
 import {
   FLIGHT_STATUS_OPTION,
   mockReportData,
-} from '@/features/flight-inventory-management/constants';
+} from '@/features/flight-management/constants';
 import { cn } from '@/lib/utils';
 
 export const FlightStatistics = () => {

@@ -1,8 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { DEFAULT_DATE_FORMAT } from '@/lib/date/constants';
 import dayjs from '@/lib/date/dayjs-config';
-import type { ObjectType } from '@/lib/types';
 import type { RangePickerProps } from 'antd/es/date-picker';
 import type { ConfigType, Dayjs } from 'dayjs';
 
@@ -58,32 +55,6 @@ export const disabledPastDate: RangePickerProps['disabledDate'] = (
 export const disabledFutureDate: RangePickerProps['disabledDate'] = (
   day: Dayjs
 ) => day.isAfter(dayjs(), 'day');
-
-/** Convert date in string DD/MM/YYYY to Dayjs object if found in parsed query params */
-export const convertDateStringToObjectDate = (obj: ObjectType): ObjectType => {
-  const isValidDateString = (value: any): value is string => {
-    const vnmDateTimeFormatRegexPattern = /^\d{2}\/\d{2}\/\d{4}$/;
-    return (
-      typeof value === 'string' && vnmDateTimeFormatRegexPattern.test(value)
-    );
-  };
-
-  const convertValue = (value: any): any => {
-    if (isValidDateString(value)) {
-      return dayjs(value, DEFAULT_DATE_FORMAT);
-    }
-    if (Array.isArray(value)) {
-      return value.map(v =>
-        isValidDateString(v) ? dayjs(v, DEFAULT_DATE_FORMAT) : v
-      );
-    }
-    return value;
-  };
-  return Object.entries(obj).reduce<ObjectType>((result, [key, value]) => {
-    result[key] = convertValue(value);
-    return result;
-  }, {});
-};
 
 export const formatDateWithDayOfWeek = (date: Dayjs) => {
   const day = date.day();

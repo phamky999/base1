@@ -3,7 +3,7 @@ import { lazyNamedExport } from '@/lib/utils';
 import type { RouteObject } from 'react-router-dom';
 
 const LoginPage = lazyNamedExport(
-  () => import('@/features/auth/views/LoginPage'),
+  () => import('@/features/auth/views/login-page'),
   'LoginPage'
 );
 

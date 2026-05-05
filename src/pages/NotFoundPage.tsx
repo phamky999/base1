@@ -2,10 +2,10 @@ import { getPagePath } from '@/app/router/app-router-paths';
 import NotFoundImage from '@/assets/svgs/404.svg';
 import { AppGridShapeBackground } from '@/components/app-grid-shape-background';
 import { PageHelmet } from '@/components/app-helmet';
-import { Button } from 'antd';
+import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
-export function NotFoundPage() {
+export const NotFoundPage = () => {
   const navigate = useNavigate();
   return (
     <>
@@ -22,14 +22,14 @@ export function NotFoundPage() {
 
           <div className="flex flex-wrap justify-center gap-4">
             <Button
-              type="default"
+              variant={'outline'}
               onClick={() => navigate(-1)}
               className="h-10 w-40"
             >
               Quay lại trang trước
             </Button>
             <Button
-              type="primary"
+              variant={'default'}
               className="h-10 w-40"
               onClick={() => navigate(getPagePath('portalPage'))}
             >
@@ -40,4 +40,4 @@ export function NotFoundPage() {
       </div>
     </>
   );
-}
+};

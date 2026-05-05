@@ -6,13 +6,11 @@ export const appPathConfig = {
 
   portal: {
     root: '/',
-    flight: {
+    flightInventoryManagement: {
       root: 'flight-inventory-management',
-      create: 'create',
-      detail: {
-        root: ':id',
-        bookingList: 'booking-list',
-      },
+      createFlight: 'create',
+      flightDetail: ':id',
+      bookingList: 'booking-list',
     },
   },
 } as const;
@@ -27,22 +25,26 @@ const absolutePagePaths = {
   portalPage: () => '/',
 
   flightListPage: () =>
-    handleGetAbsolutePathConfig(appPathConfig.portal.flight.root),
+    handleGetAbsolutePathConfig(
+      appPathConfig.portal.flightInventoryManagement.root
+    ),
 
   createFlightPage: () =>
     handleGetAbsolutePathConfig(
-      appPathConfig.portal.flight.root,
-      appPathConfig.portal.flight.create
+      appPathConfig.portal.flightInventoryManagement.root,
+      appPathConfig.portal.flightInventoryManagement.createFlight
     ),
 
   flightDetailPage: (id: string) =>
-    handleGetAbsolutePathConfig(appPathConfig.portal.flight.root, id),
-
-  flightBookingListPage: (id: string) =>
     handleGetAbsolutePathConfig(
-      appPathConfig.portal.flight.root,
-      id,
-      appPathConfig.portal.flight.detail.bookingList
+      appPathConfig.portal.flightInventoryManagement.root,
+      id
+    ),
+
+  flightBookingListPage: () =>
+    handleGetAbsolutePathConfig(
+      appPathConfig.portal.flightInventoryManagement.root,
+      appPathConfig.portal.flightInventoryManagement.bookingList
     ),
 };
 

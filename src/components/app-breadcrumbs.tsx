@@ -7,10 +7,10 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import type { TAppUIMatch } from '@/lib/types';
-import { Fragment, memo } from 'react';
+import { Fragment } from 'react';
 import { Link, useLocation, useMatches } from 'react-router-dom';
 
-export const AppBreadcrumbs = memo(() => {
+export const AppBreadcrumbs = () => {
   const matches = useMatches() as TAppUIMatch[];
   const location = useLocation();
   const isHome = location.pathname === '/';
@@ -32,7 +32,7 @@ export const AppBreadcrumbs = memo(() => {
       };
     });
 
-  if (!isHome && crumbs.length > 0 && crumbs[0]?.label !== 'Trang chủ') {
+  if (!isHome && crumbs.length > 0 && crumbs[0]?.path !== '/') {
     crumbs = [
       {
         label: 'Trang chủ',
@@ -56,7 +56,7 @@ export const AppBreadcrumbs = memo(() => {
 
           const item = shouldLink ? (
             <BreadcrumbItem>
-              <BreadcrumbLink asChild href={crumb.path}>
+              <BreadcrumbLink asChild>
                 <Link
                   to={crumb.path}
                   className="hover:bg-transparent hover:text-primary"
@@ -87,4 +87,4 @@ export const AppBreadcrumbs = memo(() => {
       </BreadcrumbList>
     </Breadcrumb>
   );
-});
+};

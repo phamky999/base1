@@ -21,18 +21,27 @@ import {
   Sun,
 } from 'lucide-react';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-export function HeaderCommandSearch() {
-  //   const navigate = useNavigate()
+export const HeaderCommandSearch = () => {
+  const navigate = useNavigate();
   const { setTheme } = useTheme();
   const [open, setOpen] = useState(false);
 
-  const runCommand = React.useCallback(
-    (command: () => unknown) => {
+  const handleThemeSwitch = React.useCallback(
+    (theme: 'light' | 'dark' | 'system') => {
       setOpen(false);
-      command();
+      setTheme(theme);
     },
-    [setOpen]
+    [setTheme]
+  );
+
+  const handleNavigate = React.useCallback(
+    (url: string) => {
+      setOpen(false);
+      navigate(url);
+    },
+    [navigate]
   );
 
   return (
@@ -66,9 +75,7 @@ export function HeaderCommandSearch() {
                       <CommandItem
                         key={`${navItem.url}-${i}`}
                         value={navItem.title}
-                        //   onSelect={() => {
-                        //     runCommand(() => navigate({ to: navItem.url }))
-                        //   }}
+                        onSelect={() => handleNavigate(navItem.url)}
                       >
                         <div className="flex size-4 items-center justify-center">
                           <ArrowRight className="size-2 text-muted-foreground/80" />
@@ -81,9 +88,7 @@ export function HeaderCommandSearch() {
                     <CommandItem
                       key={`${navItem.title}-${subItem.url}-${i}`}
                       value={`${navItem.title}-${subItem.url}`}
-                      // onSelect={() => {
-                      //   runCommand(() => navigate({ to: subItem.url }))
-                      // }}
+                      onSelect={() => handleNavigate(subItem.url)}
                     >
                       <div className="flex size-4 items-center justify-center">
                         <ArrowRight className="size-2 text-muted-foreground/80" />
@@ -96,16 +101,14 @@ export function HeaderCommandSearch() {
             ))}
             <CommandSeparator />
             <CommandGroup heading="Theme">
-              <CommandItem onSelect={() => runCommand(() => setTheme('light'))}>
+              <CommandItem onSelect={() => handleThemeSwitch('light')}>
                 <Sun /> <span>Light</span>
               </CommandItem>
-              <CommandItem onSelect={() => runCommand(() => setTheme('dark'))}>
+              <CommandItem onSelect={() => handleThemeSwitch('dark')}>
                 <Moon className="scale-90" />
                 <span>Dark</span>
               </CommandItem>
-              <CommandItem
-                onSelect={() => runCommand(() => setTheme('system'))}
-              >
+              <CommandItem onSelect={() => handleThemeSwitch('system')}>
                 <Laptop />
                 <span>System</span>
               </CommandItem>
@@ -115,4 +118,4 @@ export function HeaderCommandSearch() {
       </CommandDialog>
     </>
   );
-}
+};

@@ -55,13 +55,17 @@ export const useQueryHandle = <T extends ObjectType>(
             paginationData[PAGINATION_QUERY_KEY.PAGE_SIZE],
         }),
       });
-      navigate(`${pathName}?${queryPayload}`);
+      navigate(`${pathName}?${queryPayload}`, {
+        replace: true,
+      });
     },
     [navigate, noPagination, paginationData, pathName]
   );
 
   const handleClearFilter = useCallback(() => {
-    navigate(pathName);
+    navigate(pathName, {
+      replace: true,
+    });
   }, [navigate, pathName]);
 
   const handleChangePageIndex = useCallback(
@@ -71,7 +75,9 @@ export const useQueryHandle = <T extends ObjectType>(
         ...queryParams,
         [PAGINATION_QUERY_KEY.PAGE_INDEX]: index,
       });
-      navigate(`${pathName}?${queryPayload}`);
+      navigate(`${pathName}?${queryPayload}`, {
+        replace: true,
+      });
     },
     [navigate, paginationData, pathName, queryParams]
   );
@@ -84,7 +90,9 @@ export const useQueryHandle = <T extends ObjectType>(
         [PAGINATION_QUERY_KEY.PAGE_INDEX]: DEFAULT_PAGE_INDEX,
         [PAGINATION_QUERY_KEY.PAGE_SIZE]: size,
       });
-      navigate(`${pathName}?${queryPayload}`);
+      navigate(`${pathName}?${queryPayload}`, {
+        replace: true,
+      });
     },
     [navigate, paginationData, pathName, queryParams]
   );

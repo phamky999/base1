@@ -1,16 +1,16 @@
 import { store } from '@/app/redux/store';
+import { appRoutes } from '@/app/router/app-routes';
 import { AppHelmetWrapper } from '@/components/app-helmet';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { useTheme } from '@/context/theme';
-import { Provider } from 'react-redux';
-import { Toaster } from 'sonner';
 import { StyleProvider } from '@ant-design/cssinjs';
 import { ConfigProvider, theme } from 'antd';
 import vi_VN from 'antd/es/locale/vi_VN';
+import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
-import { appRoutes } from '@/app/router/app-routes';
+import { Toaster } from '@/components/ui/sonner';
 
-export function App() {
+export const App = () => {
   const { theme: appTheme } = useTheme();
 
   const ANT_DESIGN_THEME = {
@@ -45,6 +45,4 @@ export function App() {
       </AppHelmetWrapper>
     </Provider>
   );
-}
-
-export default App;
+};

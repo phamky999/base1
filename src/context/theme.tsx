@@ -38,20 +38,33 @@ function getSystemTheme(): ResolvedTheme {
   return 'light';
 }
 
+let transitionTimeoutId: number | null = null;
 function disableTransitionsTemporarily() {
-  const style = document.createElement('style');
-  style.appendChild(
-    document.createTextNode(
-      '*,*::before,*::after{-webkit-transition:none!important;transition:none!important}'
-    )
-  );
-  document.head.appendChild(style);
+  let style = document.getElementById(
+    'disable-transitions-style'
+  ) as HTMLStyleElement | null;
+  if (!style) {
+    style = document.createElement('style');
+    style.id = 'disable-transitions-style';
+    style.appendChild(
+      document.createTextNode(
+        '*,*::before,*::after{-webkit-transition:none!important;transition:none!important}'
+      )
+    );
+    document.head.appendChild(style);
+  } else if (!document.head.contains(style)) {
+    document.head.appendChild(style);
+  }
 
   return () => {
     window.getComputedStyle(document.body);
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        style.remove();
+    if (transitionTimeoutId) cancelAnimationFrame(transitionTimeoutId);
+
+    transitionTimeoutId = requestAnimationFrame(() => {
+      transitionTimeoutId = requestAnimationFrame(() => {
+        if (style && style.parentNode) {
+          style.remove();
+        }
       });
     });
   };
@@ -76,13 +89,13 @@ function isEditableTarget(target: EventTarget | null) {
   return false;
 }
 
-export function ThemeProvider({
+export const ThemeProvider = ({
   children,
   defaultTheme = 'system',
   storageKey = 'theme',
   disableTransitionOnChange = true,
   ...props
-}: ThemeProviderProps) {
+}: ThemeProviderProps) => {
   const [theme, setThemeState] = React.useState<Theme>(() => {
     const storedTheme = localStorage.getItem(storageKey);
     if (isTheme(storedTheme)) {
@@ -216,7 +229,7 @@ export function ThemeProvider({
       {children}
     </ThemeProviderContext.Provider>
   );
-}
+};
 
 export const useTheme = () => {
   const context = React.useContext(ThemeProviderContext);

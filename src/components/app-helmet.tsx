@@ -8,7 +8,7 @@ export const PageHelmet = ({
   description?: string;
 }) => (
   <Helmet>
-    <title>{`${title} | Việt An | Kho Sản Phẩm`}</title>
+    <title>{`${title} | Kho Sản Phẩm | Việt An `}</title>
     <meta name="description" content={description ? description : title} />
   </Helmet>
 );

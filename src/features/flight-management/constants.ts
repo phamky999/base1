@@ -1,4 +1,4 @@
-import type { TFlightListItem } from '@/features/flight-inventory-management/types';
+import type { TFlightListItem } from '@/features/flight-management/types';
 import { fillArrayWithNumber } from '@/lib/helpers/array';
 
 export const FLIGHT_STATUS_OPTION = {

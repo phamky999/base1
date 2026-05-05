@@ -4,11 +4,11 @@ import {
   FLIGHT_STATUS_COLOR,
   FLIGHT_STATUS_LABEL,
   mockFlightList,
-} from '@/features/flight-inventory-management/constants';
+} from '@/features/flight-management/constants';
 import type {
   TFlightListItem,
   TFlightStatus,
-} from '@/features/flight-inventory-management/types';
+} from '@/features/flight-management/types';
 import { DEFAULT_DATE_FORMAT } from '@/lib/date/constants';
 import dayjs from '@/lib/date/dayjs-config';
 import { formatDisplayCurrency } from '@/lib/helpers/string';
@@ -107,7 +107,10 @@ export const FlightList = () => {
           <Tooltip title="Xem danh sách booking">
             <Button
               onClick={() =>
-                navigate(getPagePath('flightBookingListPage', record?.id))
+                navigate({
+                  pathname: getPagePath('flightBookingListPage'),
+                  search: `flightId=${record?.id}`,
+                })
               }
               type="text"
               shape="circle"
@@ -130,14 +133,12 @@ export const FlightList = () => {
   ];
 
   return (
-    <>
-      <AppTable<TFlightListItem>
-        size="small"
-        rowKey={record => record?.id}
-        dataSource={mockFlightList}
-        totalCount={mockFlightList?.length}
-        columns={columns}
-      />
-    </>
+    <AppTable<TFlightListItem>
+      size="small"
+      rowKey={record => record?.id}
+      dataSource={mockFlightList}
+      totalCount={mockFlightList?.length}
+      columns={columns}
+    />
   );
 };

@@ -2,7 +2,7 @@ import { AppFieldSet } from '@/components/app-fieldset';
 import {
   FLIGHT_STATUS_LABEL,
   FLIGHT_STATUS_OPTION,
-} from '@/features/flight-inventory-management/constants';
+} from '@/features/flight-management/constants';
 import { fillArrayWithNumber } from '@/lib/helpers/array';
 import {
   Button,
@@ -18,7 +18,8 @@ import {
 } from 'antd';
 import { CircleMinusIcon, PlusCircleIcon } from 'lucide-react';
 import { useState } from 'react';
-import { type FlightFormValues } from './AddEditFlightForm.schema';
+import { type FlightFormValues } from './add-edit-flight-form.schema';
+import { AppLunarDatePicker } from '@/components/app-lunar-date-picker';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -35,7 +36,7 @@ export const AddEditFlightForm = ({ id }: AddEditFlightFormProps) => {
     console.log('Form submitted:', values);
   };
 
-  const sectionCls = 'rounded-xl border bg-muted p-4 shadow-xs';
+  const sectionCls = 'rounded-xl border bg-white dark:bg-muted p-4 shadow-xs';
 
   const initialValues: Partial<FlightFormValues> = {
     airline: '',
@@ -172,7 +173,7 @@ export const AddEditFlightForm = ({ id }: AddEditFlightFormProps) => {
             {/* Ngày khởi hành */}
             <Col span={12} lg={8}>
               <Form.Item name="startDate" label="Ngày khởi hành">
-                <DatePicker className="w-full" />
+                <AppLunarDatePicker className="w-full" />
               </Form.Item>
             </Col>
 
@@ -193,7 +194,7 @@ export const AddEditFlightForm = ({ id }: AddEditFlightFormProps) => {
             {/* Ngày hạ cánh */}
             <Col span={12} lg={8}>
               <Form.Item name="endDate" label="Ngày hạ cánh">
-                <DatePicker className="w-full" />
+                <AppLunarDatePicker className="w-full" />
               </Form.Item>
             </Col>
 

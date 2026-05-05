@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,36 +7,38 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from '@/components/ui/dropdown-menu';
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
-import { cn } from "@/lib/utils"
+} from '@/components/ui/sidebar';
+import { cn } from '@/lib/utils';
 import {
   BadgeCheckIcon,
   BellIcon,
   ChevronsUpDownIcon,
   LogOutIcon,
-} from "lucide-react"
+} from 'lucide-react';
 
-export function SidebarUser({
+export const SidebarUser = ({
   user,
   showInHeader,
 }: {
   user: {
-    name: string
-    email: string
-    avatar: string
-  }
-  showInHeader?: boolean
-}) {
-  const { isMobile, open } = useSidebar()
+    name: string;
+    email: string;
+    avatar: string;
+  };
+  showInHeader?: boolean;
+}) => {
+  const { isMobile, open } = useSidebar();
+
+  const avatarFallback = user?.name?.charAt(0)?.toUpperCase() || 'A';
 
   return (
-    <SidebarMenu className={cn(showInHeader && "w-fit")}>
+    <SidebarMenu className={cn(showInHeader && 'w-fit')}>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -48,7 +50,7 @@ export function SidebarUser({
                 <div className="relative h-8 w-8 overflow-hidden rounded-full">
                   <Avatar className="h-8 w-8">
                     <AvatarImage src="/avatars/01.png" alt="@shadcn" />
-                    <AvatarFallback>SN</AvatarFallback>
+                    <AvatarFallback>{avatarFallback}</AvatarFallback>
                   </Avatar>
                 </div>
                 {open && (
@@ -65,14 +67,14 @@ export function SidebarUser({
               <div className="relative h-8 w-8 cursor-pointer overflow-hidden rounded-full">
                 <Avatar className="h-8 w-8">
                   <AvatarImage src="/avatars/01.png" alt="@shadcn" />
-                  <AvatarFallback>SN</AvatarFallback>
+                  <AvatarFallback>{avatarFallback}</AvatarFallback>
                 </Avatar>
               </div>
             )}
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side={showInHeader ? "bottom" : isMobile ? "bottom" : "right"}
+            side={showInHeader ? 'bottom' : isMobile ? 'bottom' : 'right'}
             align="end"
             sideOffset={4}
           >
@@ -80,7 +82,9 @@ export function SidebarUser({
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">
+                    {avatarFallback}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
@@ -108,5 +112,5 @@ export function SidebarUser({
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
-}
+  );
+};

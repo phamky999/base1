@@ -1,6 +1,6 @@
 import { getPagePath } from '@/app/router/app-router-paths';
+import { Button } from '@/components/ui/button';
 import type { ObjectType } from '@/lib/types';
-import { Button } from 'antd';
 import clsx from 'clsx';
 import { useNavigate, useRouteError } from 'react-router-dom';
 
@@ -29,12 +29,12 @@ export const AppErrorBoundary = () => {
       )}
       <div className="flex items-center justify-center gap-x-4">
         <Button
-          type="default"
+          variant={'outline'}
           onClick={() => navigate(getPagePath('portalPage'))}
         >
           Quay lại trang chủ
         </Button>
-        <Button type="primary" onClick={() => window.location.reload()}>
+        <Button variant={'default'} onClick={() => window.location.reload()}>
           Tải lại trang
         </Button>
       </div>

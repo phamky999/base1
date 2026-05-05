@@ -5,7 +5,7 @@
 }
 
 .custom-ant-table {
-  @apply overflow-hidden rounded-lg border shadow-xs;
+  @apply overflow-hidden rounded-lg border bg-(--ant-table-header-bg) shadow-xs;
 }
 .custom-ant-table .ant-table {
   @apply overflow-hidden rounded-t-lg;
@@ -26,7 +26,7 @@
 }
 
 .ant-form-item-label {
-  @apply pb-0;
+  @apply pb-1;
 }
 .ant-form-item-label label {
   @apply text-sm;

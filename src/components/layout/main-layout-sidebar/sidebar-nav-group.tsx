@@ -34,14 +34,15 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { NavLink, useLocation } from 'react-router-dom';
 
-export function SidebarNavGroup({ title, items }: TNavGroup) {
+export const SidebarNavGroup = ({ title, items }: TNavGroup) => {
   const { state, isMobile } = useSidebar();
   const { pathname, search, hash } = useLocation();
   const href = pathname + search + hash;
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>{title}</SidebarGroupLabel>
-      <SidebarMenu>
+      {title && <SidebarGroupLabel>{title}</SidebarGroupLabel>}
+
+      <SidebarMenu className="space-y-0.5">
         {items.map(item => {
           const key = `${item.title}-${item.url}`;
 
@@ -58,7 +59,7 @@ export function SidebarNavGroup({ title, items }: TNavGroup) {
       </SidebarMenu>
     </SidebarGroup>
   );
-}
+};
 
 function NavBadge({ children }: { children: ReactNode }) {
   return <Badge className="rounded-full px-1 py-0 text-xs">{children}</Badge>;
@@ -159,7 +160,11 @@ function SidebarMenuCollapsedDropdown({
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           {item.items.map(sub => (
-            <DropdownMenuItem key={`${sub.title}-${sub.url}`} asChild>
+            <DropdownMenuItem
+              key={`${sub.title}-${sub.url}`}
+              asChild
+              className="mb-0.5"
+            >
               <NavLink
                 to={sub.url}
                 className={`${checkIsActive(href, sub) ? 'bg-secondary' : ''}`}

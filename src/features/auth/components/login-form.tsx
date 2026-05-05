@@ -1,4 +1,5 @@
 import { getPagePath } from '@/app/router/app-router-paths';
+import { Button } from '@/components/ui/button';
 import {
   LOGIN_FORM_FIELDS,
   LOGIN_FORM_LABELS,
@@ -8,7 +9,7 @@ import { useSignInUserMutation } from '@/features/auth/query';
 import type { TUserSignInPayload } from '@/features/auth/types';
 import { TOKEN } from '@/lib/constants';
 import { setAuthToken } from '@/lib/utils';
-import { Button, Form, Input } from 'antd';
+import { Form, Input } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -63,9 +64,9 @@ export const LoginForm = () => {
 
       <Form.Item>
         <Button
-          type="primary"
+          variant={'default'}
           loading={isLoading}
-          htmlType="submit"
+          type="submit"
           className="h-10 w-full"
         >
           Đăng nhập

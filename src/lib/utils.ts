@@ -5,25 +5,28 @@ import Cookies from 'js-cookie';
 import { lazy, type ComponentType } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-export function cn(...inputs: ClassValue[]) {
+export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs));
-}
+};
 
 /**
  * @param factory - Hàm import()
  * @param name - Tên của Component được export
  */
-export function lazyNamedExport<
+export const lazyNamedExport = <
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   T extends Record<string, ComponentType<any>>,
   K extends keyof T,
->(factory: () => Promise<T>, name: K) {
+>(
+  factory: () => Promise<T>,
+  name: K
+) => {
   return lazy(() =>
     factory().then(module => ({
       default: module[name],
     }))
   );
-}
+};
 
 /** Set application auth token
  * @param tokenType

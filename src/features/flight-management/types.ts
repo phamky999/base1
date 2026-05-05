@@ -1,4 +1,4 @@
-import type { FLIGHT_STATUS_OPTION } from '@/features/flight-inventory-management/constants';
+import type { FLIGHT_STATUS_OPTION } from '@/features/flight-management/constants';
 
 export type TFlightStatus =
   (typeof FLIGHT_STATUS_OPTION)[keyof typeof FLIGHT_STATUS_OPTION];

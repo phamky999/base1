@@ -3,7 +3,7 @@ import { AppErrorBoundary } from '@/components/app-error-boundary';
 import { AuthLayout } from '@/components/layout/auth-layout';
 import { MainLayout } from '@/components/layout/main-layout';
 import { authRoutes } from '@/features/auth/routes';
-import { flightInventoryManagementRoutes } from '@/features/flight-inventory-management/routes';
+import { flightManagementRoutes } from '@/features/flight-management/routes';
 import { lazyNamedExport } from '@/lib/utils';
 import { createBrowserRouter } from 'react-router-dom';
 
@@ -35,11 +35,7 @@ export const appRoutes = createBrowserRouter([
         element: <PortalPage />,
       },
       // declare app features routes
-      ...flightInventoryManagementRoutes,
-      {
-        path: '*',
-        element: <NotFoundPage />,
-      },
+      ...flightManagementRoutes,
     ],
   },
 

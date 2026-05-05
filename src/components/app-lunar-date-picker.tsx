@@ -1,10 +1,13 @@
 import { DEFAULT_DATE_FORMAT } from '@/lib/date/constants';
 import { getLunarDate } from '@/lib/date/convertSolarToLunar';
 import dayjs from '@/lib/date/dayjs-config';
+import { cn } from '@/lib/utils';
 import { DatePicker, type DatePickerProps } from 'antd';
 import { Dayjs } from 'dayjs';
 
 export const AppLunarDatePicker = (props: DatePickerProps) => {
+  const { className, ...restProps } = props || {};
+
   const cellRender: DatePickerProps<Dayjs>['cellRender'] = (current, info) => {
     if (info.type !== 'date') {
       return info.originNode;
@@ -26,11 +29,11 @@ export const AppLunarDatePicker = (props: DatePickerProps) => {
     const { day, month } = currentLunarDate;
 
     return (
-      <div className="ant-picker-cell-inner flex h-9 w-9 flex-col justify-center gap-0.5 p-0.75">
-        <div className="flex justify-start pl-0.5 text-sm leading-3">
+      <div className="ant-picker-cell-inner flex h-9 w-9 flex-col justify-center gap-0.5">
+        <div className="flex justify-center text-sm leading-3">
           {current.date()}
         </div>
-        <div className="flex justify-end pr-0.5 text-[10px] leading-3">
+        <div className="flex justify-center text-[9px] leading-[10px]">
           {day === 1 ? (
             <span className="highlight font-semibold text-red-500">
               {day}/{month}
@@ -45,11 +48,15 @@ export const AppLunarDatePicker = (props: DatePickerProps) => {
 
   return (
     <DatePicker
-      className="[&_.ant-picker-cell-selected_.highlight]:text-white!"
+      className={cn(className)}
+      classNames={{
+        popup: {
+          root: '[&_.ant-picker-cell]:py-0 [&_.ant-picker-cell-selected_.highlight]:text-white!',
+        },
+      }}
       format={DEFAULT_DATE_FORMAT}
-      getPopupContainer={(trigger: HTMLElement) => trigger}
       cellRender={cellRender}
-      {...props}
+      {...restProps}
     />
   );
 };

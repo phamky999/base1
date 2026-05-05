@@ -1,5 +1,5 @@
 import { PageHelmet } from '@/components/app-helmet';
-import { LoginForm } from '@/features/auth/components/LoginForm';
+import { LoginForm } from '@/features/auth/components/login-form';
 import { ConfigProvider, theme } from 'antd';
 
 export const LoginPage = () => {

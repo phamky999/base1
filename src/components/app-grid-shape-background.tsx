@@ -1,6 +1,6 @@
 import GridImage from '@/assets/svgs/grid.svg';
 
-export function AppGridShapeBackground() {
+export const AppGridShapeBackground = () => {
   return (
     <>
       <div className="absolute top-0 right-0 -z-1 w-full max-w-62.5 xl:max-w-112.5">
@@ -11,4 +11,4 @@ export function AppGridShapeBackground() {
       </div>
     </>
   );
-}
+};
