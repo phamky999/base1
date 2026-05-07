@@ -1,15 +1,10 @@
 import { normalizeQueryParamValue } from '@/components/app-filter/helper';
 import { Button } from '@/components/ui/button';
-// import {
-//   Popover,
-//   PopoverContent,
-//   PopoverTrigger,
-// } from '@/components/ui/popover';
 import { DEFAULT_PAGE_INDEX, PAGINATION_QUERY_KEY } from '@/lib/constants';
 import { DEFAULT_DATE_FORMAT } from '@/lib/date/constants';
 import dayjs from '@/lib/date/dayjs-config';
 import type { ObjectType } from '@/lib/types';
-import { Form, Popover } from 'antd';
+import { Form, Popover, Tooltip } from 'antd';
 import { FunnelPlusIcon } from 'lucide-react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -97,7 +92,7 @@ export const AdvanceFilter = ({
       arrow={false}
       trigger={'click'}
       placement="bottomRight"
-      title="Tìm kiếm nâng cao"
+      title="Bộ lọc nâng cao"
       content={
         <>
           <Form form={form} layout="vertical" onFinish={onFinish}>
@@ -118,42 +113,14 @@ export const AdvanceFilter = ({
         </>
       }
     >
-      <Button variant="outline" size="sm" className="relative h-8">
-        <FunnelPlusIcon className="size-4" />
-        {isFiltered && (
-          <div className="absolute -top-0.5 -right-0.5 size-2 rounded-full bg-red-600" />
-        )}
-      </Button>
+      <Tooltip title="Bộ lọc nâng cao">
+        <Button variant="outline" size="sm" className="relative h-8">
+          <FunnelPlusIcon className="size-4" />
+          {isFiltered && (
+            <div className="absolute -top-0.5 -right-0.5 size-2 rounded-full bg-red-600" />
+          )}
+        </Button>
+      </Tooltip>
     </Popover>
   );
-
-  // return (
-  //   <Popover open={open} onOpenChange={setOpen}>
-  //     <PopoverTrigger asChild>
-  //       <Button variant="outline" size="sm" className="relative h-8">
-  //         <FunnelPlusIcon className="size-4" />
-  //         {isFiltered && (
-  //           <div className="absolute -top-0.5 -right-0.5 size-2 rounded-full bg-red-600" />
-  //         )}
-  //       </Button>
-  //     </PopoverTrigger>
-  //     <PopoverContent className="w-[280px] p-4" align="end" forceMount>
-  //       <Form form={form} layout="vertical" onFinish={onFinish}>
-  //         <div className="no-scrollbar max-h-72 overflow-y-auto px-1">
-  //           {formElements}
-  //         </div>
-  //         <div className="mb-3 h-px bg-border" />
-  //         <div className="flex items-center justify-between gap-2.5">
-  //           <Button type="reset" variant="outline" onClick={handleReset}>
-  //             Bỏ lọc
-  //           </Button>
-
-  //           <Button type="submit" variant="default">
-  //             Áp dụng
-  //           </Button>
-  //         </div>
-  //       </Form>
-  //     </PopoverContent>
-  //   </Popover>
-  // );
 };

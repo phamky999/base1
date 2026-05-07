@@ -1,4 +1,7 @@
-import type { FLIGHT_STATUS_OPTION } from '@/features/flight-management/constants';
+import type {
+  FLIGHT_BOOKING_STATUS_OPTION,
+  FLIGHT_STATUS_OPTION,
+} from '@/features/flight-management/constants';
 
 export type TFlightStatus =
   (typeof FLIGHT_STATUS_OPTION)[keyof typeof FLIGHT_STATUS_OPTION];
@@ -11,6 +14,7 @@ export type TFlightListItem = {
   destinationAirport: string;
   departureDate: string;
   departureTime: string;
+  returnDate: string;
   arrivalTime: string;
   aircraftType: string;
   seat: {
@@ -20,3 +24,6 @@ export type TFlightListItem = {
   price: number;
   status: TFlightStatus;
 };
+
+export type TFlightBookingStatus =
+  (typeof FLIGHT_BOOKING_STATUS_OPTION)[keyof typeof FLIGHT_BOOKING_STATUS_OPTION];

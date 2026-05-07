@@ -8,7 +8,7 @@ import { FlightStatistics } from '@/features/flight-management/components/flight
 import { PlusIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-export const FlightInventoryManagementPage = () => {
+export const FlightListPage = () => {
   const navigate = useNavigate();
   return (
     <>
@@ -27,10 +27,9 @@ export const FlightInventoryManagementPage = () => {
           </div>
         }
       />
-      <div className="space-y-6">
-        <FlightStatistics />
-
+      <div className="space-y-4">
         <FlightListFilter />
+        <FlightStatistics />
         <FlightList />
       </div>
     </>

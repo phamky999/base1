@@ -1,7 +1,4 @@
-import { LOGIN_FORM_FIELDS, USER_ROLE } from './constants';
-
-export type TLoginFormFields =
-  (typeof LOGIN_FORM_FIELDS)[keyof typeof LOGIN_FORM_FIELDS];
+import { USER_ROLE } from './constants';
 
 export type TUserRole = (typeof USER_ROLE)[keyof typeof USER_ROLE];
 

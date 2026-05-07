@@ -50,8 +50,8 @@ export const AppFilter = ({
   };
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex flex-1 flex-col-reverse items-start gap-y-2 sm:flex-row sm:items-center sm:space-x-2">
+    <div className="flex items-start justify-between gap-4 sm:items-center">
+      <div className="flex flex-1 flex-row flex-wrap items-start gap-4 sm:items-center">
         {!!searchField?.key && (
           <QuickFilterSearchInput
             searchKey={searchField?.key}

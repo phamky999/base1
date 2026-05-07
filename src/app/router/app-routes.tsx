@@ -4,6 +4,7 @@ import { AuthLayout } from '@/components/layout/auth-layout';
 import { MainLayout } from '@/components/layout/main-layout';
 import { authRoutes } from '@/features/auth/routes';
 import { flightManagementRoutes } from '@/features/flight-management/routes';
+import { systemManagementRoutes } from '@/features/system-management/routes';
 import { lazyNamedExport } from '@/lib/utils';
 import { createBrowserRouter } from 'react-router-dom';
 
@@ -36,6 +37,7 @@ export const appRoutes = createBrowserRouter([
       },
       // declare app features routes
       ...flightManagementRoutes,
+      ...systemManagementRoutes,
     ],
   },
 

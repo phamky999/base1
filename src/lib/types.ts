@@ -3,8 +3,6 @@
 import type { PAGINATION_QUERY_KEY, TOKEN } from '@/lib/constants';
 import type { ReactNode } from 'react';
 import type { UIMatch } from 'react-router-dom';
-// import type { ReactNode } from "react"
-// import type { UIMatch } from 'react-router-dom';
 
 /** Get extracted type from an Array Type */
 export type Unpacked<T> = T extends (infer U)[] ? U : T;
@@ -42,13 +40,3 @@ export type TAppUIMatch = UIMatch<unknown, TAppRouteHandle | undefined>;
 export type TAuthToken = (typeof TOKEN)[keyof typeof TOKEN];
 export type TPaginationQueryKey =
   (typeof PAGINATION_QUERY_KEY)[keyof typeof PAGINATION_QUERY_KEY];
-
-// export type TAppSidebarMenuItem = {
-//   key: string;
-//   label: ReactNode;
-//   icon?: ReactNode;
-//   children?: TAppSidebarMenuItem[];
-//   type?: string;
-//   disabled?: boolean;
-//   matcher?: (pathname: string) => boolean;
-// };

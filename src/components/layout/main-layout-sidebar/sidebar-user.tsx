@@ -16,10 +16,11 @@ import {
 } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import {
-  BadgeCheckIcon,
   BellIcon,
   ChevronsUpDownIcon,
+  LockIcon,
   LogOutIcon,
+  User2Icon,
 } from 'lucide-react';
 
 export const SidebarUser = ({
@@ -95,18 +96,22 @@ export const SidebarUser = ({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <BadgeCheckIcon />
-                Account
+                <User2Icon />
+                Tài khoản
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <BellIcon />
-                Notifications
+                Thông báo
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <LockIcon />
+                Đổi mật khẩu
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem className="text-red-500">
               <LogOutIcon />
-              Log out
+              Đăng xuất
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

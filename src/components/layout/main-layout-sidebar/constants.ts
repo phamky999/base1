@@ -72,7 +72,7 @@ export const sidebarData: TSidebarData = {
             },
             {
               title: 'Bộ điều kiện vé',
-              url: '#',
+              url: getPagePath('flightTicketConditionsPage'),
             },
           ],
         },
@@ -86,21 +86,17 @@ export const sidebarData: TSidebarData = {
           icon: Settings,
           items: [
             {
-              title: 'Nhà cung cấp',
-              url: '#',
-            },
-            {
               title: 'Email',
-              url: '#',
+              url: getPagePath('emailConfigPage'),
             },
             {
               title: 'Thông báo',
-              url: '#',
+              url: getPagePath('notificationConfigPage'),
             },
 
             {
               title: 'Tài khoản',
-              url: '#',
+              url: getPagePath('accountListPage'),
             },
           ],
         },

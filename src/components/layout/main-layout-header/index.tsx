@@ -1,6 +1,6 @@
 import { AppBreadcrumbs } from '@/components/app-breadcrumbs';
 import { HeaderThemeSwitch } from '@/components/layout/main-layout-header/header-theme-switch';
-import { HeaderCommandSearch } from '@/components/layout/main-layout-header/heaser-command-search';
+import { HeaderCommandSearch } from '@/components/layout/main-layout-header/header-command-search';
 import { sidebarData } from '@/components/layout/main-layout-sidebar/constants';
 import { SidebarUser } from '@/components/layout/main-layout-sidebar/sidebar-user';
 import { Button } from '@/components/ui/button';

@@ -1,10 +1,10 @@
 import { getPagePath } from '@/app/router/app-router-paths';
 import { Button } from '@/components/ui/button';
 import {
-  LOGIN_FORM_FIELDS,
-  LOGIN_FORM_LABELS,
-  LOGIN_FORM_VALIDATIONS,
-} from '@/features/auth/constants';
+  FORM_FIELDS,
+  FORM_LABELS,
+  FORM_VALIDATIONS,
+} from '@/features/auth/components/login-form.schema';
 import { useSignInUserMutation } from '@/features/auth/query';
 import type { TUserSignInPayload } from '@/features/auth/types';
 import { TOKEN } from '@/lib/constants';
@@ -41,23 +41,34 @@ export const LoginForm = () => {
   return (
     <Form form={form} layout="vertical" onFinish={handleLogin}>
       <Form.Item
-        name={LOGIN_FORM_FIELDS.USERNAME}
-        label={LOGIN_FORM_LABELS[LOGIN_FORM_FIELDS.USERNAME]}
-        rules={LOGIN_FORM_VALIDATIONS[LOGIN_FORM_FIELDS.USERNAME]}
+        name={FORM_FIELDS.PARTNER_CODE}
+        label={FORM_LABELS[FORM_FIELDS.PARTNER_CODE]}
+        rules={FORM_VALIDATIONS[FORM_FIELDS.PARTNER_CODE]}
       >
         <Input
-          placeholder={LOGIN_FORM_LABELS[LOGIN_FORM_FIELDS.USERNAME]}
+          placeholder={FORM_LABELS[FORM_FIELDS.PARTNER_CODE]}
           className="h-10"
         />
       </Form.Item>
 
       <Form.Item
-        name={LOGIN_FORM_FIELDS.PASSWORD}
-        label={LOGIN_FORM_LABELS[LOGIN_FORM_FIELDS.PASSWORD]}
-        rules={LOGIN_FORM_VALIDATIONS[LOGIN_FORM_FIELDS.PASSWORD]}
+        name={FORM_FIELDS.USERNAME}
+        label={FORM_LABELS[FORM_FIELDS.USERNAME]}
+        rules={FORM_VALIDATIONS[FORM_FIELDS.USERNAME]}
+      >
+        <Input
+          placeholder={FORM_LABELS[FORM_FIELDS.USERNAME]}
+          className="h-10"
+        />
+      </Form.Item>
+
+      <Form.Item
+        name={FORM_FIELDS.PASSWORD}
+        label={FORM_LABELS[FORM_FIELDS.PASSWORD]}
+        rules={FORM_VALIDATIONS[FORM_FIELDS.PASSWORD]}
       >
         <Input.Password
-          placeholder={LOGIN_FORM_LABELS[LOGIN_FORM_FIELDS.PASSWORD]}
+          placeholder={FORM_LABELS[FORM_FIELDS.PASSWORD]}
           className="h-10"
         />
       </Form.Item>

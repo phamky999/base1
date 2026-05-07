@@ -1,11 +1,10 @@
-import { appPathConfig } from '@/app/router/app-router-paths';
+import { appPathConfig, getPagePath } from '@/app/router/app-router-paths';
 import { lazyNamedExport } from '@/lib/utils';
-import type { RouteObject } from 'react-router-dom';
+import { Navigate, type RouteObject } from 'react-router-dom';
 
-const FlightInventoryManagementPage = lazyNamedExport(
-  () =>
-    import('@/features/flight-management/views/flight-inventory-management-page'),
-  'FlightInventoryManagementPage'
+const FlightListPage = lazyNamedExport(
+  () => import('@/features/flight-management/views/flight-list-page'),
+  'FlightListPage'
 );
 
 const CreateFlightPage = lazyNamedExport(
@@ -23,36 +22,60 @@ const FlightBookingListPage = lazyNamedExport(
   'FlightBookingListPage'
 );
 
+const TicketConditionsPage = lazyNamedExport(
+  () => import('@/features/flight-management/views/ticket-conditions-page'),
+  'TicketConditionsPage'
+);
+
 export const flightManagementRoutes: RouteObject[] = [
   {
-    path: appPathConfig.portal.flightInventoryManagement.root,
+    path: appPathConfig.portal.flightManagement.root,
     handle: {
       crumb: () => 'Kho vé máy bay',
     },
     children: [
       {
         index: true,
-        element: <FlightInventoryManagementPage />,
+        element: <Navigate to={getPagePath('flightListPage')} replace />,
       },
       {
-        path: appPathConfig.portal.flightInventoryManagement.createFlight,
-        element: <CreateFlightPage />,
+        path: appPathConfig.portal.flightManagement.flightList.root,
         handle: {
-          crumb: () => 'Tạo chuyến bay',
+          crumb: () => 'Danh sách chuyến bay',
         },
+        children: [
+          {
+            index: true,
+            element: <FlightListPage />,
+          },
+          {
+            path: appPathConfig.portal.flightManagement.flightList.createFlight,
+            element: <CreateFlightPage />,
+            handle: {
+              crumb: () => 'Tạo chuyến bay',
+            },
+          },
+          {
+            path: appPathConfig.portal.flightManagement.flightList.flightDetail,
+            element: <FlightDetailPage />,
+            handle: {
+              crumb: () => 'Thông tin chuyến bay',
+            },
+          },
+        ],
       },
       {
-        path: appPathConfig.portal.flightInventoryManagement.flightDetail,
-        element: <FlightDetailPage />,
-        handle: {
-          crumb: () => 'Thông tin chuyến bay',
-        },
-      },
-      {
-        path: appPathConfig.portal.flightInventoryManagement.bookingList,
+        path: appPathConfig.portal.flightManagement.bookingList,
         element: <FlightBookingListPage />,
         handle: {
           crumb: () => 'Danh sách booking',
+        },
+      },
+      {
+        path: appPathConfig.portal.flightManagement.ticketConditions,
+        element: <TicketConditionsPage />,
+        handle: {
+          crumb: () => 'Bộ điều kiện vé',
         },
       },
     ],

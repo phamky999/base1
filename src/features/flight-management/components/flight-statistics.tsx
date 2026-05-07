@@ -2,7 +2,6 @@ import {
   FLIGHT_STATUS_OPTION,
   mockReportData,
 } from '@/features/flight-management/constants';
-import { cn } from '@/lib/utils';
 
 export const FlightStatistics = () => {
   const { totalFlight, totalSeat, totalAvailable, countFlightByStatus } =
@@ -16,7 +15,6 @@ export const FlightStatistics = () => {
     {
       label: 'Chuyến bay đang hoạt động',
       value: countFlightByStatus[FLIGHT_STATUS_OPTION.ACTIVE],
-      valueClassName: 'text-blue-500',
     },
     {
       label: 'Tổng số vé',
@@ -25,27 +23,16 @@ export const FlightStatistics = () => {
     {
       label: 'Số vé còn lại',
       value: totalAvailable,
-      valueClassName: 'text-blue-500',
     },
   ];
 
   return (
     <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
       {statistics.map((item, index) => (
-        <div
-          key={index}
-          className="rounded-lg border bg-background p-4 shadow-xs"
-        >
-          <p className="text-sm font-medium">{item.label}</p>
+        <div key={index} className="rounded-lg border bg-card p-4 shadow-sm">
+          <p className="text-sm font-medium text-gray-400">{item.label}</p>
           <p className="mt-2">
-            <span
-              className={cn(
-                'text-lg font-bold text-foreground',
-                item.valueClassName
-              )}
-            >
-              {item.value}
-            </span>
+            <span className="text-lg font-bold">{item.value}</span>
           </p>
         </div>
       ))}

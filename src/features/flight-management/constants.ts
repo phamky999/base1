@@ -19,6 +19,24 @@ export const FLIGHT_STATUS_COLOR = {
   [FLIGHT_STATUS_OPTION.CANCELLED]: 'red',
 } as const;
 
+export const FLIGHT_BOOKING_STATUS_OPTION = {
+  PENDING: 'PENDING',
+  CANCELLED: 'CANCELLED',
+  CONFIRMED: 'CONFIRMED',
+} as const;
+
+export const FLIGHT_BOOKING_STATUS_LABEL = {
+  [FLIGHT_BOOKING_STATUS_OPTION.PENDING]: 'Đang chờ',
+  [FLIGHT_BOOKING_STATUS_OPTION.CANCELLED]: 'Đã hủy',
+  [FLIGHT_BOOKING_STATUS_OPTION.CONFIRMED]: 'Đã xác nhận',
+} as const;
+
+export const FLIGHT_BOOKING_STATUS_COLOR = {
+  [FLIGHT_BOOKING_STATUS_OPTION.PENDING]: 'yellow',
+  [FLIGHT_BOOKING_STATUS_OPTION.CANCELLED]: 'red',
+  [FLIGHT_BOOKING_STATUS_OPTION.CONFIRMED]: 'blue',
+} as const;
+
 export const mockFlightList: TFlightListItem[] = fillArrayWithNumber(20).map(
   (_, index) => ({
     id: (index + 2).toString(),
@@ -28,6 +46,7 @@ export const mockFlightList: TFlightListItem[] = fillArrayWithNumber(20).map(
     destinationAirport: 'SGN',
     departureDate: '2022-01-01',
     departureTime: '12:00',
+    returnDate: '2022-01-02',
     arrivalTime: '13:00',
     aircraftType: 'Boeing 737',
     seat: {

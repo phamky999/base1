@@ -141,7 +141,7 @@
     @apply border-border font-sans outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-sm text-foreground;
   }
   button:not(:disabled),
   [role='button']:not(:disabled) {
@@ -163,6 +163,7 @@
 ::-webkit-scrollbar-thumb {
   @apply rounded-full bg-gray-400;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-gray-600;
 }

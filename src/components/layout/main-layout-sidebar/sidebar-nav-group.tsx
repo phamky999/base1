@@ -36,8 +36,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 
 export const SidebarNavGroup = ({ title, items }: TNavGroup) => {
   const { state, isMobile } = useSidebar();
-  const { pathname, search, hash } = useLocation();
-  const href = pathname + search + hash;
+  const { pathname } = useLocation();
   return (
     <SidebarGroup>
       {title && <SidebarGroupLabel>{title}</SidebarGroupLabel>}
@@ -47,14 +46,20 @@ export const SidebarNavGroup = ({ title, items }: TNavGroup) => {
           const key = `${item.title}-${item.url}`;
 
           if (!item.items)
-            return <SidebarMenuLink key={key} item={item} href={href} />;
+            return <SidebarMenuLink key={key} item={item} href={pathname} />;
 
           if (state === 'collapsed' && !isMobile)
             return (
-              <SidebarMenuCollapsedDropdown key={key} item={item} href={href} />
+              <SidebarMenuCollapsedDropdown
+                key={key}
+                item={item}
+                href={pathname}
+              />
             );
 
-          return <SidebarMenuCollapsible key={key} item={item} href={href} />;
+          return (
+            <SidebarMenuCollapsible key={key} item={item} href={pathname} />
+          );
         })}
       </SidebarMenu>
     </SidebarGroup>
@@ -184,12 +189,26 @@ function SidebarMenuCollapsedDropdown({
 }
 
 function checkIsActive(href: string, item: TNavItem, mainNav = false) {
-  return (
-    href === item.url || // /endpint?search=param
-    href.split('?')[0] === item.url || // endpoint
-    !!item?.items?.filter(i => i.url === href).length || // if child nav is active
-    (mainNav &&
-      href.split('/')[1] !== '' &&
-      href.split('/')[1] === item?.url?.split('/')[1])
-  );
+  const path = href.split('?')[0];
+  const itemUrl = item.url?.split('?')[0];
+
+  if (path === itemUrl) return true;
+
+  const isChildActive = !!item.items?.some(subItem => {
+    const subUrl = subItem.url.split('?')[0];
+    return path === subUrl || path.startsWith(`${subUrl}/`);
+  });
+  if (isChildActive) return true;
+
+  if (itemUrl && itemUrl !== '/') {
+    const isParentOfCurrentPath = path.startsWith(`${itemUrl}/`);
+
+    return isParentOfCurrentPath;
+  }
+
+  if (mainNav && itemUrl) {
+    return path.split('/')[1] === itemUrl.split('/')[1];
+  }
+
+  return false;
 }
