@@ -1,5 +1,6 @@
 import { AppDateTimeLabel } from '@/components/app-date-time-label';
 import { AppTable } from '@/components/app-table';
+import { Button } from '@/components/ui/button';
 import {
   Drawer,
   DrawerClose,
@@ -40,11 +41,12 @@ export const FlightDetailDrawer = ({
 
   return (
     <Drawer direction="right" open={open} onOpenChange={onOpenChange}>
-      {' '}
       <DrawerContent className="max-w-200! max-md:w-full!">
         <DrawerHeader className="flex flex-row items-center justify-start! gap-2">
-          <DrawerClose>
-            <XIcon className="size-4" />
+          <DrawerClose asChild>
+            <Button variant="ghost" onClick={() => onOpenChange(false)}>
+              <XIcon className="size-4" />
+            </Button>
           </DrawerClose>
           <DrawerTitle className="mr-auto">Thông tin đơn hàng</DrawerTitle>
 
@@ -58,10 +60,13 @@ export const FlightDetailDrawer = ({
                   <p className="mb-2 text-base">Thông tin chung</p>
                   <Descriptions
                     bordered
-                    className="rounded-lg shadow-sm"
-                    column={{ xxl: 2, xl: 2, lg: 2, md: 1, sm: 1, xs: 1 }}
+                    className="rounded-lg shadow-xs"
+                    column={isMobile ? 1 : 2}
                   >
-                    <Descriptions.Item label="Mã đặt chỗ" span={2}>
+                    <Descriptions.Item
+                      label="Mã đặt chỗ"
+                      span={isMobile ? 1 : 2}
+                    >
                       <span className="font-bold">{detail.bookingCode}</span>
                     </Descriptions.Item>
                     <Descriptions.Item label="Hãng hàng không">
@@ -93,8 +98,8 @@ export const FlightDetailDrawer = ({
                   <p className="mb-2 text-base">Cấu hình giá</p>
                   <Descriptions
                     bordered
-                    className="rounded-lg shadow-sm"
-                    column={{ xxl: 3, xl: 3, lg: 3, md: 2, sm: 1, xs: 1 }}
+                    className="rounded-lg shadow-xs"
+                    column={isMobile ? 1 : 3}
                   >
                     <Descriptions.Item label="Người lớn">
                       {formatDisplayCurrency(detail.priceAdult)}
@@ -115,7 +120,7 @@ export const FlightDetailDrawer = ({
                       {detail.segments.map((segment, index) => (
                         <div
                           key={`${segment.flightNumber}-${index}`}
-                          className="rounded-lg border p-4 shadow-sm"
+                          className="rounded-lg border p-4 shadow-xs"
                         >
                           <div className="mb-3 flex items-center justify-between border-b border-gray-100 pb-2">
                             <div className="flex items-center gap-2">
@@ -259,7 +264,7 @@ export const FlightDetailDrawer = ({
                     <Descriptions
                       bordered
                       column={1}
-                      className="rounded-lg shadow-sm"
+                      className="rounded-lg shadow-xs"
                     >
                       {detail?.fareRules.map((rule, index) => (
                         <Descriptions.Item

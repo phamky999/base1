@@ -1,6 +1,6 @@
 export const BookingFlightInfo = () => {
   return (
-    <div className="rounded-lg border bg-card p-4 shadow-sm">
+    <div className="rounded-lg border bg-card p-4 shadow-xs">
       {/* <h2>Thông tin chuyến bay</h2>
       <p>Mã chuyến bay: VN123</p>
       <p>Hãng hàng không: Vietnam Airlines</p>

@@ -122,7 +122,7 @@ export const AddEditFlightForm = ({ id }: AddEditFlightFormProps) => {
     }
   };
 
-  const sectionCls = 'rounded-xl border bg-card p-4 shadow-sm';
+  const sectionCls = 'rounded-xl border bg-card p-4 shadow-xs';
 
   return (
     <Spin spinning={isFetching}>

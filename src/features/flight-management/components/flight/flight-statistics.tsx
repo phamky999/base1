@@ -21,7 +21,7 @@ export const FlightStatistics = () => {
   return (
     <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
       {statistics.map((item, index) => (
-        <div key={index} className="rounded-lg border bg-card p-4 shadow-sm">
+        <div key={index} className="rounded-lg border bg-card p-4 shadow-xs">
           <p className="text-sm font-medium text-gray-400">{item.label}</p>
           <p className="mt-2">
             <span className="text-lg font-bold">{item.value}</span>

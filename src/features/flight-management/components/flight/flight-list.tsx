@@ -54,7 +54,9 @@ export const FlightList = () => {
       render: (record: TFlightListItem) => (
         <div>
           <p className="font-semibold">{record?.airlineName}</p>
-          <p className="text-gray-400">{record?.flightNumbers?.join(', ')}</p>
+          <p className="text-xs text-gray-400">
+            {record?.flightNumbers?.join(', ')}
+          </p>
         </div>
       ),
     },
@@ -79,7 +81,7 @@ export const FlightList = () => {
             <span>→</span>
             <span className="font-semibold">{record?.endPoint}</span>
           </div>
-          <p className="text-gray-400">{record?.planes?.join(', ')}</p>
+          <p className="text-xs text-gray-400">{record?.planes?.join(', ')}</p>
         </div>
       ),
     },

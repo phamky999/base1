@@ -58,7 +58,7 @@ export const FlightBookingList = () => {
       render: record => (
         <div className="space-y-0.5">
           <div> {record?.airlineName}</div>
-          <div className="flex items-center justify-start gap-2">
+          <div className="flex items-center justify-start gap-2 text-xs">
             <span>{record?.startPoint}</span>
             <span>→</span>
             <span>{record?.endPoint}</span>
@@ -95,7 +95,9 @@ export const FlightBookingList = () => {
         <div className="space-y-0.5">
           <p className="font-semibold">{record?.contactName}</p>
           <Tooltip title={record?.contactEmail}>
-            <p className="line-clamp-1 text-gray-400">{record?.contactEmail}</p>
+            <p className="line-clamp-1 text-xs text-gray-400">
+              {record?.contactEmail}
+            </p>
           </Tooltip>
         </div>
       ),

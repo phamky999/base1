@@ -1,4 +1,5 @@
 import { AppDateTimeLabel } from '@/components/app-date-time-label';
+import { Button } from '@/components/ui/button';
 import {
   Drawer,
   DrawerClose,
@@ -34,8 +35,10 @@ export const BookingDetailLogsDrawer = ({
     <Drawer direction="right" open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="max-w-150! max-md:w-full!">
         <DrawerHeader className="flex flex-row items-center justify-start! gap-2">
-          <DrawerClose>
-            <XIcon className="size-4" />
+          <DrawerClose asChild>
+            <Button variant="ghost" onClick={() => onOpenChange(false)}>
+              <XIcon className="size-4" />
+            </Button>
           </DrawerClose>
           <DrawerTitle>Lịch sử cập nhật</DrawerTitle>
         </DrawerHeader>

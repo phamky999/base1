@@ -1,5 +1,6 @@
 import { AppDateTimeLabel } from '@/components/app-date-time-label';
 import { AppTable } from '@/components/app-table';
+import { Button } from '@/components/ui/button';
 import {
   Drawer,
   DrawerClose,
@@ -41,8 +42,10 @@ export const BookingDetailDrawer = ({
     <Drawer direction="right" open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="max-w-200! max-md:w-full!">
         <DrawerHeader className="flex flex-row items-center justify-start! gap-2">
-          <DrawerClose>
-            <XIcon className="size-4" />
+          <DrawerClose asChild>
+            <Button variant="ghost" onClick={() => onOpenChange(false)}>
+              <XIcon className="size-4" />
+            </Button>
           </DrawerClose>
           <DrawerTitle className="mr-auto">Thông tin đơn hàng</DrawerTitle>
 
@@ -58,11 +61,11 @@ export const BookingDetailDrawer = ({
                   </p>
                   <Descriptions
                     bordered
-                    className="rounded-lg shadow-sm"
-                    column={{ xxl: 2, xl: 2, lg: 2, md: 1, sm: 1, xs: 1 }}
+                    className="rounded-lg shadow-xs"
+                    column={isMobile ? 1 : 2}
                   >
                     <Descriptions.Item label="Mã đặt chỗ">
-                      <span className="text-brand font-bold">
+                      <span className="text-brand font-semibold">
                         {detail.bookingCode}
                       </span>
                     </Descriptions.Item>
@@ -114,7 +117,7 @@ export const BookingDetailDrawer = ({
                       </div>
                     </Descriptions.Item>
                     <Descriptions.Item label="Tổng giá">
-                      <span className="text-brand text-lg font-bold">
+                      <span className="text-brand text-lg font-semibold">
                         {formatDisplayCurrency(detail.totalPrice)}
                       </span>
                     </Descriptions.Item>
@@ -127,10 +130,10 @@ export const BookingDetailDrawer = ({
                   </p>
                   <Descriptions
                     bordered
-                    className="rounded-lg shadow-sm"
-                    column={{ xxl: 2, xl: 2, lg: 2, md: 1, sm: 1, xs: 1 }}
+                    className="rounded-lg shadow-xs"
+                    column={isMobile ? 1 : 2}
                   >
-                    <Descriptions.Item label="Họ tên">
+                    <Descriptions.Item label="Họ tên" span={isMobile ? 1 : 2}>
                       {detail.contactName}
                     </Descriptions.Item>
                     <Descriptions.Item label="Số điện thoại">
@@ -151,18 +154,20 @@ export const BookingDetailDrawer = ({
                       {detail.passengers.map((passenger, index) => (
                         <div
                           key={passenger.id}
-                          className="rounded-lg border p-4 shadow-sm"
+                          className="rounded-lg border p-4 shadow-xs"
                         >
                           <div className="mb-3 flex items-center justify-between border-b border-gray-100 pb-2">
                             <div className="flex items-center gap-2">
                               <span className="text-xs font-medium text-gray-400">
                                 #{index + 1}
                               </span>
-                              <span className="font-bold text-gray-800 uppercase">
+                              <span className="font-semibold text-gray-800 uppercase">
                                 {passenger.lastName} {passenger.firstName}
                               </span>
                             </div>
-                            <span className="font-bold">{passenger.type}</span>
+                            <span className="font-semibold">
+                              {passenger.type}
+                            </span>
                           </div>
 
                           <div className="grid grid-cols-2 gap-4">

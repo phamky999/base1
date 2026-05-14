@@ -5,13 +5,13 @@
 }
 
 .custom-ant-table {
-  @apply overflow-hidden rounded-lg border bg-(--ant-table-header-bg) shadow-sm;
+  @apply overflow-hidden rounded-lg border bg-(--ant-table-header-bg) shadow-xs;
 }
 .custom-ant-table .ant-table {
   @apply overflow-hidden rounded-t-lg;
 }
 .custom-ant-table .ant-table-thead th.ant-table-cell {
-  @apply text-sm;
+  @apply text-sm font-bold;
 }
 .custom-ant-table .ant-table-thead th.ant-table-cell::before {
   @apply hidden;
