@@ -1,6 +1,12 @@
-import { DEFAULT_DATE_FORMAT } from '@/lib/date/constants';
+import {
+  DEFAULT_DATE_FORMAT,
+  DEFAULT_DATE_TIME_FORMAT,
+  EMPTY_DATE_TIME_PLACEHOLDER,
+} from '@/lib/date/constants';
 import dayjs from '@/lib/date/dayjs-config';
+import type { FormInstance } from 'antd';
 import type { RangePickerProps } from 'antd/es/date-picker';
+import type { RuleObject } from 'antd/es/form';
 import type { ConfigType, Dayjs } from 'dayjs';
 
 export const convertMillisecondsToDays = (milliseconds: number) =>
@@ -62,10 +68,6 @@ export const formatDateWithDayOfWeek = (date: Dayjs) => {
   return `${dayOfWeek}, ${date.format(DEFAULT_DATE_FORMAT)}`;
 };
 
-export const renderTableDate = (date: string | null) => {
-  return date ? dayjs(date).format(DEFAULT_DATE_FORMAT) : '---';
-};
-
 export const formatDateRange = (dateRange?: [string?, string?]) => {
   if (!dateRange) return {};
   const [from, to] = dateRange;
@@ -77,4 +79,108 @@ export const formatDateRange = (dateRange?: [string?, string?]) => {
       to: dayjs(to, DEFAULT_DATE_FORMAT).format(DEFAULT_DATE_FORMAT),
     }),
   };
+};
+
+// export const startAndEndDateValidator = ({
+//   comparisonFieldName,
+//   currentFieldType,
+//   customErrorMessage,
+//   allowSame = false,
+// }: {
+//   comparisonFieldName: string | (string | number)[];
+//   currentFieldType: 'START_DATE' | 'END_DATE';
+//   customErrorMessage?: string;
+//   allowSame?: boolean;
+// }) => {
+//   return ({ getFieldValue }: FormInstance) => ({
+//     validator(_: RuleObject, value: Dayjs) {
+//       const isStartDate = currentFieldType === 'START_DATE';
+
+//       const comparisonFieldValue: Dayjs = getFieldValue(comparisonFieldName);
+//       console.log(value, comparisonFieldValue, currentFieldType);
+//       if (
+//         !value ||
+//         !comparisonFieldValue ||
+//         (allowSame
+//           ? isStartDate
+//             ? comparisonFieldValue?.isSameOrAfter(value)
+//             : comparisonFieldValue?.isSameOrBefore(value)
+//           : isStartDate
+//             ? comparisonFieldValue?.isAfter(value)
+//             : comparisonFieldValue?.isBefore(value))
+//       )
+//         return Promise.resolve();
+
+//       return Promise.reject(
+//         new Error(
+//           customErrorMessage
+//             ? customErrorMessage
+//             : isStartDate
+//               ? 'Ngày bắt đầu phải nhỏ hơn ngày kết thúc'
+//               : 'Ngày kết thúc phải lớn hơn ngày bắt đầu'
+//         )
+//       );
+//     },
+//   });
+// };
+
+type FieldType = 'START_DATE' | 'END_DATE';
+
+type Params = {
+  comparisonFieldName: string | (string | number)[];
+  currentFieldType: FieldType;
+  customErrorMessage?: string;
+  allowSame?: boolean;
+};
+
+export const startAndEndDateValidator =
+  ({
+    comparisonFieldName,
+    currentFieldType,
+    customErrorMessage,
+    allowSame = false,
+  }: Params) =>
+  ({ getFieldValue }: FormInstance) => ({
+    validator(_: RuleObject, value?: Dayjs) {
+      const comparisonValue: Dayjs | undefined =
+        getFieldValue(comparisonFieldName);
+
+      if (!value || !comparisonValue) {
+        return Promise.resolve();
+      }
+
+      const isStartDate = currentFieldType === 'START_DATE';
+
+      const isValid = isStartDate
+        ? allowSame
+          ? value.isSameOrBefore(comparisonValue)
+          : value.isBefore(comparisonValue)
+        : allowSame
+          ? value.isSameOrAfter(comparisonValue)
+          : value.isAfter(comparisonValue);
+
+      if (isValid) {
+        return Promise.resolve();
+      }
+
+      return Promise.reject(
+        new Error(
+          customErrorMessage ??
+            (isStartDate
+              ? 'Ngày bắt đầu phải nhỏ hơn ngày kết thúc'
+              : 'Ngày kết thúc phải lớn hơn ngày bắt đầu')
+        )
+      );
+    },
+  });
+
+export const formatDisplayDateTime = (
+  date: string | Dayjs,
+  displayFormat?: string
+) => {
+  if (!date) return EMPTY_DATE_TIME_PLACEHOLDER;
+
+  if (!dayjs(date).isValid()) return date as string;
+
+  return dayjs(date).format(displayFormat || DEFAULT_DATE_TIME_FORMAT);
 };

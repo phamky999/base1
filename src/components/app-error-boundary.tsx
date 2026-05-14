@@ -1,4 +1,3 @@
-import { getPagePath } from '@/app/router/app-router-paths';
 import { Button } from '@/components/ui/button';
 import type { ObjectType } from '@/lib/types';
 import clsx from 'clsx';
@@ -28,10 +27,7 @@ export const AppErrorBoundary = () => {
         </div>
       )}
       <div className="flex items-center justify-center gap-x-4">
-        <Button
-          variant={'outline'}
-          onClick={() => navigate(getPagePath('portalPage'))}
-        >
+        <Button variant={'outline'} onClick={() => navigate('/')}>
           Quay lại trang chủ
         </Button>
         <Button variant={'default'} onClick={() => window.location.reload()}>

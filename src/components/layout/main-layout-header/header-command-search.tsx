@@ -49,7 +49,7 @@ export const HeaderCommandSearch = () => {
       <Button
         variant="outline"
         className={cn(
-          'group relative h-8 w-full flex-1 justify-start rounded-md bg-muted/25 text-sm font-normal text-muted-foreground shadow-none hover:bg-accent sm:w-20 sm:pe-12 md:flex-none lg:w-30 xl:w-40'
+          'group relative h-8 w-full flex-1 justify-start rounded-md bg-muted/25 text-sm font-normal text-muted-foreground shadow-none hover:bg-accent sm:w-30 sm:pe-12 md:flex-none lg:w-40 xl:w-50'
         )}
         aria-keyshortcuts="Meta+K Control+K"
         onClick={() => setOpen(true)}

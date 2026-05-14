@@ -12,24 +12,26 @@ type AppFilterProps = {
     key: string;
   };
   filters?: {
+    type?: 'multiple' | 'single';
     filterKey: string;
     title: string;
     options: {
       label: string;
       value: string;
-      icon?: React.ComponentType<{ className?: string }>;
     }[];
   }[];
   advanceFilter?: {
     keys: string[];
     elements: React.ReactNode;
   };
+  showAdvanceFilterOnly?: boolean;
 };
 
 export const AppFilter = ({
   searchField,
   filters = [],
   advanceFilter,
+  showAdvanceFilterOnly = false,
 }: AppFilterProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -49,6 +51,15 @@ export const AppFilter = ({
     setSearchParams(newParams, { replace: true });
   };
 
+  const addvanceFilter = advanceFilter ? (
+    <AdvanceFilter
+      advanceFilterKeys={advanceFilter?.keys}
+      formElements={advanceFilter?.elements}
+    />
+  ) : null;
+
+  if (showAdvanceFilterOnly) return addvanceFilter;
+
   return (
     <div className="flex items-start justify-between gap-4 sm:items-center">
       <div className="flex flex-1 flex-row flex-wrap items-start gap-4 sm:items-center">
@@ -59,16 +70,19 @@ export const AppFilter = ({
           />
         )}
 
-        <div className="flex gap-x-2">
-          {filters.map(filter => (
-            <QuickFilterSelection
-              key={filter.filterKey}
-              filterKey={filter.filterKey}
-              title={filter.title}
-              options={filter.options}
-            />
-          ))}
-        </div>
+        {!!filters?.length && (
+          <div className="flex gap-x-2">
+            {filters.map(filter => (
+              <QuickFilterSelection
+                key={filter.filterKey}
+                filterKey={filter.filterKey}
+                title={filter.title}
+                options={filter.options}
+                type={filter?.type || 'single'}
+              />
+            ))}
+          </div>
+        )}
 
         {isFiltered && (
           <Button
@@ -81,12 +95,8 @@ export const AppFilter = ({
           </Button>
         )}
       </div>
-      {!!advanceFilter && (
-        <AdvanceFilter
-          advanceFilterKeys={advanceFilter?.keys}
-          formElements={advanceFilter?.elements}
-        />
-      )}
+
+      {addvanceFilter}
     </div>
   );
 };

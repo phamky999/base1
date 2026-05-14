@@ -15,3 +15,13 @@ export const isNumeric = (val: string) => {
     /^-?\d+(\.\d+)?$/.test(val) && !(val.length > 1 && val.startsWith('0'))
   );
 };
+
+export const displayNumberWithCommas = {
+  formatter: (value: number | string) => {
+    const [start, end] = `${value}`.split('.') || [];
+    const v = `${start}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return `${end ? `${v}.${end}` : `${v}`}`;
+  },
+
+  parser: (value?: string) => value?.replace(/\$\s?|(,*)/g, ''),
+};

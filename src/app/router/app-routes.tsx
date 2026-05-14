@@ -1,6 +1,4 @@
-import { appPathConfig } from '@/app/router/app-router-paths';
 import { AppErrorBoundary } from '@/components/app-error-boundary';
-import { AuthLayout } from '@/components/layout/auth-layout';
 import { MainLayout } from '@/components/layout/main-layout';
 import { authRoutes } from '@/features/auth/routes';
 import { flightManagementRoutes } from '@/features/flight-management/routes';
@@ -19,15 +17,12 @@ const NotFoundPage = lazyNamedExport(
 );
 
 export const appRoutes = createBrowserRouter([
-  {
-    path: appPathConfig.auth.root,
-    element: <AuthLayout />,
-    errorElement: <AppErrorBoundary />,
-    children: [...authRoutes],
-  },
+  // Unauthenticated routes
+  ...authRoutes,
 
+  // Authenticated routes
   {
-    path: appPathConfig.portal.root,
+    path: '/',
     element: <MainLayout />,
     errorElement: <AppErrorBoundary />,
     children: [

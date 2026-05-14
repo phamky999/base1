@@ -85,3 +85,8 @@ export const getFileExtension = (fileName: string) => {
   if (!fileName || typeof fileName !== 'string') return '';
   return fileName.toLowerCase().split('.').pop();
 };
+
+export const upperCaseValue = (value?: string) => {
+  if (!value) return '';
+  return value.toUpperCase();
+};

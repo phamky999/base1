@@ -1,85 +1,82 @@
-import type { TFlightListItem } from '@/features/flight-management/types';
-import { fillArrayWithNumber } from '@/lib/helpers/array';
+import type {
+  TFareRuleType,
+  TFlightBookingLogAction,
+} from '@/features/flight-management/types';
 
-export const FLIGHT_STATUS_OPTION = {
-  PENDING: 'PENDING',
+export const FLIGHT_STATUS = {
+  DRAFT: 'DRAFT',
   ACTIVE: 'ACTIVE',
-  CANCELLED: 'CANCELLED',
 } as const;
 
 export const FLIGHT_STATUS_LABEL = {
-  [FLIGHT_STATUS_OPTION.PENDING]: 'Đang chờ',
-  [FLIGHT_STATUS_OPTION.ACTIVE]: 'Đang hoạt động',
-  [FLIGHT_STATUS_OPTION.CANCELLED]: 'Đã hủy',
+  [FLIGHT_STATUS.DRAFT]: 'Đang khởi tạo',
+  [FLIGHT_STATUS.ACTIVE]: 'Đang hoạt động',
 } as const;
 
 export const FLIGHT_STATUS_COLOR = {
-  [FLIGHT_STATUS_OPTION.PENDING]: 'yellow',
-  [FLIGHT_STATUS_OPTION.ACTIVE]: 'blue',
-  [FLIGHT_STATUS_OPTION.CANCELLED]: 'red',
+  [FLIGHT_STATUS.DRAFT]: 'blue',
+  [FLIGHT_STATUS.ACTIVE]: 'green',
 } as const;
 
-export const FLIGHT_BOOKING_STATUS_OPTION = {
-  PENDING: 'PENDING',
+export const FLIGHT_BOOKING_STATUS = {
+  HOLD: 'HOLD',
   CANCELLED: 'CANCELLED',
-  CONFIRMED: 'CONFIRMED',
+  ISSUED: 'ISSUED',
 } as const;
 
 export const FLIGHT_BOOKING_STATUS_LABEL = {
-  [FLIGHT_BOOKING_STATUS_OPTION.PENDING]: 'Đang chờ',
-  [FLIGHT_BOOKING_STATUS_OPTION.CANCELLED]: 'Đã hủy',
-  [FLIGHT_BOOKING_STATUS_OPTION.CONFIRMED]: 'Đã xác nhận',
+  [FLIGHT_BOOKING_STATUS.HOLD]: 'Đang giữ chỗ',
+  [FLIGHT_BOOKING_STATUS.CANCELLED]: 'Đã hủy',
+  [FLIGHT_BOOKING_STATUS.ISSUED]: 'Đã xuất vé',
 } as const;
 
 export const FLIGHT_BOOKING_STATUS_COLOR = {
-  [FLIGHT_BOOKING_STATUS_OPTION.PENDING]: 'yellow',
-  [FLIGHT_BOOKING_STATUS_OPTION.CANCELLED]: 'red',
-  [FLIGHT_BOOKING_STATUS_OPTION.CONFIRMED]: 'blue',
+  [FLIGHT_BOOKING_STATUS.HOLD]: 'blue',
+  [FLIGHT_BOOKING_STATUS.CANCELLED]: 'red',
+  [FLIGHT_BOOKING_STATUS.ISSUED]: 'green',
 } as const;
 
-export const mockFlightList: TFlightListItem[] = fillArrayWithNumber(20).map(
-  (_, index) => ({
-    id: (index + 2).toString(),
-    flightNumber: `VN${index + 123}`,
-    airline: `Vietnam Airlines ${index + 1}`,
-    originAirport: 'HAN',
-    destinationAirport: 'SGN',
-    departureDate: '2022-01-01',
-    departureTime: '12:00',
-    returnDate: '2022-01-02',
-    arrivalTime: '13:00',
-    aircraftType: 'Boeing 737',
-    seat: {
-      total: 180,
-      available: index > 0 && index % 9 === 0 ? 0 : 100,
-    },
-    price: 1000000,
-    status:
-      index === 0
-        ? FLIGHT_STATUS_OPTION.PENDING
-        : index > 10 && index % 3 === 0
-          ? FLIGHT_STATUS_OPTION.CANCELLED
-          : FLIGHT_STATUS_OPTION.ACTIVE,
-  })
-);
+export const FARE_RULE_TYPE = {
+  REFUNDABLE: 'REFUNDABLE',
+  NON_REFUNDABLE: 'NON_REFUNDABLE',
+  HAND_BAGGAGE: 'HAND_BAGGAGE',
+  CHECKED_BAGGAGE: 'CHECKED_BAGGAGE',
+  CHANGE: 'CHANGE',
+  NO_CHANGE: 'NO_CHANGE',
+  NOTE: 'NOTE',
+} as const;
 
-export const mockReportData = {
-  totalFlight: mockFlightList.length,
-  totalSeat: mockFlightList.reduce((acc, flight) => acc + flight.seat.total, 0),
-  totalPrice: mockFlightList.reduce((acc, flight) => acc + flight.price, 0),
-  totalAvailable: mockFlightList.reduce(
-    (acc, flight) => acc + flight.seat.available,
-    0
-  ),
-  totalFlightSold: mockFlightList.reduce(
-    (acc, flight) => acc + (flight.seat.total - flight.seat.available),
-    0
-  ),
-  countFlightByStatus: mockFlightList.reduce(
-    (acc, flight) => {
-      acc[flight.status] = (acc[flight.status] || 0) + 1;
-      return acc;
-    },
-    {} as Record<string, number>
-  ),
-};
+export const FARE_RULE_TYPE_LABEL: Record<TFareRuleType, string> = {
+  [FARE_RULE_TYPE.REFUNDABLE]: 'Hoàn hủy',
+  [FARE_RULE_TYPE.NON_REFUNDABLE]: 'Không hoàn hủy',
+  [FARE_RULE_TYPE.HAND_BAGGAGE]: 'Hành lý xách tay',
+  [FARE_RULE_TYPE.CHECKED_BAGGAGE]: 'Hành lý ký gửi',
+  [FARE_RULE_TYPE.CHANGE]: 'Thay đổi thông tin',
+  [FARE_RULE_TYPE.NO_CHANGE]: 'Không được thay đổi thông tin',
+  [FARE_RULE_TYPE.NOTE]: 'Ghi chú',
+} as const;
+
+export const FLIGHT_DETAIL_LOG_ACTION = {
+  ADD: 'ADD',
+  UPDATE: 'UPDATE',
+} as const;
+
+export const FLIGHT_DETAIL_LOG_ACTION_LABEL = {
+  [FLIGHT_DETAIL_LOG_ACTION.ADD]: 'Tạo mới',
+  [FLIGHT_DETAIL_LOG_ACTION.UPDATE]: 'Cập nhật',
+} as const;
+
+export const FLIGHT_BOOKING_LOG_ACTION = {
+  HOLD: 'HOLD',
+  CANCELLED: 'CANCELLED',
+  ISSUED: 'ISSUED',
+} as const;
+
+export const FLIGHT_BOOKING_LOG_ACTION_LABEL: Record<
+  TFlightBookingLogAction,
+  string
+> = {
+  [FLIGHT_BOOKING_LOG_ACTION.HOLD]: 'Giữ chỗ',
+  [FLIGHT_BOOKING_LOG_ACTION.CANCELLED]: 'Hủy vé',
+  [FLIGHT_BOOKING_LOG_ACTION.ISSUED]: 'Xuất vé',
+} as const;

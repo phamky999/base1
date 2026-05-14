@@ -1,11 +1,11 @@
 import { baseApi } from '@/app/redux/baseApi';
-// import authReducer from '@/features/auth/slice';
+import authReducer from '@/features/auth/slice';
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 
 export const store = configureStore({
   reducer: {
-    // auth: authReducer,
+    auth: authReducer,
     [baseApi.reducerPath]: baseApi.reducer,
   },
 
@@ -13,7 +13,12 @@ export const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         ignoredPaths: ['scanner.onScan', 'modals'],
-        ignoredActionPaths: ['payload.onScan', 'payload.element'],
+        ignoredActionPaths: [
+          'payload.onScan',
+          'payload.element',
+          'meta.arg',
+          'meta.baseQueryMeta',
+        ],
       },
     }).concat(baseApi.middleware),
 });

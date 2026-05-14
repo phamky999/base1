@@ -1,4 +1,5 @@
-import { appPathConfig } from '@/app/router/app-router-paths';
+import { AppErrorBoundary } from '@/components/app-error-boundary';
+import { AuthLayout } from '@/components/layout/auth-layout';
 import { lazyNamedExport } from '@/lib/utils';
 import type { RouteObject } from 'react-router-dom';
 
@@ -7,10 +8,27 @@ const LoginPage = lazyNamedExport(
   'LoginPage'
 );
 
+export const authPaths = {
+  root: {
+    path: '/auth',
+  },
+  login: {
+    path: 'login',
+    fullPath: '/auth/login',
+  },
+};
+
 export const authRoutes: RouteObject[] = [
   {
-    index: false,
-    path: appPathConfig.auth.login,
-    element: <LoginPage />,
+    path: authPaths.root.path,
+    element: <AuthLayout />,
+    errorElement: <AppErrorBoundary />,
+    children: [
+      {
+        index: false,
+        path: authPaths.login.path,
+        element: <LoginPage />,
+      },
+    ],
   },
 ];

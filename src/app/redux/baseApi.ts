@@ -2,6 +2,7 @@ import { TOKEN } from '@/lib/constants';
 import type { ObjectType } from '@/lib/types';
 import { clearAuthToken, getAuthToken, setAuthToken } from '@/lib/utils';
 import type {
+  BaseQueryApi,
   BaseQueryFn,
   FetchArgs,
   FetchBaseQueryError,
@@ -11,8 +12,9 @@ import { Mutex } from 'async-mutex';
 import { toast } from 'sonner';
 
 const baseApiURL = import.meta.env.VITE_APP_API_URL;
-const refreshTokenAPIEndpoint = '/UserAuth/Refresh';
+const refreshTokenAPIEndpoint = '/Identity/Refresh';
 const RTKRefreshTokenEndpoint = 'refreshAuthToken';
+const RTKSignInUserEndpoint = 'SignInUser';
 
 // create a new mutex
 const mutex = new Mutex();
@@ -28,6 +30,16 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
+const handleLogout = (api: BaseQueryApi) => {
+  clearAuthToken();
+  api.dispatch(baseApi.util.resetApiState());
+  api.dispatch({
+    type: 'auth/logout',
+  });
+
+  window.location.href = '/auth/login';
+};
+
 const baseQueryWithInterceptor: BaseQueryFn<
   string | FetchArgs,
   unknown,
@@ -37,15 +49,14 @@ const baseQueryWithInterceptor: BaseQueryFn<
 
   let result = await baseQuery(args, api, extraOptions);
   if (result.error) {
-    if (result.error.status === 401) {
+    if (result.error.status === 401 && api.endpoint !== RTKSignInUserEndpoint) {
       if (!mutex.isLocked()) {
         const release = await mutex.acquire();
         try {
           const refresh_token = getAuthToken(TOKEN.REFRESH_TOKEN);
 
           if (!refresh_token) {
-            clearAuthToken();
-            window.location.href = '/auth/login';
+            handleLogout(api);
             return result;
           }
 
@@ -61,30 +72,28 @@ const baseQueryWithInterceptor: BaseQueryFn<
           );
 
           if (refreshResult.error) {
-            clearAuthToken();
-            window.location.href = '/auth/login';
+            handleLogout(api);
             return refreshResult;
           }
 
           const {
             accessToken,
             refreshToken,
-            expireInSeconds,
-            refreshTokenExpireIn,
-          } = refreshResult.data || {};
+            accessTokenExpiresIn,
+            refreshTokenExpiresIn,
+          } = refreshResult.data?.data || {};
 
           if (accessToken && refreshToken) {
-            setAuthToken(TOKEN.ACCESS_TOKEN, accessToken, expireInSeconds);
+            setAuthToken(TOKEN.ACCESS_TOKEN, accessToken, accessTokenExpiresIn);
             setAuthToken(
               TOKEN.REFRESH_TOKEN,
               refreshToken,
-              refreshTokenExpireIn
+              refreshTokenExpiresIn
             );
 
             result = await baseQuery(args, api, extraOptions);
           } else {
-            clearAuthToken();
-            window.location.href = '/auth/login';
+            handleLogout(api);
           }
 
           // eslint-disable-next-line @typescript-eslint/no-explicit-any

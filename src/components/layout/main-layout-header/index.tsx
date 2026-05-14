@@ -1,7 +1,5 @@
-import { AppBreadcrumbs } from '@/components/app-breadcrumbs';
-import { HeaderThemeSwitch } from '@/components/layout/main-layout-header/header-theme-switch';
 import { HeaderCommandSearch } from '@/components/layout/main-layout-header/header-command-search';
-import { sidebarData } from '@/components/layout/main-layout-sidebar/constants';
+import { HeaderThemeSwitch } from '@/components/layout/main-layout-header/header-theme-switch';
 import { SidebarUser } from '@/components/layout/main-layout-sidebar/sidebar-user';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -24,16 +22,12 @@ export const MainLayoutHeader = () => {
         </Button>
         <Separator orientation="vertical" className="mr-2 h-4 self-center!" />
 
-        <div className="hidden md:block">
-          <AppBreadcrumbs />
-        </div>
-
         <div className="ml-auto">
           <HeaderCommandSearch />
         </div>
 
         <HeaderThemeSwitch />
-        <SidebarUser showInHeader user={sidebarData?.user} />
+        <SidebarUser showInHeader />
       </div>
     </header>
   );

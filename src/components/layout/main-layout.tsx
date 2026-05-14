@@ -2,10 +2,44 @@ import { AppScreenLoader } from '@/components/app-screen-loader';
 import { MainLayoutHeader } from '@/components/layout/main-layout-header';
 import { MainLayoutSidebar } from '@/components/layout/main-layout-sidebar';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import { useAuth } from '@/features/auth/hooks/use-auth';
+import { useTokenRefresh } from '@/features/auth/hooks/use-auth';
+import { authPaths } from '@/features/auth/routes';
+import { TOKEN } from '@/lib/constants';
+import { getAuthToken } from '@/lib/utils';
 import { Suspense } from 'react';
-import { Outlet, ScrollRestoration } from 'react-router-dom';
+import {
+  Navigate,
+  Outlet,
+  ScrollRestoration,
+  useLocation,
+} from 'react-router-dom';
 
 export const MainLayout = ({ children }: { children?: React.ReactNode }) => {
+  const location = useLocation();
+  const { isRefreshing, isRefreshFailed } = useTokenRefresh();
+  const hasAccessToken = !!getAuthToken(TOKEN.ACCESS_TOKEN);
+
+  if (isRefreshing) return <AppScreenLoader />;
+
+  if (isRefreshFailed || !hasAccessToken) {
+    return (
+      <Navigate
+        to={authPaths.login.fullPath}
+        replace
+        state={{ redirectTo: location.pathname + location.search }}
+      />
+    );
+  }
+
+  return <MainLayoutInner>{children}</MainLayoutInner>;
+};
+
+const MainLayoutInner = ({ children }: { children?: React.ReactNode }) => {
+  const { isLoading } = useAuth();
+
+  if (isLoading) return <AppScreenLoader />;
+
   return (
     <>
       <SidebarProvider>

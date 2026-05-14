@@ -1,7 +1,21 @@
 import { AppGridShapeBackground } from '@/components/app-grid-shape-background';
-import { Outlet } from 'react-router-dom';
+import { AppScreenLoader } from '@/components/app-screen-loader';
+import { useTokenRefresh } from '@/features/auth/hooks/use-auth';
+import { TOKEN } from '@/lib/constants';
+import { getAuthToken } from '@/lib/utils';
+import { Navigate, Outlet } from 'react-router-dom';
 
 export const AuthLayout = ({ children }: { children?: React.ReactNode }) => {
+  const { isRefreshing, isRefreshFailed } = useTokenRefresh();
+
+  if (isRefreshing) return <AppScreenLoader />;
+
+  const hasAccessToken = !!getAuthToken(TOKEN.ACCESS_TOKEN);
+
+  if (!isRefreshFailed && hasAccessToken) {
+    return <Navigate to="/" replace />;
+  }
+
   return (
     <div className="relative grid h-screen w-screen items-center bg-brand-950">
       <div className="z-1 flex items-center justify-center p-4">

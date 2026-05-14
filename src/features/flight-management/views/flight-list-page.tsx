@@ -1,10 +1,10 @@
-import { getPagePath } from '@/app/router/app-router-paths';
 import { PageHelmet } from '@/components/app-helmet';
 import { AppPageHeader } from '@/components/app-page-header';
 import { Button } from '@/components/ui/button';
-import { FlightList } from '@/features/flight-management/components/flight-list';
-import { FlightListFilter } from '@/features/flight-management/components/flight-list-filter';
-import { FlightStatistics } from '@/features/flight-management/components/flight-statistics';
+import { FlightList } from '@/features/flight-management/components/flight/flight-list';
+import { FlightListFilter } from '@/features/flight-management/components/flight/flight-list-filter';
+// import { FlightStatistics } from '@/features/flight-management/components/flight-statistics';
+import { flightManagementPaths } from '@/features/flight-management/routes';
 import { PlusIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,7 +19,9 @@ export const FlightListPage = () => {
           <div className="flex justify-end gap-4">
             <Button
               variant={'default'}
-              onClick={() => navigate(getPagePath('createFlightPage'))}
+              onClick={() =>
+                navigate(flightManagementPaths.createFlight.fullPath)
+              }
             >
               <PlusIcon className="mr-2 size-4" />
               Thêm mới
@@ -27,9 +29,9 @@ export const FlightListPage = () => {
           </div>
         }
       />
-      <div className="space-y-4">
+      <div className="space-y-6">
         <FlightListFilter />
-        <FlightStatistics />
+        {/* <FlightStatistics /> */}
         <FlightList />
       </div>
     </>

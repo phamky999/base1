@@ -1,28 +1,20 @@
-import {
-  FLIGHT_STATUS_OPTION,
-  mockReportData,
-} from '@/features/flight-management/constants';
-
 export const FlightStatistics = () => {
-  const { totalFlight, totalSeat, totalAvailable, countFlightByStatus } =
-    mockReportData || {};
-
   const statistics = [
     {
       label: 'Tổng số chuyến bay',
-      value: totalFlight,
+      value: 0,
     },
     {
       label: 'Chuyến bay đang hoạt động',
-      value: countFlightByStatus[FLIGHT_STATUS_OPTION.ACTIVE],
+      value: 0,
     },
     {
       label: 'Tổng số vé',
-      value: totalSeat,
+      value: 0,
     },
     {
       label: 'Số vé còn lại',
-      value: totalAvailable,
+      value: 0,
     },
   ];
 

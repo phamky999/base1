@@ -1,19 +1,21 @@
-import { USER_ROLE } from './constants';
+import { USER_PERMISSIONS, USER_ROLE } from './constants';
 
 export type TUserRole = (typeof USER_ROLE)[keyof typeof USER_ROLE];
 
-export type TTokenExpires = {
-  expireInSeconds: number;
-  refreshTokenExpireIn: number;
-};
+export type TUserPermission =
+  (typeof USER_PERMISSIONS)[keyof typeof USER_PERMISSIONS];
 
 export type TUserInfo = {
-  id: number;
+  id: string;
+  username: string;
   displayName: string;
-  userName: string;
+  providerCode: string;
+  role: TUserRole;
   email: string;
   phone: string;
-  role: TUserRole;
+  isActive: boolean;
+  permissions: TUserPermission;
+  avatar?: string;
 };
 
 export type TUserSignInPayload = {
@@ -23,10 +25,14 @@ export type TUserSignInPayload = {
 
 export type TUserSignInSuccessResponse = {
   accessToken: string;
+  accessTokenExpiresIn: number; // seconds
   refreshToken: string;
-  agentUser: TUserInfo;
-} & TTokenExpires;
+  refreshTokenExpiresIn: number; // seconds
+  user: TUserInfo;
+};
 
 export type TAuthState = {
   currentUser: TUserInfo | null;
 };
+
+export type TRefreshAuthTokenResponse = TUserSignInSuccessResponse;

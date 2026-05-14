@@ -1,6 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { authQueryApi } from './query';
-import { type TAuthState } from './types';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { type TAuthState, type TUserInfo } from './types';
 
 const initialState: TAuthState = {
   currentUser: null,
@@ -9,15 +8,18 @@ const initialState: TAuthState = {
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
-  extraReducers: builder => {
-    const { GetCurrentUser } = authQueryApi.endpoints;
+  reducers: {
+    setCurrentUser: (state, action: PayloadAction<TUserInfo | null>) => {
+      state.currentUser = action.payload;
+    },
 
-    builder.addMatcher(GetCurrentUser.matchFulfilled, (state, { payload }) => {
-      state.currentUser = payload?.data ?? null;
-    });
+    logout() {
+      return initialState;
+    },
   },
 });
+
+export const { setCurrentUser, logout } = authSlice.actions;
 
 const authReducer = authSlice.reducer;
 

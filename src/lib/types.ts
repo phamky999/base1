@@ -40,3 +40,8 @@ export type TAppUIMatch = UIMatch<unknown, TAppRouteHandle | undefined>;
 export type TAuthToken = (typeof TOKEN)[keyof typeof TOKEN];
 export type TPaginationQueryKey =
   (typeof PAGINATION_QUERY_KEY)[keyof typeof PAGINATION_QUERY_KEY];
+
+export type TPaginationRequest = {
+  page: number;
+  pageSize: number;
+};

@@ -22,6 +22,7 @@ import { useSearchParams } from 'react-router-dom';
 
 type QuickFilterSelectionProps = {
   title?: string;
+  type?: 'multiple' | 'single';
   filterKey: string;
   options: {
     label: string;
@@ -33,6 +34,7 @@ export const QuickFilterSelection = ({
   title,
   filterKey,
   options,
+  type = 'single',
 }: QuickFilterSelectionProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -42,6 +44,20 @@ export const QuickFilterSelection = ({
 
   const handleSelect = (value: string) => {
     const newParams = new URLSearchParams(searchParams);
+
+    if (type === 'single') {
+      const currentValue = newParams.get(filterKey);
+
+      newParams.delete(filterKey);
+
+      if (currentValue !== value) {
+        newParams.set(filterKey, value);
+      }
+
+      setSearchParams(newParams, { replace: true });
+      return;
+    }
+
     const currentFilters = new Set(newParams.getAll(filterKey));
 
     if (currentFilters.has(value)) {
@@ -143,7 +159,9 @@ export const QuickFilterSelection = ({
                   onSelect={clearFilters}
                   className="justify-center text-center"
                 >
-                  <span className="flex-1">Bỏ chọn tất cả</span>
+                  <span className="flex-1">
+                    {type === 'single' ? 'Bỏ chọn' : 'Bỏ chọn tất cả'}
+                  </span>
                 </CommandItem>
               </CommandGroup>
             </>

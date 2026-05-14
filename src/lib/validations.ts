@@ -43,8 +43,8 @@ export const Regex: Record<RegexKey, RegExp> = {
 };
 
 export const RegexValidationMessage: Record<RegexKey, string> = {
-  AIRLINE_CODE: 'Hãy nhập đúng định dạng mã hãng hàng không',
-  AIRPORT_CODE: 'Hãy nhập 3 ký tự chữ cái không dấu',
+  AIRLINE_CODE: 'Hãy nhập 2 ký tự (chữ cái không dấu, chữ số)',
+  AIRPORT_CODE: 'Hãy nhập 3 ký tự (chữ cái không dấu)',
   EMAIL: 'Vui lòng nhập đúng định dạng email',
   FLIGHT_NUMBER: 'Hãy nhập đúng định dạng số hiệu chuyến bay',
   FULL_NAME: 'Vui lòng nhập đúng định dạng họ tên',

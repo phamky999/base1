@@ -1,29 +1,258 @@
 import type {
-  FLIGHT_BOOKING_STATUS_OPTION,
-  FLIGHT_STATUS_OPTION,
+  FLIGHT_BOOKING_STATUS,
+  FLIGHT_STATUS,
+  FARE_RULE_TYPE,
+  FLIGHT_DETAIL_LOG_ACTION,
+  FLIGHT_BOOKING_LOG_ACTION,
 } from '@/features/flight-management/constants';
+import type { TPaginationRequest } from '@/lib/types';
 
-export type TFlightStatus =
-  (typeof FLIGHT_STATUS_OPTION)[keyof typeof FLIGHT_STATUS_OPTION];
+export type TFlightStatus = (typeof FLIGHT_STATUS)[keyof typeof FLIGHT_STATUS];
+
+export type TFareRuleType =
+  (typeof FARE_RULE_TYPE)[keyof typeof FARE_RULE_TYPE];
+
+export type TFlightBookingStatus =
+  (typeof FLIGHT_BOOKING_STATUS)[keyof typeof FLIGHT_BOOKING_STATUS];
+
+export type TFlightDetailLogAction =
+  (typeof FLIGHT_DETAIL_LOG_ACTION)[keyof typeof FLIGHT_DETAIL_LOG_ACTION];
+
+export type TFlightBookingLogAction =
+  (typeof FLIGHT_BOOKING_LOG_ACTION)[keyof typeof FLIGHT_BOOKING_LOG_ACTION];
+
+export type TAirportItem = {
+  code: string;
+  name: string;
+  cityCode: string;
+  cityName: string;
+  countryCode: string;
+  countryName: string;
+};
+
+export type TCreateFlightPayload = {
+  airlineCode: string;
+  bookingCode: string;
+  seatTotal: number;
+  fareRules: Array<{
+    type: TFareRuleType;
+    text: string;
+  }>;
+  timeLimit: number;
+  closingDaysBeforeDeparture: number;
+  priceAdult: number;
+  priceChild: number;
+  priceInfant: number;
+  segments: Array<{
+    airlineCode: string;
+    startPoint: string;
+    endPoint: string;
+    startDate: string;
+    endDate: string;
+    flightNumber: string;
+    seatClass: string;
+    plane: string;
+    duration: number;
+  }>;
+};
+
+export type TCreateFlightResponse = {
+  id: string;
+  bookingCode: string;
+  segmentCount: number;
+};
+
+export type TGetFlightListRequestParams = TPaginationRequest & {
+  status?: TFlightStatus;
+  airlineCode?: string;
+  bookingCode?: string;
+  startPoint?: string;
+  endPoint?: string;
+  flightNumber?: string;
+};
 
 export type TFlightListItem = {
   id: string;
-  flightNumber: string;
-  airline: string;
-  originAirport: string;
-  destinationAirport: string;
-  departureDate: string;
-  departureTime: string;
-  returnDate: string;
-  arrivalTime: string;
-  aircraftType: string;
-  seat: {
-    total: number;
-    available: number;
-  };
-  price: number;
   status: TFlightStatus;
+  airlineCode: string;
+  airlineName: string;
+  startPoint: string;
+  endPoint: string;
+  startDate: string;
+  endDate: string;
+  bookingCode: string;
+  stops: number;
+  seatTotal: number;
+  seatAvailable: number;
+  flightNumbers: string[];
+  seatClasses: string[];
+  planes: string[];
+  priceAdult: number;
+  priceChild: number;
+  priceInfant: number;
+  bookingTotalCount: number;
+  bookingHoldCount: number;
+  bookingIssuedCount: number;
+  createdAt: string;
+  updatedAt: string;
 };
 
-export type TFlightBookingStatus =
-  (typeof FLIGHT_BOOKING_STATUS_OPTION)[keyof typeof FLIGHT_BOOKING_STATUS_OPTION];
+export type TGetFlightListResponse = {
+  items: TFlightListItem[];
+  totalItems: number;
+};
+
+export type TGetFlightDetailResponse = {
+  id: string;
+  status: TFlightStatus;
+  airlineCode: string;
+  airlineName: string;
+  startPoint: string;
+  endPoint: string;
+  startDate: string;
+  endDate: string;
+  bookingCode: string;
+  stops: number;
+  seatTotal: number;
+  seatAvailable: number;
+  flightNumbers: string[];
+  seatClasses: string[];
+  planes: string[];
+  fareRules: Array<{
+    type: TFareRuleType;
+    text: string;
+  }>;
+  priceAdult: number;
+  priceChild: number;
+  priceInfant: number;
+  timeLimit: number;
+  closingDaysBeforeDeparture: number;
+  userId: string;
+  userName: string;
+  providerCode: string;
+  createdAt: string;
+  updatedAt: string;
+  bookingTotalCount: number;
+  bookingHoldCount: number;
+  bookingIssuedCount: number;
+  segments: Array<{
+    airlineCode: string;
+    airlineName: string;
+    startPoint: string;
+    endPoint: string;
+    startDate: string;
+    endDate: string;
+    flightNumber: string;
+    seatClass: string;
+    plane: string;
+    duration: number;
+  }>;
+};
+
+export type TUpdateFlightPayload = TCreateFlightPayload & {
+  id: string;
+};
+export type TUpdateFlightResponse = TCreateFlightResponse;
+
+export type TFlightBookingListItem = {
+  id: string;
+  flightId: string;
+  status: TFlightBookingStatus;
+  airlineCode: string;
+  airlineName: string;
+  startPoint: string;
+  endPoint: string;
+  startDate: string;
+  endDate: string;
+  bookingCode: string;
+  userId: string | null;
+  userName: string | null;
+  providerCode: string;
+  merchantCode: string;
+  merchantName: string;
+  adult: number;
+  children: number;
+  infant: number;
+  totalPrice: number;
+  contactName: string;
+  contactPhone: string;
+  contactEmail: string;
+  lastTicketDate: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TGetFlightBookingListRequestParams = TPaginationRequest & {
+  status?: TFlightBookingStatus;
+  airlineCode?: string;
+  bookingCode?: string;
+  startPoint?: string;
+  endPoint?: string;
+  flightId?: string;
+  flightDate?: string;
+};
+
+export type TGetFlightBookingListResponse = {
+  items: TFlightBookingListItem[];
+  totalItems: number;
+};
+
+export type TGetFlightBookingDetailResponse = {
+  id: string;
+  flightId: string;
+  status: TFlightBookingStatus;
+  airlineCode: string;
+  airlineName: string;
+  startPoint: string;
+  endPoint: string;
+  startDate: string;
+  endDate: string;
+  bookingCode: string;
+  userId: string | null;
+  userName: string | null;
+  providerCode: string;
+  merchantCode: string;
+  merchantName: string;
+  adult: number;
+  children: number;
+  infant: number;
+  totalPrice: number;
+  contactName: string;
+  contactPhone: string;
+  contactEmail: string;
+  lastTicketDate: string;
+  createdAt: string;
+  updatedAt: string;
+  passengers: Array<{
+    id: string;
+    bookingId: string;
+    flightId: string;
+    type: string;
+    gender: number;
+    firstName: string;
+    lastName: string;
+    birthday: string | null;
+    documentNumber: string;
+    documentExpiryDate: string | null;
+    documentNationality: string | null;
+    documentIssuingCountry: string | null;
+  }>;
+};
+
+export type TFlightDetailLogItem = {
+  action: TFlightDetailLogAction;
+  userId: string;
+  userName: string;
+  note: string;
+  createdAt: string;
+};
+
+export type TFlightBookingLogItem = {
+  action: TFlightBookingLogAction;
+  userId: string;
+  userName: string;
+  merchantCode: string;
+  merchantName: string;
+  note: string;
+  createdAt: string;
+};

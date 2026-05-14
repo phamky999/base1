@@ -47,7 +47,7 @@ export const MainLayoutSidebar = ({
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <SidebarUser user={sidebarData.user} />
+        <SidebarUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

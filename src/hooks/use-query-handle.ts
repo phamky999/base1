@@ -8,6 +8,7 @@ import { useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { type ObjectType, type TPaginationQueryKey } from '@/lib/types';
+import { pick } from 'lodash-es';
 
 type QueryHandleProps = {
   noPagination?: boolean;
@@ -97,6 +98,42 @@ export const useQueryHandle = <T extends ObjectType>(
     [navigate, paginationData, pathName, queryParams]
   );
 
+  const getApiQueryParamsFromUrlQuery = useCallback(
+    ({
+      keys,
+      parser,
+      noPagination = false,
+    }: {
+      keys: (keyof T)[];
+      parser?: {
+        [K in keyof T]?: (value: unknown) => T[K];
+      };
+      noPagination?: boolean;
+    }) => {
+      const picked = pick(queryParams, keys);
+
+      const parsed = Object.entries(picked).reduce((acc, [key, value]) => {
+        if (value == null || value === '') return acc;
+
+        const parseFn = parser?.[key as keyof T];
+
+        acc[key as keyof T] = parseFn ? parseFn(value) : value;
+
+        return acc;
+      }, {} as Partial<T>);
+
+      if (!noPagination) {
+        return {
+          ...parsed,
+          ...paginationData,
+        };
+      }
+
+      return parsed;
+    },
+    [queryParams, paginationData]
+  );
+
   return {
     pagination: paginationData,
     queryParams,
@@ -104,5 +141,6 @@ export const useQueryHandle = <T extends ObjectType>(
     handleChangePageSize,
     handleChangeFilter,
     handleClearFilter,
+    getApiQueryParamsFromUrlQuery,
   };
 };

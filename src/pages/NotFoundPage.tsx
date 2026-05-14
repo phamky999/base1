@@ -1,4 +1,3 @@
-import { getPagePath } from '@/app/router/app-router-paths';
 import NotFoundImage from '@/assets/svgs/404.svg';
 import { AppGridShapeBackground } from '@/components/app-grid-shape-background';
 import { PageHelmet } from '@/components/app-helmet';
@@ -31,7 +30,7 @@ export const NotFoundPage = () => {
             <Button
               variant={'default'}
               className="h-10 w-40"
-              onClick={() => navigate(getPagePath('portalPage'))}
+              onClick={() => navigate('/')}
             >
               Về trang chủ
             </Button>

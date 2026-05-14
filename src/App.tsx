@@ -9,6 +9,10 @@ import { ConfigProvider, theme } from 'antd';
 import vi_VN from 'antd/es/locale/vi_VN';
 import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
+import { Spin } from 'antd';
+import { AppScreenLoader } from '@/components/app-screen-loader';
+
+Spin.setDefaultIndicator(<AppScreenLoader isFullScreen={false} />);
 
 export const App = () => {
   const { resolvedTheme } = useTheme();
@@ -17,7 +21,7 @@ export const App = () => {
     algorithm:
       resolvedTheme === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm,
     token: {
-      colorPrimary: '#4F46E5',
+      colorPrimary: resolvedTheme === 'dark' ? '#193cb8' : '#1447e6',
     },
     components: {
       Form: {
@@ -30,7 +34,14 @@ export const App = () => {
       <AppHelmetWrapper>
         <StyleProvider layer>
           <ConfigProvider locale={vi_VN} theme={ANT_DESIGN_THEME}>
-            <Toaster position="top-right" closeButton richColors />
+            <Toaster
+              position="top-right"
+              closeButton
+              richColors
+              offset={{
+                top: 50,
+              }}
+            />
 
             <TooltipProvider>
               <RouterProvider

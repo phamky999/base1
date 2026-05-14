@@ -1,16 +1,13 @@
-import { getPagePath } from '@/app/router/app-router-paths';
+import { flightManagementPaths } from '@/features/flight-management/routes';
+import { systemManagementPaths } from '@/features/system-management/routes';
+// import { systemManagementPaths } from '@/features/system-management/routes';
 import {
   LayoutDashboard,
-  MonitorCogIcon,
   Settings,
+  // MonitorCogIcon,
+  // Settings,
   TicketsPlane,
 } from 'lucide-react';
-
-type TUser = {
-  name: string;
-  email: string;
-  avatar: string;
-};
 
 type TBaseNavItem = {
   title: string;
@@ -37,25 +34,19 @@ type TNavGroup = {
 };
 
 type TSidebarData = {
-  user: TUser;
   navGroups: TNavGroup[];
 };
 
 export type { TNavCollapsible, TNavGroup, TNavItem, TNavLink, TSidebarData };
 
 export const sidebarData: TSidebarData = {
-  user: {
-    name: 'dev',
-    email: 'dev@example.com',
-    avatar: '/avatars/shadcn.jpg',
-  },
   navGroups: [
     {
       title: 'MENU',
       items: [
         {
           title: 'Trang chủ',
-          url: getPagePath('portalPage'),
+          url: '/',
           icon: LayoutDashboard,
         },
         {
@@ -64,39 +55,39 @@ export const sidebarData: TSidebarData = {
           items: [
             {
               title: 'Danh sách chuyến bay',
-              url: getPagePath('flightListPage'),
+              url: flightManagementPaths.flightList.fullPath,
             },
             {
               title: 'Đơn hàng',
-              url: getPagePath('flightBookingListPage'),
+              url: flightManagementPaths.bookingList.fullPath,
             },
-            {
-              title: 'Bộ điều kiện vé',
-              url: getPagePath('flightTicketConditionsPage'),
-            },
+            // {
+            //   title: 'Bộ điều kiện vé',
+            //   url: flightManagementPaths.ticketConditions.fullPath,
+            // },
           ],
         },
-        {
-          title: 'Quản lý kênh bán',
-          icon: MonitorCogIcon,
-          url: '#',
-        },
+        // {
+        //   title: 'Quản lý kênh bán',
+        //   icon: MonitorCogIcon,
+        //   url: '#',
+        // },
         {
           title: 'Cài đặt hệ thống',
           icon: Settings,
           items: [
-            {
-              title: 'Email',
-              url: getPagePath('emailConfigPage'),
-            },
-            {
-              title: 'Thông báo',
-              url: getPagePath('notificationConfigPage'),
-            },
+            // {
+            //   title: 'Email',
+            //   url: systemManagementPaths.emailConfig.fullPath,
+            // },
+            // {
+            //   title: 'Thông báo',
+            //   url: systemManagementPaths.notificationConfig.fullPath,
+            // },
 
             {
               title: 'Tài khoản',
-              url: getPagePath('accountListPage'),
+              url: systemManagementPaths.accountList.fullPath,
             },
           ],
         },
