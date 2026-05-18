@@ -1,11 +1,12 @@
 import type {
-  FLIGHT_BOOKING_STATUS,
-  FLIGHT_STATUS,
   FARE_RULE_TYPE,
-  FLIGHT_DETAIL_LOG_ACTION,
-  FLIGHT_BOOKING_LOG_ACTION,
+  FLIGHT_BOOKING_ACTION,
+  FLIGHT_BOOKING_STATUS,
+  FLIGHT_DETAIL_ACTION,
+  FLIGHT_STATUS,
 } from '@/features/flight-management/constants';
 import type { TPaginationRequest } from '@/lib/types';
+import type { ReactElement } from 'react';
 
 export type TFlightStatus = (typeof FLIGHT_STATUS)[keyof typeof FLIGHT_STATUS];
 
@@ -15,11 +16,11 @@ export type TFareRuleType =
 export type TFlightBookingStatus =
   (typeof FLIGHT_BOOKING_STATUS)[keyof typeof FLIGHT_BOOKING_STATUS];
 
-export type TFlightDetailLogAction =
-  (typeof FLIGHT_DETAIL_LOG_ACTION)[keyof typeof FLIGHT_DETAIL_LOG_ACTION];
+export type TFlightDetailAction =
+  (typeof FLIGHT_DETAIL_ACTION)[keyof typeof FLIGHT_DETAIL_ACTION];
 
-export type TFlightBookingLogAction =
-  (typeof FLIGHT_BOOKING_LOG_ACTION)[keyof typeof FLIGHT_BOOKING_LOG_ACTION];
+export type TFlightBookingAction =
+  (typeof FLIGHT_BOOKING_ACTION)[keyof typeof FLIGHT_BOOKING_ACTION];
 
 export type TAirportItem = {
   code: string;
@@ -95,6 +96,8 @@ export type TFlightListItem = {
   bookingIssuedCount: number;
   createdAt: string;
   updatedAt: string;
+  allowedStatuses: TFlightStatus[];
+  allowedActions: TFlightDetailAction[];
 };
 
 export type TGetFlightListResponse = {
@@ -147,12 +150,22 @@ export type TGetFlightDetailResponse = {
     plane: string;
     duration: number;
   }>;
+  allowedStatuses: TFlightStatus[];
+  allowedActions: TFlightDetailAction[];
 };
 
 export type TUpdateFlightPayload = TCreateFlightPayload & {
   id: string;
 };
 export type TUpdateFlightResponse = TCreateFlightResponse;
+
+export type TFlightDetailActionConfig = {
+  label: string;
+  icon: ReactElement;
+  manualRender?: boolean;
+  danger?: boolean;
+  priority: number;
+};
 
 export type TFlightBookingListItem = {
   id: string;
@@ -180,6 +193,13 @@ export type TFlightBookingListItem = {
   lastTicketDate: string;
   createdAt: string;
   updatedAt: string;
+};
+
+export type TGetFlightStaticsResponse = {
+  totalFlights: number;
+  totalActiveFlights: number;
+  totalSeats: number;
+  totalAvailableSeats: number;
 };
 
 export type TGetFlightBookingListRequestParams = TPaginationRequest & {
@@ -240,7 +260,7 @@ export type TGetFlightBookingDetailResponse = {
 };
 
 export type TFlightDetailLogItem = {
-  action: TFlightDetailLogAction;
+  action: TFlightDetailAction;
   userId: string;
   userName: string;
   note: string;
@@ -248,7 +268,7 @@ export type TFlightDetailLogItem = {
 };
 
 export type TFlightBookingLogItem = {
-  action: TFlightBookingLogAction;
+  action: TFlightBookingAction;
   userId: string;
   userName: string;
   merchantCode: string;

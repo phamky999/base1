@@ -1,21 +1,28 @@
 import type {
   TFareRuleType,
-  TFlightBookingLogAction,
+  TFlightBookingAction,
+  TGetFlightListRequestParams,
 } from '@/features/flight-management/types';
 
 export const FLIGHT_STATUS = {
   DRAFT: 'DRAFT',
   ACTIVE: 'ACTIVE',
+  CLOSED: 'CLOSED',
+  CANCELLED: 'CANCELLED',
 } as const;
 
 export const FLIGHT_STATUS_LABEL = {
   [FLIGHT_STATUS.DRAFT]: 'Đang khởi tạo',
-  [FLIGHT_STATUS.ACTIVE]: 'Đang hoạt động',
+  [FLIGHT_STATUS.ACTIVE]: 'Đang mở bán',
+  [FLIGHT_STATUS.CLOSED]: 'Đóng bán',
+  [FLIGHT_STATUS.CANCELLED]: 'Đã hủy',
 } as const;
 
 export const FLIGHT_STATUS_COLOR = {
   [FLIGHT_STATUS.DRAFT]: 'blue',
   [FLIGHT_STATUS.ACTIVE]: 'green',
+  [FLIGHT_STATUS.CLOSED]: 'gray',
+  [FLIGHT_STATUS.CANCELLED]: 'red',
 } as const;
 
 export const FLIGHT_BOOKING_STATUS = {
@@ -56,27 +63,52 @@ export const FARE_RULE_TYPE_LABEL: Record<TFareRuleType, string> = {
   [FARE_RULE_TYPE.NOTE]: 'Ghi chú',
 } as const;
 
-export const FLIGHT_DETAIL_LOG_ACTION = {
+export const FLIGHT_DETAIL_ACTION = {
   ADD: 'ADD',
   UPDATE: 'UPDATE',
+  DELETE: 'DELETE',
+  PUBLISH: 'PUBLISH',
+  CLOSE: 'CLOSE',
+  REOPEN: 'REOPEN',
+  CANCEL: 'CANCEL',
+
+  //front-end
+  VIEW_BOOKING_LIST: 'VIEW_BOOKING_LIST',
+  VIEW_LOGS: 'VIEW_LOGS',
 } as const;
 
-export const FLIGHT_DETAIL_LOG_ACTION_LABEL = {
-  [FLIGHT_DETAIL_LOG_ACTION.ADD]: 'Tạo mới',
-  [FLIGHT_DETAIL_LOG_ACTION.UPDATE]: 'Cập nhật',
+export const FLIGHT_DETAIL_ACTION_LABEL = {
+  [FLIGHT_DETAIL_ACTION.ADD]: 'Tạo mới',
+  [FLIGHT_DETAIL_ACTION.UPDATE]: 'Cập nhật',
+  [FLIGHT_DETAIL_ACTION.DELETE]: 'Xóa chuyến bay',
+  [FLIGHT_DETAIL_ACTION.PUBLISH]: 'Mở bán',
+  [FLIGHT_DETAIL_ACTION.CLOSE]: 'Đóng bán',
+  [FLIGHT_DETAIL_ACTION.REOPEN]: 'Mở bán lại',
+  [FLIGHT_DETAIL_ACTION.CANCEL]: 'Hủy chuyến bay',
+
+  //front-end
+  [FLIGHT_DETAIL_ACTION.VIEW_BOOKING_LIST]: 'Xem danh sách đơn hàng',
+  [FLIGHT_DETAIL_ACTION.VIEW_LOGS]: 'Xem lịch sử thay đổi',
 } as const;
 
-export const FLIGHT_BOOKING_LOG_ACTION = {
+export const FLIGHT_BOOKING_ACTION = {
   HOLD: 'HOLD',
   CANCELLED: 'CANCELLED',
   ISSUED: 'ISSUED',
 } as const;
 
-export const FLIGHT_BOOKING_LOG_ACTION_LABEL: Record<
-  TFlightBookingLogAction,
-  string
-> = {
-  [FLIGHT_BOOKING_LOG_ACTION.HOLD]: 'Giữ chỗ',
-  [FLIGHT_BOOKING_LOG_ACTION.CANCELLED]: 'Hủy vé',
-  [FLIGHT_BOOKING_LOG_ACTION.ISSUED]: 'Xuất vé',
-} as const;
+export const FLIGHT_BOOKING_ACTION_LABEL: Record<TFlightBookingAction, string> =
+  {
+    [FLIGHT_BOOKING_ACTION.HOLD]: 'Giữ chỗ',
+    [FLIGHT_BOOKING_ACTION.CANCELLED]: 'Hủy đơn hàng',
+    [FLIGHT_BOOKING_ACTION.ISSUED]: 'Xuất vé',
+  } as const;
+
+export const GET_FLIGHT_FILTER_KEYS: (keyof TGetFlightListRequestParams)[] = [
+  'status',
+  'airlineCode',
+  'bookingCode',
+  'startPoint',
+  'endPoint',
+  'flightNumber',
+];

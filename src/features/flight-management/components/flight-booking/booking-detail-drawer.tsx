@@ -72,7 +72,7 @@ export const BookingDetailDrawer = ({
                     <Descriptions.Item label="Trạng thái">
                       <Tag
                         color={FLIGHT_BOOKING_STATUS_COLOR[detail.status]}
-                        variant="solid"
+                        variant="outlined"
                       >
                         {FLIGHT_BOOKING_STATUS_LABEL[detail.status]}
                       </Tag>
@@ -99,7 +99,7 @@ export const BookingDetailDrawer = ({
                         </div>
                       </div>
                     </Descriptions.Item>
-                    <Descriptions.Item label="Kênh bán">
+                    <Descriptions.Item label="Kênh bán" span={isMobile ? 1 : 2}>
                       {detail?.merchantName ? (
                         detail.merchantName
                       ) : (
@@ -108,6 +108,9 @@ export const BookingDetailDrawer = ({
                     </Descriptions.Item>
                     <Descriptions.Item label="Ngày đặt">
                       <AppDateTimeLabel value={detail.createdAt} />
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Hạn thanh toán">
+                      <AppDateTimeLabel value={detail.lastTicketDate} />
                     </Descriptions.Item>
                     <Descriptions.Item label="Số lượng">
                       <div className="flex flex-col gap-4">

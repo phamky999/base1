@@ -16,6 +16,7 @@ import {
   FLIGHT_STATUS_LABEL,
 } from '@/features/flight-management/constants';
 import { useGetFlightDetailQuery } from '@/features/flight-management/query';
+import type { TGetFlightDetailResponse } from '@/features/flight-management/types';
 import { formatDisplayCurrency } from '@/lib/helpers/string';
 import { Descriptions, Empty, Skeleton, Space, Tag } from 'antd';
 import { PlaneLandingIcon, PlaneTakeoffIcon, XIcon } from 'lucide-react';
@@ -50,7 +51,9 @@ export const FlightDetailDrawer = ({
           </DrawerClose>
           <DrawerTitle className="mr-auto">Thông tin đơn hàng</DrawerTitle>
 
-          <FlightDetailActionGroups flightId={flightId || ''} />
+          <FlightDetailActionGroups
+            flight={detail as TGetFlightDetailResponse}
+          />
         </DrawerHeader>
         <div className="overflow-y-auto p-4">
           <Skeleton loading={isFetching} active>
@@ -75,7 +78,7 @@ export const FlightDetailDrawer = ({
                     <Descriptions.Item label="Trạng thái">
                       <Tag
                         color={FLIGHT_STATUS_COLOR[detail.status]}
-                        variant="solid"
+                        variant="outlined"
                       >
                         {FLIGHT_STATUS_LABEL[detail.status]}
                       </Tag>

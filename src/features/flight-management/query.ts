@@ -13,6 +13,7 @@ import type {
   TGetFlightDetailResponse,
   TGetFlightListRequestParams,
   TGetFlightListResponse,
+  TGetFlightStaticsResponse,
   TUpdateFlightPayload,
   TUpdateFlightResponse,
 } from '@/features/flight-management/types';
@@ -40,6 +41,16 @@ export const flightManagementQueryApi = baseApi
         }),
 
         providesTags: [QUERY_TAGS.FLIGHT_LIST],
+      }),
+
+      GetFlightStatics: builder.query<
+        QueryResponse<TGetFlightStaticsResponse>,
+        TGetFlightListRequestParams
+      >({
+        query: () => ({
+          url: `${endpoint}/Flights/Statistics`,
+          method: 'GET',
+        }),
       }),
 
       GetFlightDetail: builder.query<
@@ -86,6 +97,74 @@ export const flightManagementQueryApi = baseApi
           url: `${endpoint}/Flights/Update/${id}`,
           method: 'PUT',
           body: restPayload,
+        }),
+
+        invalidatesTags: invalidatesTags([
+          QUERY_TAGS.FLIGHT_LIST,
+          QUERY_TAGS.FLIGHT_DETAIL,
+          QUERY_TAGS.FLIGHT_DETAIL_LOGS,
+        ]),
+      }),
+
+      PublishFlight: builder.mutation<
+        QueryResponse<void>,
+        { id: string; remark: string }
+      >({
+        query: ({ id, ...rest }) => ({
+          url: `${endpoint}/Flights/Publish/${id}`,
+          method: 'PUT',
+          body: rest,
+        }),
+
+        invalidatesTags: invalidatesTags([
+          QUERY_TAGS.FLIGHT_LIST,
+          QUERY_TAGS.FLIGHT_DETAIL,
+          QUERY_TAGS.FLIGHT_DETAIL_LOGS,
+        ]),
+      }),
+
+      CloseFlight: builder.mutation<
+        QueryResponse<void>,
+        { id: string; remark: string }
+      >({
+        query: ({ id, ...rest }) => ({
+          url: `${endpoint}/Flights/Close/${id}`,
+          method: 'PUT',
+          body: rest,
+        }),
+
+        invalidatesTags: invalidatesTags([
+          QUERY_TAGS.FLIGHT_LIST,
+          QUERY_TAGS.FLIGHT_DETAIL,
+          QUERY_TAGS.FLIGHT_DETAIL_LOGS,
+        ]),
+      }),
+
+      CancelFlight: builder.mutation<
+        QueryResponse<void>,
+        { id: string; remark: string }
+      >({
+        query: ({ id, ...rest }) => ({
+          url: `${endpoint}/Flights/Cancel/${id}`,
+          method: 'PUT',
+          body: rest,
+        }),
+
+        invalidatesTags: invalidatesTags([
+          QUERY_TAGS.FLIGHT_LIST,
+          QUERY_TAGS.FLIGHT_DETAIL,
+          QUERY_TAGS.FLIGHT_DETAIL_LOGS,
+        ]),
+      }),
+
+      ReopenFlight: builder.mutation<
+        QueryResponse<void>,
+        { id: string; remark: string }
+      >({
+        query: ({ id, ...rest }) => ({
+          url: `${endpoint}/Flights/Reopen/${id}`,
+          method: 'PUT',
+          body: rest,
         }),
 
         invalidatesTags: invalidatesTags([
@@ -152,14 +231,21 @@ export const flightManagementQueryApi = baseApi
   });
 
 export const {
-  useCreateFlightMutation,
+  //flight
   useSearchAirportsQuery,
   useGetFlightListQuery,
-  useUpdateFlightMutation,
+  useGetFlightStaticsQuery,
+  useGetFlightDetailLogsQuery,
+  useCreateFlightMutation,
   useGetFlightDetailQuery,
+  useUpdateFlightMutation,
+  usePublishFlightMutation,
+  useCloseFlightMutation,
+  useCancelFlightMutation,
+  useReopenFlightMutation,
   useDeleteFlightMutation,
+  //booking
   useGetFlightBookingListQuery,
   useGetFlightBookingDetailQuery,
-  useGetFlightDetailLogsQuery,
   useGetFlightBookingDetailLogsQuery,
 } = flightManagementQueryApi;

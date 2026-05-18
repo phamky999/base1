@@ -12,15 +12,17 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { Link } from 'react-router-dom';
+import { cn } from '@/lib/utils';
 
 export const MainLayoutSidebar = ({
   ...props
 }: React.ComponentProps<typeof Sidebar>) => {
+  const { state } = useSidebar();
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar variant="floating" collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -29,11 +31,24 @@ export const MainLayoutSidebar = ({
                 size="lg"
                 className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               >
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-transparent text-sidebar-primary-foreground">
-                  <img src={LogoIconImg} alt="Logo" width={24} height={24} />
+                <div
+                  className={cn(
+                    'flex aspect-square size-10 items-center justify-center rounded-lg bg-sidebar-accent text-sidebar-primary-foreground transition-all duration-300 ease-in-out',
+                    state === 'collapsed' ? 'size-8' : 'size-10'
+                  )}
+                >
+                  <img
+                    className="transition-all duration-300 ease-in-out"
+                    src={LogoIconImg}
+                    alt="Logo"
+                    width={state === 'collapsed' ? 20 : 24}
+                    height={state === 'collapsed' ? 20 : 24}
+                  />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">Việt An</span>
+                  <span className="truncate text-base leading-[20px] font-semibold">
+                    Việt An
+                  </span>
                   <span className="truncate text-xs">Kho sản phẩm</span>
                 </div>
               </SidebarMenuButton>
@@ -41,7 +56,12 @@ export const MainLayoutSidebar = ({
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent
+        className={cn(
+          'transition-all duration-300 ease-in-out',
+          state === 'collapsed' ? 'pt-4' : ''
+        )}
+      >
         {sidebarData.navGroups.map(props => (
           <SidebarNavGroup key={props.title} {...props} />
         ))}
@@ -49,7 +69,6 @@ export const MainLayoutSidebar = ({
       <SidebarFooter>
         <SidebarUser />
       </SidebarFooter>
-      <SidebarRail />
     </Sidebar>
   );
 };

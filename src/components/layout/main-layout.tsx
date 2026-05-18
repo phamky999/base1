@@ -6,7 +6,7 @@ import { useAuth } from '@/features/auth/hooks/use-auth';
 import { useTokenRefresh } from '@/features/auth/hooks/use-auth';
 import { authPaths } from '@/features/auth/routes';
 import { TOKEN } from '@/lib/constants';
-import { getAuthToken } from '@/lib/utils';
+import { cn, getAuthToken } from '@/lib/utils';
 import { Suspense } from 'react';
 import {
   Navigate,
@@ -44,14 +44,28 @@ const MainLayoutInner = ({ children }: { children?: React.ReactNode }) => {
     <>
       <SidebarProvider>
         <MainLayoutSidebar />
-        <SidebarInset className="min-w-0">
+        <SidebarInset
+          className={cn(
+            // Set content container, so we can use container queries
+            '@container/content',
+
+            // If layout is fixed, set the height
+            // to 100svh to prevent overflow
+            'has-data-[layout=fixed]:h-svh',
+
+            // If layout is fixed and sidebar is inset,
+            // set the height to 100svh - spacing (total margins) to prevent overflow
+            'peer-data-[variant=inset]:has-data-[layout=fixed]:h-[calc(100svh-(var(--spacing)*4))]',
+            'min-w-0'
+          )}
+        >
           <MainLayoutHeader />
-          <div className="min-h-svh flex-1 bg-(--main-background) p-4">
-            <div className="mx-auto max-w-[1920px]">
-              <Suspense fallback={<AppScreenLoader isFullScreen={false} />}>
+          <div className="min-h-svh flex-1 bg-(--main-background) p-4 md:p-2 md:pt-6">
+            <Suspense fallback={<AppScreenLoader isFullScreen={false} />}>
+              <div className="mx-auto max-w-[1648px]">
                 {children ?? <Outlet />}
-              </Suspense>
-            </div>
+              </div>
+            </Suspense>
           </div>
         </SidebarInset>
       </SidebarProvider>

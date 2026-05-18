@@ -10,8 +10,8 @@ export const MainLayoutHeader = () => {
   const { toggleSidebar } = useSidebar();
 
   return (
-    <header className="sticky top-0 z-50 flex w-full items-center border-b bg-sidebar py-3">
-      <div className="flex h-(--header-height) w-full items-center gap-2 px-4">
+    <header className="sticky top-0 z-50 flex w-full items-center bg-(--main-background) md:pt-2 md:pr-2 md:pl-2">
+      <div className="flex h-12.5 w-full items-center gap-2 border-b bg-background px-4 md:rounded-lg md:border md:shadow-sm md:ring-sidebar-border">
         <Button
           className="h-8 w-8"
           variant="ghost"

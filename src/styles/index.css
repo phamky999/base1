@@ -56,7 +56,9 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
+
   --primary: oklch(0.488 0.243 264.376);
+
   --primary-foreground: oklch(0.97 0.014 254.604);
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
@@ -74,6 +76,8 @@
   --chart-4: oklch(0.52 0.105 223.128);
   --chart-5: oklch(0.45 0.085 224.283);
   --radius: 0.625rem;
+
+  /* Sidebar - Professional Navy (#03045E) */
   --sidebar: oklch(100% 0.00011 271.152);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.546 0.245 262.881);
@@ -84,6 +88,7 @@
   --sidebar-ring: oklch(0.708 0 0);
 
   --main-background: #f2f4f7;
+  /* --main-background: oklch(0.98 0.01 195); */
 }
 
 .dark {
@@ -93,7 +98,10 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.424 0.199 265.638);
+
+  /* --primary: oklch(0.424 0.199 265.638); */
+  --primary: oklch(0.488 0.243 264.376);
+
   --primary-foreground: oklch(0.97 0.014 254.604);
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
@@ -102,7 +110,7 @@
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
+  --border: oklch(1 0 0 / 30%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
   --chart-1: oklch(0.865 0.127 207.078);
@@ -110,6 +118,8 @@
   --chart-3: oklch(0.609 0.126 221.723);
   --chart-4: oklch(0.52 0.105 223.128);
   --chart-5: oklch(0.45 0.085 224.283);
+
+  /* Sidebar */
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.623 0.214 259.815);
@@ -127,7 +137,7 @@
     @apply border-border font-sans outline-ring/50;
   }
   body {
-    @apply bg-background text-sm text-foreground;
+    @apply bg-(--main-background) text-sm text-foreground;
   }
   button:not(:disabled),
   [role='button']:not(:disabled) {

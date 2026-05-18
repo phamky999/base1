@@ -7,7 +7,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer';
-import { FLIGHT_DETAIL_LOG_ACTION_LABEL } from '@/features/flight-management/constants';
+import { FLIGHT_DETAIL_ACTION_LABEL } from '@/features/flight-management/constants';
 import { useGetFlightDetailLogsQuery } from '@/features/flight-management/query';
 import { Empty, Skeleton, Timeline } from 'antd';
 import { XIcon } from 'lucide-react';
@@ -52,9 +52,9 @@ export const FlightDetailLogsDrawer = ({
                       <div>
                         <p>
                           <span className="font-semibold">
-                            [
-                            {FLIGHT_DETAIL_LOG_ACTION_LABEL[log.action] ||
-                              log.action}
+                            [{' '}
+                            {FLIGHT_DETAIL_ACTION_LABEL[log.action] ||
+                              log.action}{' '}
                             ]
                           </span>{' '}
                           {!!log?.note && <span>{log.note}</span>}

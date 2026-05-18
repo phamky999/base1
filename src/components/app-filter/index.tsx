@@ -3,7 +3,7 @@ import { QuickFilterSelection } from '@/components/app-filter/quick-filter-selec
 import { QuickFilterSearchInput } from '@/components/app-filter/search-input';
 import { Button } from '@/components/ui/button';
 import { XIcon } from 'lucide-react';
-import * as React from 'react';
+import { type ReactNode } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 type AppFilterProps = {
@@ -22,7 +22,7 @@ type AppFilterProps = {
   }[];
   advanceFilter?: {
     keys: string[];
-    elements: React.ReactNode;
+    elements: ReactNode;
   };
   showAdvanceFilterOnly?: boolean;
 };
@@ -37,11 +37,11 @@ export const AppFilter = ({
 
   const searchKey = searchField?.key ?? 'keyword';
 
-  const isFiltered = React.useMemo(() => {
-    const hasSearch = !!searchParams.get(searchKey);
-    const hasFacetedFilter = filters.some(f => searchParams.has(f.filterKey));
-    return hasSearch || hasFacetedFilter;
-  }, [searchParams, filters, searchKey]);
+  const hasSearch = !!searchParams.get(searchKey);
+
+  const hasFacetedFilter = filters.some(f => searchParams.has(f.filterKey));
+
+  const isFiltered = hasSearch || hasFacetedFilter;
 
   const handleReset = () => {
     const newParams = new URLSearchParams(searchParams);

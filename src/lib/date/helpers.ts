@@ -81,49 +81,6 @@ export const formatDateRange = (dateRange?: [string?, string?]) => {
   };
 };
 
-// export const startAndEndDateValidator = ({
-//   comparisonFieldName,
-//   currentFieldType,
-//   customErrorMessage,
-//   allowSame = false,
-// }: {
-//   comparisonFieldName: string | (string | number)[];
-//   currentFieldType: 'START_DATE' | 'END_DATE';
-//   customErrorMessage?: string;
-//   allowSame?: boolean;
-// }) => {
-//   return ({ getFieldValue }: FormInstance) => ({
-//     validator(_: RuleObject, value: Dayjs) {
-//       const isStartDate = currentFieldType === 'START_DATE';
-
-//       const comparisonFieldValue: Dayjs = getFieldValue(comparisonFieldName);
-//       console.log(value, comparisonFieldValue, currentFieldType);
-//       if (
-//         !value ||
-//         !comparisonFieldValue ||
-//         (allowSame
-//           ? isStartDate
-//             ? comparisonFieldValue?.isSameOrAfter(value)
-//             : comparisonFieldValue?.isSameOrBefore(value)
-//           : isStartDate
-//             ? comparisonFieldValue?.isAfter(value)
-//             : comparisonFieldValue?.isBefore(value))
-//       )
-//         return Promise.resolve();
-
-//       return Promise.reject(
-//         new Error(
-//           customErrorMessage
-//             ? customErrorMessage
-//             : isStartDate
-//               ? 'Ngày bắt đầu phải nhỏ hơn ngày kết thúc'
-//               : 'Ngày kết thúc phải lớn hơn ngày bắt đầu'
-//         )
-//       );
-//     },
-//   });
-// };
-
 type FieldType = 'START_DATE' | 'END_DATE';
 
 type Params = {

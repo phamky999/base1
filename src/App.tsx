@@ -11,24 +11,32 @@ import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
 import { Spin } from 'antd';
 import { AppScreenLoader } from '@/components/app-screen-loader';
+import { useMemo } from 'react';
 
 Spin.setDefaultIndicator(<AppScreenLoader isFullScreen={false} />);
 
 export const App = () => {
   const { resolvedTheme } = useTheme();
 
-  const ANT_DESIGN_THEME = {
-    algorithm:
-      resolvedTheme === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm,
-    token: {
-      colorPrimary: resolvedTheme === 'dark' ? '#193cb8' : '#1447e6',
-    },
-    components: {
-      Form: {
-        itemMarginBottom: 20,
+  const ANT_DESIGN_THEME = useMemo(
+    () => ({
+      algorithm:
+        resolvedTheme === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm,
+      token: {
+        colorPrimary: '#1447e6',
       },
-    },
-  };
+      components: {
+        Form: {
+          itemMarginBottom: 20,
+        },
+        Tag: {
+          borderRadiusSM: 16,
+        },
+      },
+    }),
+    [resolvedTheme]
+  );
+
   return (
     <Provider store={store}>
       <AppHelmetWrapper>
@@ -39,7 +47,7 @@ export const App = () => {
               closeButton
               richColors
               offset={{
-                top: 50,
+                top: 58,
               }}
             />
 

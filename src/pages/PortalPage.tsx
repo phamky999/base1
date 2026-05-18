@@ -5,7 +5,7 @@ export const PortalPage = () => {
     <>
       <PageHelmet title="Trang chủ" />
 
-      <div>Welcome ...</div>
+      <div className="min-h-[200dvh]">Welcome ...</div>
     </>
   );
 };

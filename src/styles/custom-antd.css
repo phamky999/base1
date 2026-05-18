@@ -18,7 +18,11 @@
 }
 
 .custom-ant-table .ant-pagination {
-  @apply px-4;
+  @apply my-3 px-4;
+}
+
+.custom-ant-table th.ant-table-cell {
+  @apply py-3.5;
 }
 
 .ant-form-item-explain-error {
@@ -42,4 +46,8 @@
 
 .ant-table-content {
   scrollbar-width: thin;
+}
+
+.ant-tag {
+  @apply font-medium;
 }
