@@ -124,7 +124,7 @@ export const FlightBookingList = () => {
         key: 'createdAt',
         width: 150,
         render: (value: string) => (
-          <AppDateTimeLabel value={value} showTime={true} layout="vertical" />
+          <AppDateTimeLabel value={value} showTime={true} />
         ),
       },
       {
@@ -133,7 +133,7 @@ export const FlightBookingList = () => {
         key: 'lastTicketDate',
         width: 150,
         render: (value: string) => (
-          <AppDateTimeLabel value={value} showTime={true} layout="vertical" />
+          <AppDateTimeLabel value={value} showTime={true} />
         ),
       },
       {
