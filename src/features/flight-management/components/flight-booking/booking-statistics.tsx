@@ -8,11 +8,11 @@ export const FlightBookingStatistics = () => {
         <p className="mt-1 text-xl font-semibold">3</p>
       </div>
       <div className="rounded-lg border bg-card p-4 shadow-xs">
-        <p className="text-sm text-gray-400">Đã xác nhận</p>
+        <p className="text-sm text-gray-400">Đã thanh toán</p>
         <p className="mt-1 text-xl font-semibold">2</p>
       </div>
       <div className="rounded-lg border bg-card p-4 shadow-xs">
-        <p className="text-sm text-gray-400">Đang xử lý</p>
+        <p className="text-sm text-gray-400">Đang giữ chỗ</p>
         <p className="mt-1 text-xl font-semibold">1</p>
       </div>
       <div className="rounded-lg border bg-card p-4 shadow-xs">

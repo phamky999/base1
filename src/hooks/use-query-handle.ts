@@ -8,7 +8,8 @@ import { useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { type ObjectType, type TPaginationQueryKey } from '@/lib/types';
-import { pick } from 'lodash-es';
+import { pick, pickBy } from 'lodash-es';
+import { normalizeQueryParamValue } from '@/components/app-filter/helper';
 
 type QueryHandleProps = {
   noPagination?: boolean;
@@ -25,7 +26,10 @@ export const useQueryHandle = <T extends ObjectType>(
   const pathName = location.pathname;
 
   const queryParams = useMemo(
-    () => queryString.parse(location.search.replace('?', '')) as T,
+    () =>
+      normalizeQueryParamValue(
+        queryString.parse(location.search.replace('?', ''))
+      ) as T,
     [location.search]
   );
 
@@ -110,7 +114,7 @@ export const useQueryHandle = <T extends ObjectType>(
       };
       noPagination?: boolean;
     }) => {
-      const picked = pick(queryParams, keys);
+      const picked = pick(queryParams, keys) as T;
 
       const parsed = Object.entries(picked).reduce((acc, [key, value]) => {
         if (value == null || value === '') return acc;
@@ -122,14 +126,19 @@ export const useQueryHandle = <T extends ObjectType>(
         return acc;
       }, {} as Partial<T>);
 
+      const cleanedParams = pickBy(
+        parsed,
+        value => value !== null && value !== undefined && value !== ''
+      );
+
       if (!noPagination) {
         return {
-          ...parsed,
+          ...cleanedParams,
           ...paginationData,
         };
       }
 
-      return parsed;
+      return cleanedParams;
     },
     [queryParams, paginationData]
   );

@@ -1,5 +1,6 @@
 import { AppDateTimeLabel } from '@/components/app-date-time-label';
 import { AppTable } from '@/components/app-table';
+import { Button } from '@/components/ui/button';
 import { BookingDetailActionGroups } from '@/features/flight-management/components/flight-booking/booking-detail-action-groups';
 import {
   FLIGHT_BOOKING_STATUS_COLOR,
@@ -17,16 +18,15 @@ import { Tag, Tooltip, type TableProps } from 'antd';
 import { EyeIcon, PlaneLandingIcon, PlaneTakeoffIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { BookingDetailDrawer } from './booking-detail-drawer';
-import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 
 export const FlightBookingList = () => {
   const { getApiQueryParamsFromUrlQuery } =
     useQueryHandle<TGetFlightBookingListRequestParams>();
 
   const [selectedId, setSelectedId] = useState<string>();
-  const [openDetail, setOpenDetail] = useState(false);
+  const [isDetailDrawerOpen, setIsDetailDrawerOpen] = useState(false);
 
-  const params = getApiQueryParamsFromUrlQuery({
+  const queryParams = getApiQueryParamsFromUrlQuery({
     keys: [
       'status',
       'airlineCode',
@@ -38,13 +38,13 @@ export const FlightBookingList = () => {
     ],
   });
 
-  const { data, isFetching } = useGetFlightBookingListQuery(
-    params as TGetFlightBookingListRequestParams
+  const { data, isFetching, isLoading } = useGetFlightBookingListQuery(
+    queryParams as TGetFlightBookingListRequestParams
   );
 
   const handleRowClick = (record: TFlightBookingListItem) => {
     setSelectedId(record.id);
-    setOpenDetail(true);
+    setIsDetailDrawerOpen(true);
   };
 
   const columns: TableProps<TFlightBookingListItem>['columns'] = useMemo(() => {
@@ -53,10 +53,8 @@ export const FlightBookingList = () => {
         title: 'Mã đặt chỗ',
         dataIndex: 'bookingCode',
         key: 'bookingCode',
-        width: 150,
-        render: value => (
-          <span className="text-brand font-semibold">{value}</span>
-        ),
+        width: 140,
+        render: value => <span className="font-semibold">{value}</span>,
       },
       {
         title: 'Chuyến bay',
@@ -64,7 +62,7 @@ export const FlightBookingList = () => {
         width: 180,
         render: record => (
           <div className="space-y-0.5">
-            <div> {record?.airlineName}</div>
+            <div>{record?.airlineName}</div>
             <div className="flex items-center justify-start gap-2 text-xs">
               <span>{record?.startPoint}</span>
               <span>→</span>
@@ -75,19 +73,19 @@ export const FlightBookingList = () => {
       },
       {
         title: 'Thời gian bay',
-        width: 200,
+        width: 170,
         key: 'flight_time',
         render: (record: TFlightBookingListItem) => (
           <div className="space-y-0.5">
             <div className="flex items-center gap-1.5">
               <PlaneTakeoffIcon className="size-3.5 shrink-0 text-gray-400" />
-              <span className="inline-block min-w-[130px]">
+              <span className="inline-block min-w-32.5">
                 <AppDateTimeLabel value={record?.startDate} />
               </span>
             </div>
             <div className="flex items-center gap-1.5">
               <PlaneLandingIcon className="size-3.5 shrink-0 text-gray-400" />
-              <span className="inline-block min-w-[130px]">
+              <span className="inline-block min-w-32.5">
                 <AppDateTimeLabel value={record?.endDate} />
               </span>
             </div>
@@ -95,66 +93,7 @@ export const FlightBookingList = () => {
         ),
       },
       {
-        title: 'Khách hàng',
-        key: 'customer',
-        width: 200,
-        render: record => (
-          <div className="space-y-0.5">
-            <p className="font-semibold">{record?.contactName}</p>
-            <Tooltip title={record?.contactEmail}>
-              <p className="line-clamp-1 text-xs text-gray-400">
-                {record?.contactEmail}
-              </p>
-            </Tooltip>
-          </div>
-        ),
-      },
-      {
-        title: 'Số lượng vé',
-        key: 'totalTickets',
-        width: 120,
-        render: (record: TFlightBookingListItem) =>
-          (record?.adult || 0) +
-          (record?.children || 0) +
-          (record?.infant || 0),
-      },
-      {
-        title: 'Ngày đặt',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
-        width: 150,
-        render: (value: string) => (
-          <AppDateTimeLabel value={value} showTime={true} />
-        ),
-      },
-      {
-        title: 'Hạn thanh toán',
-        dataIndex: 'lastTicketDate',
-        key: 'lastTicketDate',
-        width: 150,
-        render: (value: string) => (
-          <AppDateTimeLabel value={value} showTime={true} />
-        ),
-      },
-      {
-        title: 'Trạng thái',
-        dataIndex: 'status',
-        key: 'status',
-        width: 120,
-        render: (value: TFlightBookingStatus) => (
-          <div>
-            <Tag
-              variant="outlined"
-              className="px-2.5 py-1"
-              color={FLIGHT_BOOKING_STATUS_COLOR[value]}
-            >
-              {FLIGHT_BOOKING_STATUS_LABEL[value]}
-            </Tag>
-          </div>
-        ),
-      },
-      {
-        title: <span className="pr-6">Tổng giá</span>,
+        title: <span className="pr-6">Tổng tiền</span>,
         dataIndex: 'totalPrice',
         key: 'totalPrice',
         align: 'right',
@@ -168,6 +107,79 @@ export const FlightBookingList = () => {
         ),
       },
       {
+        title: 'Trạng thái',
+        dataIndex: 'status',
+        key: 'status',
+        width: 120,
+        render: (value: TFlightBookingStatus) => (
+          <div>
+            <Tag
+              variant="outlined"
+              className="px-2.5 py-0.5"
+              color={FLIGHT_BOOKING_STATUS_COLOR[value]}
+            >
+              {FLIGHT_BOOKING_STATUS_LABEL[value]}
+            </Tag>
+          </div>
+        ),
+      },
+
+      {
+        title: 'Hạn thanh toán',
+        dataIndex: 'lastTicketDate',
+        key: 'lastTicketDate',
+        width: 160,
+        render: (value: string) => (
+          <AppDateTimeLabel value={value} showTime={true} />
+        ),
+      },
+
+      {
+        title: 'Ngày đặt',
+        dataIndex: 'createdAt',
+        key: 'createdAt',
+        width: 160,
+        render: (value: string) => (
+          <AppDateTimeLabel value={value} showTime={true} />
+        ),
+      },
+
+      {
+        title: 'Số khách',
+        key: 'totalTickets',
+        width: 100,
+        render: (record: TFlightBookingListItem) =>
+          (record?.adult || 0) +
+          (record?.children || 0) +
+          (record?.infant || 0),
+      },
+
+      {
+        title: 'Thông tin liên hệ',
+        key: 'customer',
+        width: 180,
+        render: record => (
+          <div className="space-y-0.5">
+            <Tooltip
+              title={
+                <>
+                  <p>{record?.contactName}</p>
+                  <span>{record?.contactEmail}</span>
+                </>
+              }
+            >
+              <p className="line-clamp-1 max-w-40 font-semibold">
+                {record?.contactName}
+              </p>
+              <p className="line-clamp-1 max-w-40 text-xs text-gray-400">
+                {record?.contactEmail}
+              </p>
+            </Tooltip>
+          </div>
+        ),
+      },
+
+      {
         title: 'Tác vụ',
         key: 'table_action',
         fixed: 'right',
@@ -177,12 +189,13 @@ export const FlightBookingList = () => {
           <BookingDetailActionGroups
             bookingId={record.id}
             addon={
-              <DropdownMenuItem onClick={() => handleRowClick(record)}>
-                <span className="mb-0.5">
-                  <EyeIcon />
-                </span>
-                Xem chi tiết
-              </DropdownMenuItem>
+              <Button
+                size={'icon-sm'}
+                variant={'ghost'}
+                onClick={() => handleRowClick(record)}
+              >
+                <EyeIcon className="size-4" />
+              </Button>
             }
           />
         ),
@@ -199,6 +212,7 @@ export const FlightBookingList = () => {
         totalCount={data?.data?.totalItems}
         columns={columns}
         loading={isFetching}
+        isShowSkeleton={isLoading}
         onRow={record => ({
           onClick: () => handleRowClick(record),
           className: 'cursor-pointer',
@@ -206,8 +220,8 @@ export const FlightBookingList = () => {
       />
       <BookingDetailDrawer
         bookingId={selectedId}
-        open={openDetail}
-        onOpenChange={setOpenDetail}
+        open={isDetailDrawerOpen}
+        onOpenChange={setIsDetailDrawerOpen}
       />
     </>
   );

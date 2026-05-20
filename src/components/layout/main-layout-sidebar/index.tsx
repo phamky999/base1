@@ -33,8 +33,10 @@ export const MainLayoutSidebar = ({
               >
                 <div
                   className={cn(
-                    'flex aspect-square size-10 items-center justify-center rounded-lg bg-sidebar-accent text-sidebar-primary-foreground transition-all duration-300 ease-in-out',
-                    state === 'collapsed' ? 'size-8' : 'size-10'
+                    'flex aspect-square size-10 items-center justify-center rounded-lg text-sidebar-primary-foreground transition-all duration-300 ease-in-out dark:bg-gray-100',
+                    state === 'collapsed'
+                      ? 'size-8'
+                      : 'size-10 bg-sidebar-accent'
                   )}
                 >
                   <img

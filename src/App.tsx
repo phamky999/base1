@@ -47,7 +47,7 @@ export const App = () => {
               closeButton
               richColors
               offset={{
-                top: 58,
+                top: 65,
               }}
             />
 

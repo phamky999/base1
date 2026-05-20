@@ -1,47 +1,121 @@
-export const BookingFlightInfo = () => {
+import { normalizeQueryParamValue } from '@/components/app-filter/helper';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { FlightDetailDrawer } from '@/features/flight-management/components/flight/flight-detail-drawer';
+import {
+  FLIGHT_STATUS_COLOR,
+  FLIGHT_STATUS_LABEL,
+} from '@/features/flight-management/constants';
+import { useGetFlightDetailQuery } from '@/features/flight-management/query';
+import { skipToken } from '@reduxjs/toolkit/query';
+import { Tag } from 'antd';
+import { useState } from 'react';
+
+const InfoItem = ({
+  label,
+  value,
+  loading,
+}: {
+  label: string;
+  value: React.ReactNode;
+  loading: boolean;
+}) => {
+  return (
+    <div className="space-y-1">
+      <p className="text-sm text-muted-foreground">{label}</p>
+
+      {loading ? (
+        <Skeleton className="h-6.5 w-24" />
+      ) : (
+        <div className="font-semibold">{value}</div>
+      )}
+    </div>
+  );
+};
+
+export const BookingFlightInfo = ({ flightId }: { flightId?: string }) => {
+  const [isDetailDrawerOpen, setIsDetailDrawerOpen] = useState(false);
+
+  const normalizeFlightId = normalizeQueryParamValue(flightId);
+
+  const queryArg = !normalizeFlightId ? skipToken : String(normalizeFlightId);
+
+  const { data, isFetching } = useGetFlightDetailQuery(queryArg);
+
+  if (!normalizeFlightId) return null;
+
+  const detail = data?.data;
+
+  const stats = [
+    {
+      label: 'Hãng',
+      value: detail?.airlineName,
+    },
+    {
+      label: 'Số hiệu',
+      value: detail?.flightNumbers?.join(', '),
+    },
+    {
+      label: 'Loại máy bay',
+      value: detail?.planes?.join(', '),
+    },
+
+    {
+      label: 'Số ghế',
+      value: `${detail?.seatAvailable || '---'} / ${detail?.seatTotal || '---'}`,
+    },
+    {
+      label: 'Hạng',
+      value: detail?.segments?.map(segment => segment.seatClass).join(', '),
+    },
+
+    {
+      label: 'Trạng thái',
+      value: detail?.status ? (
+        <Tag
+          className="px-2 py-0.5"
+          color={FLIGHT_STATUS_COLOR[detail?.status]}
+          variant="outlined"
+        >
+          {FLIGHT_STATUS_LABEL[detail?.status]}
+        </Tag>
+      ) : (
+        '---'
+      ),
+    },
+  ];
+
   return (
     <div className="rounded-lg border bg-card p-4 shadow-xs">
-      {/* <h2>Thông tin chuyến bay</h2>
-      <p>Mã chuyến bay: VN123</p>
-      <p>Hãng hàng không: Vietnam Airlines</p>
-      <p>Chặng bay: HAN - SGN</p>
-      <p>Ngày bay: 2022-01-01</p>
-      <p>Giờ bay: 12:00</p>
-      <p>Giờ đến: 13:00</p>
-      <p>Loại máy bay: Boeing 737</p>
-      <p>Số ghế: 180</p>
-      <p>Giá vé: 1000000</p> */}
-      <div className="mb-6">
-        <p className="text-sm text-gray-400">Thông tin chuyến bay</p>
-        <p className="mt-1 font-medium">VN123 · Vietnam Airlines · HAN → SGN</p>
+      <div className="mb-4 xl:mb-6">
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-gray-400">Thông tin chuyến bay</p>
+
+          <Button
+            onClick={() => {
+              setIsDetailDrawerOpen(true);
+            }}
+          >
+            Xem chi tiết
+          </Button>
+        </div>
       </div>
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
-        <div>
-          <p className="text-sm text-gray-400">Thời gian bay</p>
-          <p className="mt-1 font-medium">12:00 2022-01-01</p>
-        </div>
-        <div>
-          <p className="text-sm text-gray-400">Thời gian hạ cánh</p>
-          <p className="mt-1 font-medium">13:00 2022-01-01</p>
-        </div>
-
-        <div>
-          <p className="text-sm text-gray-400">Loại máy bay</p>
-          <p className="mt-1 font-medium">Boeing 737</p>
-        </div>
-        <div>
-          <p className="text-sm text-gray-400">Tổng ghế</p>
-          <p className="mt-1 font-medium">180</p>
-        </div>
-        <div>
-          <p className="text-sm text-gray-400">Đã đặt</p>
-          <p className="mt-1 font-medium">135</p>
-        </div>
-        <div>
-          <p className="text-sm text-gray-400">Còn lại</p>
-          <p className="mt-1 font-medium">45</p>
-        </div>
+        {stats.map(item => (
+          <InfoItem
+            key={item.label}
+            label={item.label}
+            value={item.value}
+            loading={isFetching}
+          />
+        ))}
       </div>
+
+      <FlightDetailDrawer
+        flightId={flightId}
+        open={isDetailDrawerOpen}
+        onOpenChange={setIsDetailDrawerOpen}
+      />
     </div>
   );
 };

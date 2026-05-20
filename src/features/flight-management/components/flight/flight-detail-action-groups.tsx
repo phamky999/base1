@@ -145,10 +145,10 @@ export const FlightDetailActionGroups = ({
   };
 
   const handleViewBookings = () => {
-    if (!flight?.bookingCode) return;
+    if (!flight?.id) return;
     navigate({
       pathname: flightManagementPaths.bookingList.fullPath,
-      search: `bookingCode=${flight.bookingCode}`,
+      search: `flightId=${flight.id}`,
     });
   };
 

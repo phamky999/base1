@@ -1,4 +1,5 @@
 import { AppDateTimeLabel } from '@/components/app-date-time-label';
+import { normalizeQueryParamValue } from '@/components/app-filter/helper';
 import { AppTable } from '@/components/app-table';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,6 +19,7 @@ import {
 import { useGetFlightDetailQuery } from '@/features/flight-management/query';
 import type { TGetFlightDetailResponse } from '@/features/flight-management/types';
 import { formatDisplayCurrency } from '@/lib/helpers/string';
+import { skipToken } from '@reduxjs/toolkit/query';
 import { Descriptions, Empty, Skeleton, Space, Tag } from 'antd';
 import { PlaneLandingIcon, PlaneTakeoffIcon, XIcon } from 'lucide-react';
 
@@ -34,9 +36,10 @@ export const FlightDetailDrawer = ({
 }: FlightDetailDrawerProps) => {
   const { isMobile } = useSidebar();
 
-  const { data, isFetching } = useGetFlightDetailQuery(flightId || '', {
-    skip: !flightId || !open,
-  });
+  const normalizeFlightId = normalizeQueryParamValue(flightId);
+  const queryArg = !normalizeFlightId ? skipToken : String(normalizeFlightId);
+
+  const { data, isFetching } = useGetFlightDetailQuery(queryArg);
 
   const detail = data?.data;
 
@@ -49,7 +52,7 @@ export const FlightDetailDrawer = ({
               <XIcon className="size-4" />
             </Button>
           </DrawerClose>
-          <DrawerTitle className="mr-auto">Thông tin đơn hàng</DrawerTitle>
+          <DrawerTitle className="mr-auto">Thông tin chuyến bay</DrawerTitle>
 
           <FlightDetailActionGroups
             flight={detail as TGetFlightDetailResponse}
@@ -127,11 +130,11 @@ export const FlightDetailDrawer = ({
                         >
                           <div className="mb-3 flex items-center justify-between border-b border-gray-100 pb-2">
                             <div className="flex items-center gap-2">
-                              <span className="text-brand font-bold">
+                              <span className="font-bold">
                                 {segment.startPoint}
                               </span>
                               <span className="text-gray-400">→</span>
-                              <span className="text-brand font-bold">
+                              <span className="font-bold">
                                 {segment.endPoint}
                               </span>
                             </div>

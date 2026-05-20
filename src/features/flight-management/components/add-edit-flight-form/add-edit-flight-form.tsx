@@ -23,6 +23,9 @@ import { FareRulesSection } from './fare-rules';
 import { GeneralInfoSection } from './general-info';
 import { PriceInfoSection } from './price-info';
 import { SegmentsSection } from './segments';
+import { normalizeQueryParamValue } from '@/components/app-filter/helper';
+import { skipToken } from '@reduxjs/toolkit/query';
+import { Regex } from '@/lib/validations';
 
 type AddEditFlightFormProps = {
   id?: string;
@@ -34,9 +37,12 @@ export const AddEditFlightForm = ({ id }: AddEditFlightFormProps) => {
   const [form] = Form.useForm();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { data, isFetching } = useGetFlightDetailQuery(id || '', {
-    skip: !id,
-  });
+
+  const normalizeId = normalizeQueryParamValue(id);
+
+  const queryArg = !normalizeId ? skipToken : String(normalizeId);
+
+  const { data, isFetching } = useGetFlightDetailQuery(queryArg);
 
   const [createFlightMutationFn] = useCreateFlightMutation();
 
@@ -122,6 +128,69 @@ export const AddEditFlightForm = ({ id }: AddEditFlightFormProps) => {
     }
   };
 
+  const handleFormValueChange = (
+    changedValues: Partial<ObjectType>,
+    allValues: ObjectType
+  ) => {
+    if (id) return;
+    const segments = allValues?.[FORM_FIELDS.SEGMENTS];
+
+    if (!Array.isArray(segments)) return;
+
+    const airlineCode = allValues?.[FORM_FIELDS.AIRLINE_CODE];
+
+    if (
+      Object.prototype.hasOwnProperty.call(
+        changedValues,
+        FORM_FIELDS.AIRLINE_CODE
+      )
+    ) {
+      const isValidAirlineCode = Regex.AIRLINE_CODE.test(airlineCode);
+
+      if (isValidAirlineCode && Array.isArray(segments)) {
+        const nextSegments = segments.map((segment: ObjectType | undefined) => {
+          const isAutoFilled =
+            segment?.[FORM_FIELDS.SEGMENT_AIRLINE_CODE_AUTO_FILLED] === true;
+
+          const shouldSync = isAutoFilled;
+
+          if (!shouldSync) {
+            return segment;
+          }
+
+          return {
+            ...(segment ?? {}),
+            [FORM_FIELDS.SEGMENT_AIRLINE_CODE]: airlineCode,
+
+            [FORM_FIELDS.SEGMENT_AIRLINE_CODE_AUTO_FILLED]: true,
+          };
+        });
+
+        form.setFieldValue(FORM_FIELDS.SEGMENTS, nextSegments);
+      }
+    }
+
+    segments.forEach((segment: ObjectType, index: number) => {
+      const startDate = segment?.[FORM_FIELDS.SEGMENT_START_DATE] as
+        | Dayjs
+        | undefined;
+      const endDate = segment?.[FORM_FIELDS.SEGMENT_END_DATE] as
+        | Dayjs
+        | undefined;
+      if (
+        dayjs.isDayjs(startDate) &&
+        dayjs.isDayjs(endDate) &&
+        endDate.isAfter(startDate)
+      ) {
+        const durationInMinutes = endDate.diff(startDate, 'minute');
+        form.setFieldValue(
+          [FORM_FIELDS.SEGMENTS, index, FORM_FIELDS.SEGMENT_DURATION],
+          durationInMinutes
+        );
+      }
+    });
+  };
+
   const sectionCls = 'rounded-xl border bg-card p-4 shadow-xs';
 
   return (
@@ -132,32 +201,18 @@ export const AddEditFlightForm = ({ id }: AddEditFlightFormProps) => {
         layout="vertical"
         onFinish={onFinish}
         scrollToFirstError
-        onValuesChange={(_, allValues) => {
-          const segments = allValues?.[FORM_FIELDS.SEGMENTS];
-          if (!Array.isArray(segments)) return;
-          segments.forEach((segment: ObjectType, index: number) => {
-            const startDate = segment?.[FORM_FIELDS.SEGMENT_START_DATE] as
-              | Dayjs
-              | undefined;
-            const endDate = segment?.[FORM_FIELDS.SEGMENT_END_DATE] as
-              | Dayjs
-              | undefined;
-            if (
-              dayjs.isDayjs(startDate) &&
-              dayjs.isDayjs(endDate) &&
-              endDate.isAfter(startDate)
-            ) {
-              const durationInMinutes = endDate.diff(startDate, 'minute');
-              form.setFieldValue(
-                [FORM_FIELDS.SEGMENTS, index, FORM_FIELDS.SEGMENT_DURATION],
-                durationInMinutes
-              );
-            }
-          });
-        }}
-        initialValues={{
-          segments: [undefined],
-        }}
+        onValuesChange={handleFormValueChange}
+        {...(id
+          ? {}
+          : {
+              initialValues: {
+                [FORM_FIELDS.SEGMENTS]: [
+                  {
+                    [FORM_FIELDS.SEGMENT_AIRLINE_CODE_AUTO_FILLED]: true,
+                  },
+                ],
+              },
+            })}
       >
         <div className="space-y-4">
           <GeneralInfoSection className={sectionCls} />
@@ -169,7 +224,7 @@ export const AddEditFlightForm = ({ id }: AddEditFlightFormProps) => {
           <FareRulesSection className={sectionCls} />
         </div>
 
-        <div className="sticky bottom-0 mt-6 flex items-center justify-between gap-4 bg-(--main-background) p-4">
+        <div className="sticky bottom-0 z-1 mt-6 flex items-center justify-between gap-4 bg-(--main-background) p-4">
           <Button
             type="button"
             variant={'outline'}

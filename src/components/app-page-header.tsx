@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 
 type AppPageHeaderProps = {
-  title: string;
-  description?: string;
+  title: string | ReactNode;
+  description?: string | ReactNode;
   addon?: ReactNode;
 };
 

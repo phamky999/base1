@@ -61,10 +61,10 @@ export const sidebarData: TSidebarData = {
               title: 'Đơn hàng',
               url: flightManagementPaths.bookingList.fullPath,
             },
-            // {
-            //   title: 'Bộ điều kiện vé',
-            //   url: flightManagementPaths.ticketConditions.fullPath,
-            // },
+            {
+              title: 'Bộ điều kiện vé',
+              url: flightManagementPaths.ticketConditions.fullPath,
+            },
           ],
         },
         // {

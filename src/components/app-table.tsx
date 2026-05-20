@@ -1,13 +1,17 @@
+import { Skeleton } from '@/components/ui/skeleton';
 import { useQueryHandle } from '@/hooks/use-query-handle';
 import { PAGINATION_QUERY_KEY } from '@/lib/constants';
+import { fillArrayWithNumber } from '@/lib/helpers/object';
 import { Table, type TableProps } from 'antd';
 import { useMemo } from 'react';
 
 type AppTableProps<T> = TableProps<T> & {
   totalCount?: number;
+  isShowSkeleton?: boolean;
 };
+
 export const AppTable = <T,>(props: AppTableProps<T>) => {
-  const { totalCount, ...restProps } = props || {};
+  const { totalCount, isShowSkeleton, ...restProps } = props || {};
   const { handleChangePageSize, handleChangePageIndex, pagination } =
     useQueryHandle();
 
@@ -19,6 +23,26 @@ export const AppTable = <T,>(props: AppTableProps<T>) => {
       0
     );
   }, [props.columns]);
+
+  if (isShowSkeleton) {
+    const loadingCols = restProps?.columns?.map(col => {
+      return {
+        ...col,
+        title: <Skeleton className="h-4" />,
+        render: () => <Skeleton className="h-4" />,
+      };
+    });
+
+    return (
+      <Table<T>
+        columns={loadingCols}
+        className="custom-ant-table"
+        scroll={{ x: tableScrollWidth }}
+        pagination={false}
+        dataSource={fillArrayWithNumber(5) as T[]}
+      />
+    );
+  }
 
   return (
     <Table<T>

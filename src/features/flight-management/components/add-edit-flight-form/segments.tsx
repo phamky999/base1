@@ -23,8 +23,10 @@ type SegmentsSectionProps = {
 };
 
 export const SegmentsSection = ({ className }: SegmentsSectionProps) => {
+  const form = Form.useFormInstance();
   return (
-    <div className={className}>
+    <section className={className}>
+      <h3 className="mb-4 text-base font-semibold">Hành trình</h3>
       <Form.List
         name={FORM_FIELDS.SEGMENTS}
         rules={FORM_VALIDATIONS[FORM_FIELDS.SEGMENTS] as ValidatorRule[]}
@@ -58,7 +60,19 @@ export const SegmentsSection = ({ className }: SegmentsSectionProps) => {
                         }
                         normalize={upperCaseValue}
                       >
-                        <Input placeholder="VD: VN" />
+                        <Input
+                          placeholder="VD: VN"
+                          onChange={() => {
+                            form.setFieldValue(
+                              [
+                                FORM_FIELDS.SEGMENTS,
+                                name,
+                                FORM_FIELDS.SEGMENT_AIRLINE_CODE_AUTO_FILLED,
+                              ],
+                              false
+                            );
+                          }}
+                        />
                       </Form.Item>
                     </Col>
                     <Col span={24} md={12} xl={6}>
@@ -161,9 +175,8 @@ export const SegmentsSection = ({ className }: SegmentsSectionProps) => {
                         name={[name, FORM_FIELDS.SEGMENT_END_DATE]}
                         label={FORM_LABELS[FORM_FIELDS.SEGMENT_END_DATE]}
                         rules={[
-                          ...(FORM_VALIDATIONS[
-                            FORM_FIELDS.SEGMENT_END_DATE
-                          ] ?? []),
+                          ...(FORM_VALIDATIONS[FORM_FIELDS.SEGMENT_END_DATE] ??
+                            []),
                           ...[
                             startAndEndDateValidator({
                               comparisonFieldName: [
@@ -207,6 +220,12 @@ export const SegmentsSection = ({ className }: SegmentsSectionProps) => {
                       </Form.Item>
                     </Col>
                   </Row>
+                  <Form.Item
+                    className="hidden"
+                    name={[name, FORM_FIELDS.SEGMENT_AIRLINE_CODE_AUTO_FILLED]}
+                  >
+                    <Input />
+                  </Form.Item>
                 </AppFieldSet>
               ))}
             </div>
@@ -215,13 +234,21 @@ export const SegmentsSection = ({ className }: SegmentsSectionProps) => {
               type="button"
               variant={'outline'}
               className="w-full border-dashed"
-              onClick={() => add()}
+              onClick={() =>
+                add({
+                  [FORM_FIELDS.SEGMENT_AIRLINE_CODE]: form.getFieldValue(
+                    FORM_FIELDS.AIRLINE_CODE
+                  ),
+
+                  [FORM_FIELDS.SEGMENT_AIRLINE_CODE_AUTO_FILLED]: true,
+                })
+              }
             >
-              <PlusCircleIcon className="size-4" /> Thêm hành trình
+              <PlusCircleIcon className="mr-2 size-4" /> Thêm hành trình
             </Button>
           </>
         )}
       </Form.List>
-    </div>
+    </section>
   );
 };

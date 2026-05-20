@@ -1,4 +1,5 @@
 import { AppDateTimeLabel } from '@/components/app-date-time-label';
+import { normalizeQueryParamValue } from '@/components/app-filter/helper';
 import { AppTable } from '@/components/app-table';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,6 +17,7 @@ import {
 } from '@/features/flight-management/constants';
 import { useGetFlightBookingDetailQuery } from '@/features/flight-management/query';
 import { formatDisplayCurrency } from '@/lib/helpers/string';
+import { skipToken } from '@reduxjs/toolkit/query';
 import { Descriptions, Empty, Skeleton, Space, Tag } from 'antd';
 import { PlaneLandingIcon, PlaneTakeoffIcon, XIcon } from 'lucide-react';
 
@@ -32,9 +34,11 @@ export const BookingDetailDrawer = ({
 }: BookingDetailDrawerProps) => {
   const { isMobile } = useSidebar();
 
-  const { data, isFetching } = useGetFlightBookingDetailQuery(bookingId || '', {
-    skip: !bookingId || !open,
-  });
+  const normalizeId = normalizeQueryParamValue(bookingId);
+
+  const queryArg = !normalizeId || !open ? skipToken : String(normalizeId);
+
+  const { data, isFetching } = useGetFlightBookingDetailQuery(queryArg);
 
   const detail = data?.data;
 
@@ -65,7 +69,7 @@ export const BookingDetailDrawer = ({
                     column={isMobile ? 1 : 2}
                   >
                     <Descriptions.Item label="Mã đặt chỗ">
-                      <span className="text-brand font-semibold">
+                      <span className="font-semibold">
                         {detail.bookingCode}
                       </span>
                     </Descriptions.Item>
@@ -120,7 +124,7 @@ export const BookingDetailDrawer = ({
                       </div>
                     </Descriptions.Item>
                     <Descriptions.Item label="Tổng giá">
-                      <span className="text-brand text-lg font-semibold">
+                      <span className="text-lg font-semibold">
                         {formatDisplayCurrency(detail.totalPrice)}
                       </span>
                     </Descriptions.Item>

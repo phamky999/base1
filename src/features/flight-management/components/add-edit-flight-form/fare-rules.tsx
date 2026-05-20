@@ -16,10 +16,7 @@ import {
   FORM_LABELS,
   FORM_VALIDATIONS,
 } from '@/features/flight-management/components/add-edit-flight-form/add-edit-flight-form.schema';
-import {
-  FARE_RULE_TYPE,
-  FARE_RULE_TYPE_LABEL,
-} from '@/features/flight-management/constants';
+import { FARE_RULE_TYPE_OPTIONS } from '@/features/flight-management/constants';
 import { Col, Form, Input, Row, Select } from 'antd';
 import { CircleMinusIcon, PlusCircleIcon } from 'lucide-react';
 
@@ -39,7 +36,7 @@ export const FareRulesSection = ({ className }: FareRulesSectionProps) => {
               Dùng mẫu có sẵn
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-[250px] p-0" align="start">
+          <PopoverContent className="w-62.5 p-0" align="start">
             <Command>
               <CommandInput placeholder="Tìm kiếm" />
               <CommandList>
@@ -77,10 +74,7 @@ export const FareRulesSection = ({ className }: FareRulesSectionProps) => {
                       >
                         <Select
                           placeholder={FORM_LABELS[FORM_FIELDS.FARE_RULE_TYPE]}
-                          options={Object.values(FARE_RULE_TYPE).map(item => ({
-                            value: item,
-                            label: FARE_RULE_TYPE_LABEL[item],
-                          }))}
+                          options={FARE_RULE_TYPE_OPTIONS}
                         />
                       </Form.Item>
                     </Col>

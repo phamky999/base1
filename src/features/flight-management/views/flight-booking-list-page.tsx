@@ -1,17 +1,49 @@
 import { PageHelmet } from '@/components/app-helmet';
 import { AppPageHeader } from '@/components/app-page-header';
+import { Button } from '@/components/ui/button';
+import { BookingFlightInfo } from '@/features/flight-management/components/flight-booking/booking-flight-info';
 import { FlightBookingList } from '@/features/flight-management/components/flight-booking/booking-list';
 import { FlightBookingListFilter } from '@/features/flight-management/components/flight-booking/booking-list-filter';
+import { FlightBookingStatistics } from '@/features/flight-management/components/flight-booking/booking-statistics';
+import { flightManagementPaths } from '@/features/flight-management/routes';
+import { useQueryHandle } from '@/hooks/use-query-handle';
+import { Tooltip } from 'antd';
+import { ArrowLeftIcon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export const FlightBookingListPage = () => {
+  const navigate = useNavigate();
+
+  const { queryParams } = useQueryHandle();
+  const flightId = queryParams?.flightId;
+
   return (
     <>
       <PageHelmet title="Danh sách đơn hàng | Kho vé máy bay" />
-      <AppPageHeader title="Danh sách đơn hàng" />
+      <AppPageHeader
+        title={
+          <span className="flex items-center gap-2">
+            {flightId ? (
+              <Tooltip title="Xem tất cả đơn hàng">
+                <Button
+                  size={'icon-sm'}
+                  variant={'ghost'}
+                  onClick={() =>
+                    navigate(flightManagementPaths.bookingList.fullPath)
+                  }
+                >
+                  <ArrowLeftIcon className="size-4" />
+                </Button>
+              </Tooltip>
+            ) : null}
+            Danh sách đơn hàng
+          </span>
+        }
+      />
       <div className="space-y-6">
         <FlightBookingListFilter />
-        {/* {!!flightId && <BookingFlightInfo />} */}
-        {/* <FlightBookingStatistics /> */}
+        {!!flightId && <BookingFlightInfo flightId={flightId} />}
+        <FlightBookingStatistics />
         <FlightBookingList />
       </div>
     </>

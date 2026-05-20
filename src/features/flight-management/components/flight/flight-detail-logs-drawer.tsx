@@ -1,4 +1,5 @@
 import { AppDateTimeLabel } from '@/components/app-date-time-label';
+import { normalizeQueryParamValue } from '@/components/app-filter/helper';
 import { Button } from '@/components/ui/button';
 import {
   Drawer,
@@ -7,9 +8,13 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer';
-import { FLIGHT_DETAIL_ACTION_LABEL } from '@/features/flight-management/constants';
+import {
+  FLIGHT_DETAIL_ACTION_COLOR,
+  FLIGHT_DETAIL_ACTION_LABEL,
+} from '@/features/flight-management/constants';
 import { useGetFlightDetailLogsQuery } from '@/features/flight-management/query';
-import { Empty, Skeleton, Timeline } from 'antd';
+import { skipToken } from '@reduxjs/toolkit/query';
+import { Empty, Skeleton, Tag, Timeline } from 'antd';
 import { XIcon } from 'lucide-react';
 
 type FlightDetailLogsDrawerProps = {
@@ -23,9 +28,11 @@ export const FlightDetailLogsDrawer = ({
   open,
   onOpenChange,
 }: FlightDetailLogsDrawerProps) => {
-  const { data, isFetching } = useGetFlightDetailLogsQuery(flightId || '', {
-    skip: !flightId || !open,
-  });
+  const normalizeId = normalizeQueryParamValue(flightId);
+
+  const queryArg = !normalizeId || !open ? skipToken : String(normalizeId);
+
+  const { data, isFetching } = useGetFlightDetailLogsQuery(queryArg);
   const logs = data?.data;
 
   return (
@@ -46,19 +53,18 @@ export const FlightDetailLogsDrawer = ({
                 items={logs.map(log => ({
                   content: (
                     <>
-                      <div>
+                      <div className="mb-1 flex flex-col items-start gap-1">
                         <AppDateTimeLabel value={log.createdAt} />
+                        <Tag
+                          variant="outlined"
+                          className="px-2.5 py-0.5"
+                          color={FLIGHT_DETAIL_ACTION_COLOR[log.action]}
+                        >
+                          {FLIGHT_DETAIL_ACTION_LABEL[log.action]}
+                        </Tag>
                       </div>
                       <div>
-                        <p>
-                          <span className="font-semibold">
-                            [{' '}
-                            {FLIGHT_DETAIL_ACTION_LABEL[log.action] ||
-                              log.action}{' '}
-                            ]
-                          </span>{' '}
-                          {!!log?.note && <span>{log.note}</span>}
-                        </p>
+                        {!!log?.note && <p className="mb-1">{log.note}</p>}
 
                         <p>Thay đổi bởi: {log.userName}</p>
                       </div>

@@ -6,7 +6,10 @@ import {
   FLIGHT_STATUS_LABEL,
   GET_FLIGHT_FILTER_KEYS,
 } from '@/features/flight-management/constants';
-import { useGetFlightListQuery } from '@/features/flight-management/query';
+import {
+  useGetFlightListQuery,
+  useGetFlightStaticsQuery,
+} from '@/features/flight-management/query';
 import type {
   TFlightListItem,
   TFlightStatus,
@@ -24,19 +27,30 @@ import {
 import { useMemo, useState } from 'react';
 import { FlightDetailDrawer } from './flight-detail-drawer';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { FlightStatistics } from '@/features/flight-management/components/flight/flight-statistics';
 
 export const FlightList = () => {
   const [selectedFlightId, setSelectedFlightId] = useState<string>();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const { getApiQueryParamsFromUrlQuery } =
+  const { getApiQueryParamsFromUrlQuery, pagination } =
     useQueryHandle<TGetFlightListRequestParams>();
 
   const params = getApiQueryParamsFromUrlQuery({
     keys: GET_FLIGHT_FILTER_KEYS,
+    noPagination: true,
   });
 
-  const { data, isFetching } = useGetFlightListQuery({
+  const { data, isFetching, isLoading } = useGetFlightListQuery({
+    ...params,
+    ...pagination,
+  } as TGetFlightListRequestParams);
+
+  const {
+    data: statisticsDataResponse,
+    isFetching: isFetchingStatistics,
+    isLoading: isLoadingStatistics,
+  } = useGetFlightStaticsQuery({
     ...params,
   } as TGetFlightListRequestParams);
 
@@ -97,13 +111,13 @@ export const FlightList = () => {
           <div className="space-y-0.5">
             <div className="flex items-center gap-1.5">
               <PlaneTakeoffIcon className="size-3.5 shrink-0 text-gray-400" />
-              <span className="inline-block min-w-[130px]">
+              <span className="inline-block min-w-32.5">
                 <AppDateTimeLabel value={record?.startDate} />
               </span>
             </div>
             <div className="flex items-center gap-1.5">
               <PlaneLandingIcon className="size-3.5 shrink-0 text-gray-400" />
-              <span className="inline-block min-w-[130px]">
+              <span className="inline-block min-w-32.5">
                 <AppDateTimeLabel value={record?.endDate} />
               </span>
             </div>
@@ -112,7 +126,7 @@ export const FlightList = () => {
       },
 
       {
-        title: 'Số lượng vé',
+        title: 'Số lượng ghế',
         width: 120,
         key: 'flight_seat',
         render: (record: TFlightListItem) => (
@@ -191,6 +205,10 @@ export const FlightList = () => {
 
   return (
     <>
+      <FlightStatistics
+        data={statisticsDataResponse?.data}
+        isShowSkeleton={isLoadingStatistics || isFetchingStatistics}
+      />
       <AppTable<TFlightListItem>
         size="small"
         rowKey={record => record.id}
@@ -198,6 +216,7 @@ export const FlightList = () => {
         totalCount={totalItems}
         columns={columns}
         loading={isFetching}
+        isShowSkeleton={isLoading}
         onRow={record => ({
           onClick: () => handleViewDetail(record),
           className: 'cursor-pointer',

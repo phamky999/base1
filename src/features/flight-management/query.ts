@@ -3,10 +3,13 @@ import { invalidatesTags, QUERY_TAGS } from '@/app/redux/constants';
 import type { QueryResponse } from '@/app/redux/types';
 import type {
   TAirportItem,
+  TCreateFareRulePayload,
   TCreateFlightPayload,
   TCreateFlightResponse,
   TFlightBookingLogItem,
   TFlightDetailLogItem,
+  TGetFareRuleDetailResponse,
+  TGetFareRulesResponse,
   TGetFlightBookingDetailResponse,
   TGetFlightBookingListRequestParams,
   TGetFlightBookingListResponse,
@@ -14,6 +17,7 @@ import type {
   TGetFlightListRequestParams,
   TGetFlightListResponse,
   TGetFlightStaticsResponse,
+  TUpdateFareRulePayload,
   TUpdateFlightPayload,
   TUpdateFlightResponse,
 } from '@/features/flight-management/types';
@@ -26,6 +30,8 @@ export const flightManagementQueryApi = baseApi
       QUERY_TAGS.FLIGHT_LIST,
       QUERY_TAGS.FLIGHT_DETAIL,
       QUERY_TAGS.FLIGHT_DETAIL_LOGS,
+      QUERY_TAGS.FARE_RULES,
+      QUERY_TAGS.FARE_RULE_DETAIL,
     ],
   })
   .injectEndpoints({
@@ -47,9 +53,10 @@ export const flightManagementQueryApi = baseApi
         QueryResponse<TGetFlightStaticsResponse>,
         TGetFlightListRequestParams
       >({
-        query: () => ({
+        query: params => ({
           url: `${endpoint}/Flights/Statistics`,
           method: 'GET',
+          params,
         }),
       }),
 
@@ -227,6 +234,68 @@ export const flightManagementQueryApi = baseApi
           method: 'GET',
         }),
       }),
+
+      GetFareRules: builder.query<QueryResponse<TGetFareRulesResponse>, void>({
+        query: () => ({
+          url: `${endpoint}/FareRules`,
+          method: 'GET',
+        }),
+
+        providesTags: [QUERY_TAGS.FARE_RULES],
+      }),
+
+      GetFareRuleDetail: builder.query<
+        QueryResponse<TGetFareRuleDetailResponse>,
+        string
+      >({
+        query: id => ({
+          url: `${endpoint}/FareRules/${id}`,
+          method: 'GET',
+        }),
+
+        providesTags: [QUERY_TAGS.FARE_RULE_DETAIL],
+      }),
+
+      CreateFareRule: builder.mutation<
+        QueryResponse<void>,
+        TCreateFareRulePayload
+      >({
+        query: payload => ({
+          url: `${endpoint}/FareRules/Add`,
+          method: 'POST',
+          body: payload,
+        }),
+
+        invalidatesTags: invalidatesTags([QUERY_TAGS.FARE_RULES]),
+      }),
+
+      UpdateFareRule: builder.mutation<
+        QueryResponse<void>,
+        TUpdateFareRulePayload
+      >({
+        query: ({ id, ...restPayload }) => ({
+          url: `${endpoint}/FareRules/Update/${id}`,
+          method: 'PUT',
+          body: restPayload,
+        }),
+
+        invalidatesTags: invalidatesTags([
+          QUERY_TAGS.FARE_RULES,
+          QUERY_TAGS.FARE_RULE_DETAIL,
+        ]),
+      }),
+
+      DeleteFareRule: builder.mutation<void, string>({
+        query: id => ({
+          url: `${endpoint}/FareRules/Delete/${id}`,
+          method: 'DELETE',
+        }),
+
+        invalidatesTags: invalidatesTags([
+          QUERY_TAGS.FARE_RULES,
+          QUERY_TAGS.FARE_RULE_DETAIL,
+        ]),
+      }),
     }),
   });
 
@@ -248,4 +317,11 @@ export const {
   useGetFlightBookingListQuery,
   useGetFlightBookingDetailQuery,
   useGetFlightBookingDetailLogsQuery,
+
+  //fare rules
+  useGetFareRulesQuery,
+  useGetFareRuleDetailQuery,
+  useCreateFareRuleMutation,
+  useUpdateFareRuleMutation,
+  useDeleteFareRuleMutation,
 } = flightManagementQueryApi;

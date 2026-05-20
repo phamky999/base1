@@ -109,10 +109,12 @@ const baseQueryWithInterceptor: BaseQueryFn<
         result = await baseQuery(args, api, extraOptions);
       }
     } else {
-      void toast.error(
+      const message =
         (result?.error?.data as ObjectType)?.message ||
-          'Có lỗi xảy ra, vui lòn thử lại sau.'
-      );
+        'Có lỗi xảy ra, vui lòn thử lại sau.';
+      void toast.error(message, {
+        id: message,
+      });
       return result;
     }
   }

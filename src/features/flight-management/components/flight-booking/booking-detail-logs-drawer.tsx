@@ -1,4 +1,5 @@
 import { AppDateTimeLabel } from '@/components/app-date-time-label';
+import { normalizeQueryParamValue } from '@/components/app-filter/helper';
 import { Button } from '@/components/ui/button';
 import {
   Drawer,
@@ -7,9 +8,13 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer';
-import { FLIGHT_BOOKING_ACTION_LABEL } from '@/features/flight-management/constants';
+import {
+  FLIGHT_BOOKING_ACTION_COLOR,
+  FLIGHT_BOOKING_ACTION_LABEL,
+} from '@/features/flight-management/constants';
 import { useGetFlightBookingDetailLogsQuery } from '@/features/flight-management/query';
-import { Empty, Skeleton, Timeline } from 'antd';
+import { skipToken } from '@reduxjs/toolkit/query';
+import { Empty, Skeleton, Tag, Timeline } from 'antd';
 import { XIcon } from 'lucide-react';
 
 type BookingDetailLogsDrawerProps = {
@@ -23,12 +28,11 @@ export const BookingDetailLogsDrawer = ({
   open,
   onOpenChange,
 }: BookingDetailLogsDrawerProps) => {
-  const { data, isFetching } = useGetFlightBookingDetailLogsQuery(
-    bookingId || '',
-    {
-      skip: !bookingId || !open,
-    }
-  );
+  const normalizeId = normalizeQueryParamValue(bookingId);
+
+  const queryArg = !normalizeId || !open ? skipToken : String(normalizeId);
+
+  const { data, isFetching } = useGetFlightBookingDetailLogsQuery(queryArg);
   const logs = data?.data;
 
   return (
@@ -49,19 +53,18 @@ export const BookingDetailLogsDrawer = ({
                 items={logs.map(log => ({
                   children: (
                     <>
-                      <div className="mb-1">
+                      <div className="mb-1 flex flex-col items-start gap-1">
                         <AppDateTimeLabel value={log.createdAt} />
+                        <Tag
+                          variant="outlined"
+                          className="px-2.5 py-0.5"
+                          color={FLIGHT_BOOKING_ACTION_COLOR[log.action]}
+                        >
+                          {FLIGHT_BOOKING_ACTION_LABEL[log.action]}
+                        </Tag>
                       </div>
                       <div>
-                        <p className="mb-1">
-                          <span className="text-brand font-semibold">
-                            [
-                            {FLIGHT_BOOKING_ACTION_LABEL[log.action] ||
-                              log.action}
-                            ]
-                          </span>{' '}
-                          {!!log?.note && <span>{log.note}</span>}
-                        </p>
+                        {!!log?.note && <p className="mb-1">{log.note}</p>}
 
                         <p className="text-xs text-gray-500">
                           Thực hiện bởi: {log.userName}{' '}

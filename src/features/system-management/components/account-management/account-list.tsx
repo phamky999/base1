@@ -10,7 +10,7 @@ import type {
   TGetAccountListParams,
 } from '@/features/system-management/types';
 import { useQueryHandle } from '@/hooks/use-query-handle';
-import { Tooltip, type TableProps } from 'antd';
+import { type TableProps } from 'antd';
 import { UserLockIcon, UserPenIcon } from 'lucide-react';
 import { useState } from 'react';
 
@@ -82,29 +82,27 @@ export const AccountList = () => {
       width: 100,
       render: (record: TAccountListItem) => (
         <>
-          <Tooltip title="Cập nhật tài khoản">
-            <Button
-              variant={'ghost'}
-              onClick={() => {
-                setSelectedAccount(record);
-                setIsUpdateAccountModalOpen(true);
-              }}
-            >
-              <UserPenIcon className="size-4" />
-            </Button>
-          </Tooltip>
+          <Button
+            title="Cập nhật tài khoản"
+            variant={'ghost'}
+            onClick={() => {
+              setSelectedAccount(record);
+              setIsUpdateAccountModalOpen(true);
+            }}
+          >
+            <UserPenIcon className="size-4" />
+          </Button>
 
-          <Tooltip title="Đặt lại mật khẩu">
-            <Button
-              variant={'ghost'}
-              onClick={() => {
-                setSelectedAccount(record);
-                setIsUpdatePasswordModalOpen(true);
-              }}
-            >
-              <UserLockIcon className="size-4" />
-            </Button>
-          </Tooltip>
+          <Button
+            title="Đặt lại mật khẩu"
+            variant={'ghost'}
+            onClick={() => {
+              setSelectedAccount(record);
+              setIsUpdatePasswordModalOpen(true);
+            }}
+          >
+            <UserLockIcon className="size-4" />
+          </Button>
         </>
       ),
     },

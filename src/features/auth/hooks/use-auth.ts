@@ -5,6 +5,7 @@ import {
 } from '@/features/auth/query';
 import { TOKEN } from '@/lib/constants';
 import { clearAuthToken, getAuthToken, setAuthToken } from '@/lib/utils';
+import { skipToken } from '@reduxjs/toolkit/query';
 import { useEffect, useRef, useState } from 'react';
 
 export const useTokenRefresh = () => {
@@ -62,10 +63,8 @@ export const useAuth = () => {
   const { isRefreshing } = useTokenRefresh();
   const hasToken = !!getAuthToken(TOKEN.ACCESS_TOKEN);
 
-  const { data, isLoading, isError } = useGetCurrentUserQuery(undefined, {
-    // Skip khi đang refresh hoặc chưa có token
-    skip: isRefreshing || !hasToken,
-  });
+  const queryArg = !hasToken || isRefreshing ? skipToken : undefined;
+  const { data, isLoading, isError } = useGetCurrentUserQuery(queryArg);
 
   return {
     hasToken,

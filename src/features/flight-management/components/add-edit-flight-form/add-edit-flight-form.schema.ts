@@ -24,6 +24,11 @@ export const FORM_FIELDS = {
   SEGMENT_SEAT_CLASS: ['segment', 'seatClass'].join(OBJECT_KEY_SEPARATOR),
   SEGMENT_PLANE: ['segment', 'plane'].join(OBJECT_KEY_SEPARATOR),
   SEGMENT_DURATION: ['segment', 'duration'].join(OBJECT_KEY_SEPARATOR),
+
+  // FE STATE Fields
+  SEGMENT_AIRLINE_CODE_AUTO_FILLED: ['segment', 'airlineCodeAutoFilled'].join(
+    OBJECT_KEY_SEPARATOR
+  ),
 } as const;
 
 type TFormFields = (typeof FORM_FIELDS)[keyof typeof FORM_FIELDS];

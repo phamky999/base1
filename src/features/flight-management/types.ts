@@ -276,3 +276,29 @@ export type TFlightBookingLogItem = {
   note: string;
   createdAt: string;
 };
+
+export type TCreateFareRulePayload = {
+  name: string;
+  airlineCode: string;
+  rules: {
+    type: TFareRuleType;
+    text: string;
+  }[];
+};
+
+export type TUpdateFareRulePayload = TCreateFareRulePayload & {
+  id: string;
+};
+
+export type TGetFareRuleDetailResponse = {
+  id: string;
+  providerCode: string;
+  name: string;
+  airlineCode: string;
+  rules: {
+    type: TFareRuleType;
+    text: string;
+  }[];
+};
+
+export type TGetFareRulesResponse = Omit<TGetFareRuleDetailResponse, 'rules'>[];
