@@ -321,6 +321,7 @@ export const {
   //fare rules
   useGetFareRulesQuery,
   useGetFareRuleDetailQuery,
+  useLazyGetFareRuleDetailQuery,
   useCreateFareRuleMutation,
   useUpdateFareRuleMutation,
   useDeleteFareRuleMutation,

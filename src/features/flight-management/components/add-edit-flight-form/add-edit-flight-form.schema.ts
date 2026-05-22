@@ -14,7 +14,9 @@ export const FORM_FIELDS = {
   PRICE_ADULT: 'priceAdult',
   PRICE_CHILD: 'priceChild',
   PRICE_INFANT: 'priceInfant',
-  SEGMENTS: 'segments',
+  ITINERARY_TYPE: 'itineraryType',
+  DEPARTURE_SEGMENTS: 'departureSegments',
+  RETURN_SEGMENTS: 'returnSegments',
   SEGMENT_AIRLINE_CODE: ['segment', 'airlineCode'].join(OBJECT_KEY_SEPARATOR),
   SEGMENT_START_POINT: ['segment', 'startPoint'].join(OBJECT_KEY_SEPARATOR),
   SEGMENT_END_POINT: ['segment', 'endPoint'].join(OBJECT_KEY_SEPARATOR),
@@ -45,7 +47,8 @@ export const FORM_LABELS: Partial<Record<TFormFields, string>> = {
   [FORM_FIELDS.PRICE_ADULT]: 'Giá người lớn',
   [FORM_FIELDS.PRICE_CHILD]: 'Giá trẻ em',
   [FORM_FIELDS.PRICE_INFANT]: 'Giá em bé',
-  [FORM_FIELDS.SEGMENTS]: 'Hành trình',
+  [FORM_FIELDS.DEPARTURE_SEGMENTS]: 'Chiều đi',
+  [FORM_FIELDS.RETURN_SEGMENTS]: 'Chiều về',
   [FORM_FIELDS.SEGMENT_AIRLINE_CODE]: 'Mã hãng hàng không',
   [FORM_FIELDS.SEGMENT_START_POINT]: 'Mã sân bay khởi hành',
   [FORM_FIELDS.SEGMENT_END_POINT]: 'Mã sân bay hạ cánh',
@@ -90,7 +93,7 @@ export const FORM_VALIDATIONS: Partial<Record<TFormFields, Rule[]>> = {
   [FORM_FIELDS.PRICE_INFANT]: [
     { required: true, message: 'Hãy nhập giá em bé', type: 'number' },
   ],
-  [FORM_FIELDS.SEGMENTS]: [
+  [FORM_FIELDS.DEPARTURE_SEGMENTS]: [
     {
       validator: (_, value) => {
         if (!value || value.length === 0) {

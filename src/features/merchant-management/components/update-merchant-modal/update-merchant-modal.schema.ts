@@ -2,22 +2,24 @@ import { Regex, RegexValidationMessage } from '@/lib/validations';
 import type { Rule } from 'antd/es/form';
 
 export const FORM_FIELDS = {
-  DISPLAYNAME: 'displayName',
+  NAME: 'name',
   EMAIL: 'email',
   PHONE: 'phone',
+  IS_ACTIVE: 'isActive',
 } as const;
 
 type TFormFields = (typeof FORM_FIELDS)[keyof typeof FORM_FIELDS];
 
-export const FORM_LABELS: Partial<Record<TFormFields, string>> = {
-  [FORM_FIELDS.DISPLAYNAME]: 'Tên hiển thị',
+export const FORM_LABELS: Record<TFormFields, string> = {
+  [FORM_FIELDS.NAME]: 'Tên kênh bán',
   [FORM_FIELDS.EMAIL]: 'Email',
   [FORM_FIELDS.PHONE]: 'Số điện thoại',
+  [FORM_FIELDS.IS_ACTIVE]: 'Trạng thái',
 } as const;
 
-export const FORM_VALIDATIONS: Partial<Record<TFormFields, Rule[]>> = {
-  [FORM_FIELDS.DISPLAYNAME]: [
-    { required: true, message: 'Vui lòng nhập tên hiển thị', whitespace: true },
+export const FORM_VALIDATIONS: Record<TFormFields, Rule[]> = {
+  [FORM_FIELDS.NAME]: [
+    { required: true, message: 'Vui lòng nhập tên kênh bán', whitespace: true },
   ],
   [FORM_FIELDS.EMAIL]: [
     { required: true, message: 'Vui lòng nhập email' },
@@ -29,5 +31,8 @@ export const FORM_VALIDATIONS: Partial<Record<TFormFields, Rule[]>> = {
       pattern: Regex.PHONE_NUMBER,
       message: RegexValidationMessage.PHONE_NUMBER,
     },
+  ],
+  [FORM_FIELDS.IS_ACTIVE]: [
+    { required: true, message: 'Vui lòng chọn trạng thái' },
   ],
 } as const;

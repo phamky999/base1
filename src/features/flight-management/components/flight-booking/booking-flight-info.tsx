@@ -66,9 +66,13 @@ export const BookingFlightInfo = ({ flightId }: { flightId?: string }) => {
     },
     {
       label: 'Hạng',
-      value: detail?.segments?.map(segment => segment.seatClass).join(', '),
+      value: [
+        ...(detail?.departureSegments ?? []),
+        ...(detail?.returnSegments ?? []),
+      ]
+        .map(segment => segment.seatClass)
+        .join(', '),
     },
-
     {
       label: 'Trạng thái',
       value: detail?.status ? (

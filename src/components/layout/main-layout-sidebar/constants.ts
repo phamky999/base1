@@ -1,11 +1,10 @@
 import { flightManagementPaths } from '@/features/flight-management/routes';
+import { merchantManagementPaths } from '@/features/merchant-management/routes';
 import { systemManagementPaths } from '@/features/system-management/routes';
-// import { systemManagementPaths } from '@/features/system-management/routes';
 import {
   LayoutDashboard,
+  MonitorCogIcon,
   Settings,
-  // MonitorCogIcon,
-  // Settings,
   TicketsPlane,
 } from 'lucide-react';
 
@@ -67,23 +66,19 @@ export const sidebarData: TSidebarData = {
             },
           ],
         },
-        // {
-        //   title: 'Quản lý kênh bán',
-        //   icon: MonitorCogIcon,
-        //   url: '#',
-        // },
+        {
+          title: 'Quản lý kênh bán',
+          icon: MonitorCogIcon,
+          url: merchantManagementPaths.merchantList.fullPath,
+        },
         {
           title: 'Cài đặt hệ thống',
           icon: Settings,
           items: [
-            // {
-            //   title: 'Email',
-            //   url: systemManagementPaths.emailConfig.fullPath,
-            // },
-            // {
-            //   title: 'Thông báo',
-            //   url: systemManagementPaths.notificationConfig.fullPath,
-            // },
+            {
+              title: 'Cấu hình Email',
+              url: systemManagementPaths.emailConfig.fullPath,
+            },
 
             {
               title: 'Tài khoản',

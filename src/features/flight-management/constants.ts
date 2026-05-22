@@ -139,3 +139,20 @@ export const FARE_RULE_TYPE_OPTIONS = Object.values(FARE_RULE_TYPE).map(
     label: FARE_RULE_TYPE_LABEL[item],
   })
 );
+
+export const FLIGHT_ITINERARY_TYPE = {
+  ONE_WAY: 1,
+  ROUND_TRIP: 2,
+} as const;
+
+export const FLIGHT_ITINERARY_TYPE_LABEL = {
+  [FLIGHT_ITINERARY_TYPE.ONE_WAY]: 'Một chiều',
+  [FLIGHT_ITINERARY_TYPE.ROUND_TRIP]: 'Khứ hồi',
+} as const;
+
+export const FLIGHT_ITINERARY_TYPE_OPTIONS = Object.values(
+  FLIGHT_ITINERARY_TYPE
+).map(item => ({
+  value: item,
+  label: FLIGHT_ITINERARY_TYPE_LABEL[item],
+}));

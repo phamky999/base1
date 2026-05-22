@@ -51,52 +51,49 @@ export const AppFilter = ({
     setSearchParams(newParams, { replace: true });
   };
 
-  const addvanceFilter = advanceFilter ? (
+  const advanceFilterComponent = advanceFilter ? (
     <AdvanceFilter
       advanceFilterKeys={advanceFilter?.keys}
       formElements={advanceFilter?.elements}
     />
   ) : null;
 
-  if (showAdvanceFilterOnly) return addvanceFilter;
+  if (showAdvanceFilterOnly) return advanceFilterComponent;
 
   return (
-    <div className="flex items-start justify-between gap-4 sm:items-center">
-      <div className="flex flex-1 flex-row flex-wrap items-start gap-4 sm:items-center">
-        {!!searchField?.key && (
-          <QuickFilterSearchInput
-            searchKey={searchField?.key}
-            placeholder={searchField?.placeholder ?? 'Nhập từ khóa tìm kiếm'}
-          />
-        )}
+    <div className="flex flex-1 flex-row flex-wrap items-start gap-4 sm:items-center">
+      {!!searchField?.key && (
+        <QuickFilterSearchInput
+          searchKey={searchField?.key}
+          placeholder={searchField?.placeholder ?? 'Nhập từ khóa tìm kiếm'}
+        />
+      )}
 
-        {!!filters?.length && (
-          <div className="flex gap-x-2">
-            {filters.map(filter => (
-              <QuickFilterSelection
-                key={filter.filterKey}
-                filterKey={filter.filterKey}
-                title={filter.title}
-                options={filter.options}
-                type={filter?.type || 'single'}
-              />
-            ))}
-          </div>
-        )}
+      {!!filters?.length && (
+        <div className="flex gap-x-2">
+          {filters.map(filter => (
+            <QuickFilterSelection
+              key={filter.filterKey}
+              filterKey={filter.filterKey}
+              title={filter.title}
+              options={filter.options}
+              type={filter?.type || 'single'}
+            />
+          ))}
+        </div>
+      )}
 
-        {isFiltered && (
-          <Button
-            variant="outline"
-            onClick={handleReset}
-            className="h-8 border-dashed px-2 lg:px-3"
-          >
-            Reset
-            <XIcon className="ms-2 h-4 w-4" />
-          </Button>
-        )}
-      </div>
-
-      {addvanceFilter}
+      {isFiltered && (
+        <Button
+          variant="outline"
+          onClick={handleReset}
+          className="h-8 border-dashed px-2 lg:px-3"
+        >
+          Reset
+          <XIcon className="ms-2 h-4 w-4" />
+        </Button>
+      )}
+      {advanceFilterComponent}
     </div>
   );
 };

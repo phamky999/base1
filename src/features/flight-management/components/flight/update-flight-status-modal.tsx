@@ -23,6 +23,7 @@ import type {
   TFlightStatus,
 } from '@/features/flight-management/types';
 import { Form, Input, Tag } from 'antd';
+import { PlaneIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -120,67 +121,74 @@ export const UpdateFlightStatusModal = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <Form form={form} layout="vertical" onFinish={onFinish}>
-        <DialogContent showCloseButton={false} className="sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle>Cập nhật trạng thái</DialogTitle>
-            <DialogDescription>
-              Cập nhật trạng thái cho chuyến bay{' '}
-              <span className="font-semibold">{flight?.bookingCode}</span>
-            </DialogDescription>
-          </DialogHeader>
-          <Form.Item label="Thay đổi trạng thái" className="mb-0">
-            <div className="flex items-center gap-2">
-              <Tag
-                className="px-2 py-0.5"
-                color={FLIGHT_STATUS_COLOR[flight.status]}
-                variant="outlined"
-              >
-                {FLIGHT_STATUS_LABEL[flight.status]}
-              </Tag>
-              <span>→</span>
-              <Tag
-                className="px-2 py-0.5"
-                color={FLIGHT_STATUS_COLOR[newStatus]}
-                variant="outlined"
-              >
-                {FLIGHT_STATUS_LABEL[newStatus]}
-              </Tag>
-            </div>
-          </Form.Item>
-          <div>
-            <Form.Item
-              name="remark"
-              label="Remark"
-              rules={[
-                {
-                  required: true,
-                  whitespace: true,
-                  message: 'Remark không được để trống',
-                },
-              ]}
-            >
-              <Input placeholder={'Remark'} />
+      <DialogContent showCloseButton={false} className="sm:max-w-sm">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <PlaneIcon className="size-5 text-primary" />
+            <span>{updateMutationConfig?.actionLabel} chuyến bay</span>
+          </DialogTitle>
+          <DialogDescription>
+            {updateMutationConfig?.actionLabel} chuyến bay{' '}
+            <span className="font-semibold text-primary">
+              {flight?.bookingCode}
+            </span>
+          </DialogDescription>
+        </DialogHeader>
+        <div className="dialog-scroll-content">
+          <Form form={form} layout="vertical" onFinish={onFinish}>
+            <Form.Item label="Thay đổi trạng thái">
+              <div className="flex items-center gap-2">
+                <Tag
+                  className="px-2 py-0.5"
+                  color={FLIGHT_STATUS_COLOR[flight.status]}
+                  variant="outlined"
+                >
+                  {FLIGHT_STATUS_LABEL[flight.status]}
+                </Tag>
+                <span>→</span>
+                <Tag
+                  className="px-2 py-0.5"
+                  color={FLIGHT_STATUS_COLOR[newStatus]}
+                  variant="outlined"
+                >
+                  {FLIGHT_STATUS_LABEL[newStatus]}
+                </Tag>
+              </div>
             </Form.Item>
-          </div>
-          <DialogFooter className="justify-between!">
-            <Button
-              type="reset"
-              variant="outline"
-              onClick={() => handleOpenChange(false)}
-            >
-              Đóng
-            </Button>
-            <Button
-              type="submit"
-              loading={isLoading}
-              onClick={() => form.submit()}
-            >
-              Cập nhật
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Form>
+            <div>
+              <Form.Item
+                name="remark"
+                label="Remark"
+                rules={[
+                  {
+                    required: true,
+                    whitespace: true,
+                    message: 'Remark không được để trống',
+                  },
+                ]}
+              >
+                <Input placeholder={'Remark'} />
+              </Form.Item>
+            </div>
+          </Form>
+        </div>
+        <DialogFooter className="flex-row justify-between">
+          <Button
+            type="reset"
+            variant="outline"
+            onClick={() => handleOpenChange(false)}
+          >
+            Đóng
+          </Button>
+          <Button
+            type="submit"
+            loading={isLoading}
+            onClick={() => form.submit()}
+          >
+            Cập nhật
+          </Button>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
   );
 };

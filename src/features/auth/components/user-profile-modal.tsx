@@ -4,12 +4,15 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { UpdateUserProfileModal } from '@/features/auth/components/update-user-profile-modal';
 import { useGetCurrentUserQuery } from '@/features/auth/query';
 import { Skeleton } from 'antd';
-import { MailIcon, PhoneIcon } from 'lucide-react';
+import { MailIcon, PhoneIcon, User2Icon } from 'lucide-react';
 import { useState } from 'react';
 
 type UserProfileModalProps = {
@@ -30,9 +33,21 @@ export const UserProfileModal = ({
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent showCloseButton={false}>
-          <div className="overflow-y-auto px-4">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <User2Icon className="size-5 text-primary" />
+              <span>Thông tin cá nhân</span>
+            </DialogTitle>
+            <DialogDescription>
+              Thông tin tài khoản{' '}
+              <span className="font-semibold text-primary">
+                {userInfo?.username}
+              </span>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="dialog-scroll-content">
             <Skeleton active loading={isFetching}>
-              <div className="mb-6 flex flex-col items-center gap-2">
+              <div className="mb-2 flex flex-col items-center gap-2">
                 <div className="h-12 w-12 overflow-hidden rounded-full">
                   <Avatar className="h-12 w-12 rounded-lg">
                     <AvatarFallback className="rounded-lg">
@@ -43,7 +58,7 @@ export const UserProfileModal = ({
                 <p className="font-semibold">{userInfo?.displayName}</p>
               </div>
 
-              <div className="flex flex-col items-center justify-center gap-4">
+              <div className="flex flex-col items-center justify-center gap-2">
                 <div className="flex items-center gap-1">
                   <MailIcon className="size-4 text-gray-400" />
                   <span>{userInfo?.email || 'Chưa cập nhật'}</span>
@@ -56,7 +71,7 @@ export const UserProfileModal = ({
               </div>
             </Skeleton>
           </div>
-          <DialogFooter className="justify-between!">
+          <DialogFooter className="flex-row justify-between">
             <DialogClose asChild>
               <Button type="reset" variant="outline">
                 Đóng

@@ -13,11 +13,15 @@ import { useSidebar } from '@/components/ui/sidebar';
 import { FlightDetailActionGroups } from '@/features/flight-management/components/flight/flight-detail-action-groups';
 import {
   FARE_RULE_TYPE_LABEL,
+  FLIGHT_ITINERARY_TYPE,
   FLIGHT_STATUS_COLOR,
   FLIGHT_STATUS_LABEL,
 } from '@/features/flight-management/constants';
 import { useGetFlightDetailQuery } from '@/features/flight-management/query';
-import type { TGetFlightDetailResponse } from '@/features/flight-management/types';
+import type {
+  TFlightSegment,
+  TGetFlightDetailResponse,
+} from '@/features/flight-management/types';
 import { formatDisplayCurrency } from '@/lib/helpers/string';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { Descriptions, Empty, Skeleton, Space, Tag } from 'antd';
@@ -42,6 +46,132 @@ export const FlightDetailDrawer = ({
   const { data, isFetching } = useGetFlightDetailQuery(queryArg);
 
   const detail = data?.data;
+
+  const renderSegments = (segments: TFlightSegment[]) => {
+    return (
+      <div>
+        {isMobile ? (
+          <div className="space-y-4">
+            {(segments || []).map((segment, index) => (
+              <div
+                key={`${segment.flightNumber}-${index}`}
+                className="rounded-lg border p-4 shadow-xs"
+              >
+                <div className="mb-3 flex items-center justify-between border-b border-gray-100 pb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold">{segment.startPoint}</span>
+                    <span className="text-gray-400">→</span>
+                    <span className="font-bold">{segment.endPoint}</span>
+                  </div>
+                  <span className="font-bold">{segment.flightNumber}</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-[10px] tracking-wider text-gray-400 uppercase">
+                        Khởi hành
+                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <PlaneTakeoffIcon size={14} className="text-gray-400" />
+                        <AppDateTimeLabel value={segment.startDate} />
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-[10px] tracking-wider text-gray-400 uppercase">
+                        Hạ cánh
+                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <PlaneLandingIcon size={14} className="text-gray-400" />
+                        <AppDateTimeLabel value={segment.endDate} />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 text-right">
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-[10px] tracking-wider text-gray-400 uppercase">
+                        Máy bay / Hạng
+                      </span>
+                      <span className="font-medium text-gray-700">
+                        {segment.plane} / {segment.seatClass}
+                      </span>
+                    </div>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-[10px] tracking-wider text-gray-400 uppercase">
+                        Thời gian bay
+                      </span>
+                      <span className="font-medium text-gray-700">
+                        {segment.duration} phút
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <AppTable
+            dataSource={segments}
+            pagination={false}
+            rowKey={record => record.flightNumber + record.startDate}
+            size="small"
+            bordered
+            columns={[
+              {
+                title: 'Chặng bay',
+                width: 120,
+                render: (_, record) => (
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold">{record.startPoint}</span>
+                    <span>→</span>
+                    <span className="font-semibold">{record.endPoint}</span>
+                  </div>
+                ),
+              },
+              {
+                title: 'Thời gian',
+                width: 180,
+                render: (_, record) => (
+                  <div>
+                    <div className="flex items-center gap-1">
+                      <PlaneTakeoffIcon size={12} className="text-gray-400" />
+                      <AppDateTimeLabel value={record?.startDate} />
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <PlaneLandingIcon size={12} className="text-gray-400" />
+                      <AppDateTimeLabel value={record?.endDate} />
+                    </div>
+                  </div>
+                ),
+              },
+              {
+                title: 'Số hiệu',
+                width: 100,
+                dataIndex: 'flightNumber',
+              },
+              {
+                title: 'Máy bay',
+                width: 100,
+                dataIndex: 'plane',
+              },
+              {
+                title: 'Hạng ghế',
+                width: 100,
+                dataIndex: 'seatClass',
+              },
+              {
+                title: 'Thời gian bay',
+                width: 100,
+                dataIndex: 'duration',
+                render: value => `${value} phút`,
+              },
+            ]}
+          />
+        )}
+      </div>
+    );
+  };
 
   return (
     <Drawer direction="right" open={open} onOpenChange={onOpenChange}>
@@ -120,149 +250,20 @@ export const FlightDetailDrawer = ({
                 </div>
 
                 <div>
-                  <p className="mb-2 text-base">Hành trình chi tiết</p>
-                  {isMobile ? (
-                    <div className="space-y-4">
-                      {detail.segments.map((segment, index) => (
-                        <div
-                          key={`${segment.flightNumber}-${index}`}
-                          className="rounded-lg border p-4 shadow-xs"
-                        >
-                          <div className="mb-3 flex items-center justify-between border-b border-gray-100 pb-2">
-                            <div className="flex items-center gap-2">
-                              <span className="font-bold">
-                                {segment.startPoint}
-                              </span>
-                              <span className="text-gray-400">→</span>
-                              <span className="font-bold">
-                                {segment.endPoint}
-                              </span>
-                            </div>
-                            <span className="font-bold">
-                              {segment.flightNumber}
-                            </span>
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <div className="flex flex-col gap-0.5">
-                                <span className="text-[10px] tracking-wider text-gray-400 uppercase">
-                                  Khởi hành
-                                </span>
-                                <div className="flex items-center gap-1.5">
-                                  <PlaneTakeoffIcon
-                                    size={14}
-                                    className="text-gray-400"
-                                  />
-                                  <AppDateTimeLabel value={segment.startDate} />
-                                </div>
-                              </div>
-                              <div className="flex flex-col gap-0.5">
-                                <span className="text-[10px] tracking-wider text-gray-400 uppercase">
-                                  Hạ cánh
-                                </span>
-                                <div className="flex items-center gap-1.5">
-                                  <PlaneLandingIcon
-                                    size={14}
-                                    className="text-gray-400"
-                                  />
-                                  <AppDateTimeLabel value={segment.endDate} />
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="space-y-2 text-right">
-                              <div className="flex flex-col gap-0.5">
-                                <span className="text-[10px] tracking-wider text-gray-400 uppercase">
-                                  Máy bay / Hạng
-                                </span>
-                                <span className="font-medium text-gray-700">
-                                  {segment.plane} / {segment.seatClass}
-                                </span>
-                              </div>
-                              <div className="flex flex-col gap-0.5">
-                                <span className="text-[10px] tracking-wider text-gray-400 uppercase">
-                                  Thời gian bay
-                                </span>
-                                <span className="font-medium text-gray-700">
-                                  {segment.duration} phút
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <AppTable
-                      dataSource={detail.segments}
-                      pagination={false}
-                      rowKey={record => record.flightNumber + record.startDate}
-                      size="small"
-                      bordered
-                      columns={[
-                        {
-                          title: 'Chặng bay',
-                          width: 120,
-                          render: (_, record) => (
-                            <div className="flex items-center gap-2">
-                              <span className="font-semibold">
-                                {record.startPoint}
-                              </span>
-                              <span>→</span>
-                              <span className="font-semibold">
-                                {record.endPoint}
-                              </span>
-                            </div>
-                          ),
-                        },
-                        {
-                          title: 'Thời gian',
-                          width: 180,
-                          render: (_, record) => (
-                            <div>
-                              <div className="flex items-center gap-1">
-                                <PlaneTakeoffIcon
-                                  size={12}
-                                  className="text-gray-400"
-                                />
-                                <AppDateTimeLabel value={record?.startDate} />
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <PlaneLandingIcon
-                                  size={12}
-                                  className="text-gray-400"
-                                />
-                                <AppDateTimeLabel value={record?.endDate} />
-                              </div>
-                            </div>
-                          ),
-                        },
-                        {
-                          title: 'Số hiệu',
-                          width: 100,
-                          dataIndex: 'flightNumber',
-                        },
-                        {
-                          title: 'Máy bay',
-                          width: 100,
-                          dataIndex: 'plane',
-                        },
-                        {
-                          title: 'Hạng ghế',
-                          width: 100,
-                          dataIndex: 'seatClass',
-                        },
-                        {
-                          title: 'Thời gian bay',
-                          width: 100,
-                          dataIndex: 'duration',
-                          render: value => `${value} phút`,
-                        },
-                      ]}
-                    />
-                  )}
+                  <p className="mb-2 text-base">
+                    {detail?.itineraryType === FLIGHT_ITINERARY_TYPE.ONE_WAY
+                      ? 'Hành trình chi tiết'
+                      : 'Chiều đi'}
+                  </p>
+                  {renderSegments(detail?.departureSegments)}
                 </div>
+
+                {!!detail?.returnSegments?.length && (
+                  <div>
+                    <p className="mb-2 text-base">Chiều về</p>
+                    {renderSegments(detail?.returnSegments)}
+                  </div>
+                )}
 
                 {!!detail?.fareRules?.length && (
                   <div>

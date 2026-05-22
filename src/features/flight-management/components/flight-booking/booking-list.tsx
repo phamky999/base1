@@ -183,19 +183,20 @@ export const FlightBookingList = () => {
         title: 'Tác vụ',
         key: 'table_action',
         fixed: 'right',
-        align: 'center',
         width: 100,
         render: (record: TFlightBookingListItem) => (
           <BookingDetailActionGroups
             bookingId={record.id}
             addon={
-              <Button
-                size={'icon-sm'}
-                variant={'ghost'}
-                onClick={() => handleRowClick(record)}
-              >
-                <EyeIcon className="size-4" />
-              </Button>
+              <Tooltip title="Chi tiết">
+                <Button
+                  size={'icon-sm'}
+                  variant={'ghost'}
+                  onClick={() => handleRowClick(record)}
+                >
+                  <EyeIcon className="size-4" />
+                </Button>
+              </Tooltip>
             }
           />
         ),

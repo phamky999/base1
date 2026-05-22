@@ -30,7 +30,7 @@ export const FlightStatistics = ({
   }));
 
   return (
-    <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
       {statistics.map((item, index) => (
         <div key={index} className="rounded-lg border bg-card p-4 shadow-xs">
           <div className="flex items-center justify-between">

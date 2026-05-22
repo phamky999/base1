@@ -4,6 +4,7 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -17,6 +18,7 @@ import { useUpdateCurrentUserProfileMutation } from '@/features/auth/query';
 import { currentUserSelector } from '@/features/auth/selector';
 import type { ObjectType } from '@/lib/types';
 import { Form, Input } from 'antd';
+import { User2Icon } from 'lucide-react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
@@ -58,12 +60,21 @@ export const UpdateUserProfileModal = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <Form form={form} layout="vertical" onFinish={handleUpdateProfile}>
-        <DialogContent showCloseButton={false} className="sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle>Cập nhật thông tin cá nhân</DialogTitle>
-          </DialogHeader>
-          <div>
+      <DialogContent showCloseButton={false} className="sm:max-w-sm">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <User2Icon className="size-5 text-primary" />
+            <span>Cập nhật thông tin cá nhân</span>
+          </DialogTitle>
+          <DialogDescription>
+            Cập nhật thông tin cá nhân của tài khoản{' '}
+            <span className="font-semibold text-primary">
+              {currentUser?.username}
+            </span>
+          </DialogDescription>
+        </DialogHeader>
+        <div className="dialog-scroll-content">
+          <Form form={form} layout="vertical" onFinish={handleUpdateProfile}>
             <Form.Item
               name={FORM_FIELDS.DISPLAYNAME}
               label={FORM_LABELS[FORM_FIELDS.DISPLAYNAME]}
@@ -85,23 +96,23 @@ export const UpdateUserProfileModal = ({
             >
               <Input placeholder={FORM_LABELS[FORM_FIELDS.PHONE]} />
             </Form.Item>
-          </div>
-          <DialogFooter className="justify-between!">
-            <DialogClose asChild>
-              <Button type="reset" variant="outline">
-                Đóng
-              </Button>
-            </DialogClose>
-            <Button
-              type="submit"
-              loading={isLoading}
-              onClick={() => form.submit()}
-            >
-              Cập nhật
+          </Form>
+        </div>
+        <DialogFooter className="flex-row justify-between">
+          <DialogClose asChild>
+            <Button type="reset" variant="outline">
+              Đóng
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Form>
+          </DialogClose>
+          <Button
+            type="submit"
+            loading={isLoading}
+            onClick={() => form.submit()}
+          >
+            Cập nhật
+          </Button>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
   );
 };

@@ -3,9 +3,13 @@ import { AppPageHeader } from '@/components/app-page-header';
 import { Button } from '@/components/ui/button';
 import { AccountList } from '@/features/system-management/components/account-management/account-list';
 import { AccountListFilter } from '@/features/system-management/components/account-management/account-list-filter';
+import { CreateAccountModal } from '@/features/system-management/components/account-management/create-account-modal';
 import { PlusIcon } from 'lucide-react';
+import { useState } from 'react';
 
 export const AccountListPage = () => {
+  const [isAddEditModalOpen, setIsAddEditModalOpen] = useState(false);
+
   return (
     <>
       <PageHelmet title="Danh sách tài khoản" />
@@ -13,7 +17,10 @@ export const AccountListPage = () => {
         title="Danh sách tài khoản"
         addon={
           <div className="flex items-center justify-end gap-2">
-            <Button variant={'default'}>
+            <Button
+              variant={'default'}
+              onClick={() => setIsAddEditModalOpen(true)}
+            >
               <PlusIcon className="mr-2 size-4" />
               Thêm mới
             </Button>
@@ -24,6 +31,11 @@ export const AccountListPage = () => {
       <div className="space-y-6">
         <AccountList />
       </div>
+
+      <CreateAccountModal
+        open={isAddEditModalOpen}
+        onOpenChange={setIsAddEditModalOpen}
+      />
     </>
   );
 };

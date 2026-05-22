@@ -26,6 +26,7 @@ import { SegmentsSection } from './segments';
 import { normalizeQueryParamValue } from '@/components/app-filter/helper';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { Regex } from '@/lib/validations';
+import { FLIGHT_ITINERARY_TYPE } from '@/features/flight-management/constants';
 
 type AddEditFlightFormProps = {
   id?: string;
@@ -66,7 +67,20 @@ export const AddEditFlightForm = ({ id }: AddEditFlightFormProps) => {
       [FORM_FIELDS.PRICE_ADULT]: flightDetail?.priceAdult,
       [FORM_FIELDS.PRICE_CHILD]: flightDetail?.priceChild,
       [FORM_FIELDS.PRICE_INFANT]: flightDetail?.priceInfant,
-      [FORM_FIELDS.SEGMENTS]: (flightDetail?.segments || []).map(
+      [FORM_FIELDS.ITINERARY_TYPE]:
+        flightDetail?.itineraryType || FLIGHT_ITINERARY_TYPE.ONE_WAY,
+      [FORM_FIELDS.DEPARTURE_SEGMENTS]: (
+        flightDetail?.departureSegments || []
+      ).map((segment: ObjectType) => {
+        const item = {
+          ...segment,
+          startDate: dayjs(segment?.startDate),
+          endDate: dayjs(segment?.endDate),
+        };
+
+        return appendParentToKeys(item, 'segment');
+      }),
+      [FORM_FIELDS.RETURN_SEGMENTS]: (flightDetail?.returnSegments || []).map(
         (segment: ObjectType) => {
           const item = {
             ...segment,
@@ -86,18 +100,39 @@ export const AddEditFlightForm = ({ id }: AddEditFlightFormProps) => {
     try {
       setIsSubmitting(true);
       const isUpdate = !!id;
-      const { segments, fareRules, ...restValues } = values || {};
+      const { departureSegments, fareRules, returnSegments, ...restValues } =
+        values || {};
 
       const payload = {
         ...restValues,
-        segments: segments?.map((segment: ObjectType) => {
-          const item = removeParentFromKeys(segment);
+        departureSegments: (departureSegments || []).map(
+          (segment: ObjectType) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { airlineCodeAutoFilled, ...restItem } =
+              removeParentFromKeys(segment);
+            return {
+              ...restItem,
+              startDate: (restItem?.startDate as Dayjs)?.format(
+                FLIGHT_DATE_TIME_FORMAT
+              ),
+              endDate: (restItem?.endDate as Dayjs)?.format(
+                FLIGHT_DATE_TIME_FORMAT
+              ),
+            };
+          }
+        ),
+        returnSegments: (returnSegments || []).map((segment: ObjectType) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { airlineCodeAutoFilled, ...restItem } =
+            removeParentFromKeys(segment);
           return {
-            ...item,
-            startDate: (item?.startDate as Dayjs)?.format(
+            ...restItem,
+            startDate: (restItem?.startDate as Dayjs)?.format(
               FLIGHT_DATE_TIME_FORMAT
             ),
-            endDate: (item?.endDate as Dayjs)?.format(FLIGHT_DATE_TIME_FORMAT),
+            endDate: (restItem?.endDate as Dayjs)?.format(
+              FLIGHT_DATE_TIME_FORMAT
+            ),
           };
         }),
         fareRules: fareRules?.map((fareRule: ObjectType) =>
@@ -133,61 +168,64 @@ export const AddEditFlightForm = ({ id }: AddEditFlightFormProps) => {
     allValues: ObjectType
   ) => {
     if (id) return;
-    const segments = allValues?.[FORM_FIELDS.SEGMENTS];
-
-    if (!Array.isArray(segments)) return;
 
     const airlineCode = allValues?.[FORM_FIELDS.AIRLINE_CODE];
+    const hasAirlineCodeChanged = Object.prototype.hasOwnProperty.call(
+      changedValues,
+      FORM_FIELDS.AIRLINE_CODE
+    );
+    const isValidAirlineCode = Regex.AIRLINE_CODE.test(airlineCode);
 
-    if (
-      Object.prototype.hasOwnProperty.call(
-        changedValues,
-        FORM_FIELDS.AIRLINE_CODE
-      )
-    ) {
-      const isValidAirlineCode = Regex.AIRLINE_CODE.test(airlineCode);
+    // Danh sách các mảng segment cần xử lý trên Form
+    const segmentFieldKeys = [
+      FORM_FIELDS.DEPARTURE_SEGMENTS,
+      FORM_FIELDS.RETURN_SEGMENTS, // Thêm returnSegments vào đây để tự động chạy chung logic
+    ];
 
-      if (isValidAirlineCode && Array.isArray(segments)) {
+    segmentFieldKeys.forEach(fieldKey => {
+      const segments = allValues?.[fieldKey];
+      if (!Array.isArray(segments)) return;
+
+      // --- LOGIC 1: ĐỒNG BỘ AIRLINE CODE (Nếu có thay đổi) ---
+      if (hasAirlineCodeChanged && isValidAirlineCode) {
         const nextSegments = segments.map((segment: ObjectType | undefined) => {
           const isAutoFilled =
             segment?.[FORM_FIELDS.SEGMENT_AIRLINE_CODE_AUTO_FILLED] === true;
 
-          const shouldSync = isAutoFilled;
-
-          if (!shouldSync) {
-            return segment;
-          }
+          if (!isAutoFilled) return segment;
 
           return {
             ...(segment ?? {}),
             [FORM_FIELDS.SEGMENT_AIRLINE_CODE]: airlineCode,
-
             [FORM_FIELDS.SEGMENT_AIRLINE_CODE_AUTO_FILLED]: true,
           };
         });
 
-        form.setFieldValue(FORM_FIELDS.SEGMENTS, nextSegments);
+        form.setFieldValue(fieldKey, nextSegments);
       }
-    }
 
-    segments.forEach((segment: ObjectType, index: number) => {
-      const startDate = segment?.[FORM_FIELDS.SEGMENT_START_DATE] as
-        | Dayjs
-        | undefined;
-      const endDate = segment?.[FORM_FIELDS.SEGMENT_END_DATE] as
-        | Dayjs
-        | undefined;
-      if (
-        dayjs.isDayjs(startDate) &&
-        dayjs.isDayjs(endDate) &&
-        endDate.isAfter(startDate)
-      ) {
-        const durationInMinutes = endDate.diff(startDate, 'minute');
-        form.setFieldValue(
-          [FORM_FIELDS.SEGMENTS, index, FORM_FIELDS.SEGMENT_DURATION],
-          durationInMinutes
-        );
-      }
+      // --- LOGIC 2: TÍNH DURATION (Thời gian bay) ---
+      segments.forEach((segment: ObjectType, index: number) => {
+        const startDate = segment?.[FORM_FIELDS.SEGMENT_START_DATE] as
+          | Dayjs
+          | undefined;
+        const endDate = segment?.[FORM_FIELDS.SEGMENT_END_DATE] as
+          | Dayjs
+          | undefined;
+
+        if (
+          dayjs.isDayjs(startDate) &&
+          dayjs.isDayjs(endDate) &&
+          endDate.isAfter(startDate)
+        ) {
+          const durationInMinutes = endDate.diff(startDate, 'minute');
+
+          form.setFieldValue(
+            [fieldKey, index, FORM_FIELDS.SEGMENT_DURATION],
+            durationInMinutes
+          );
+        }
+      });
     });
   };
 
@@ -206,7 +244,7 @@ export const AddEditFlightForm = ({ id }: AddEditFlightFormProps) => {
           ? {}
           : {
               initialValues: {
-                [FORM_FIELDS.SEGMENTS]: [
+                [FORM_FIELDS.DEPARTURE_SEGMENTS]: [
                   {
                     [FORM_FIELDS.SEGMENT_AIRLINE_CODE_AUTO_FILLED]: true,
                   },

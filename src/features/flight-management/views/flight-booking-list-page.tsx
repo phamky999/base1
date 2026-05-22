@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { BookingFlightInfo } from '@/features/flight-management/components/flight-booking/booking-flight-info';
 import { FlightBookingList } from '@/features/flight-management/components/flight-booking/booking-list';
 import { FlightBookingListFilter } from '@/features/flight-management/components/flight-booking/booking-list-filter';
-import { FlightBookingStatistics } from '@/features/flight-management/components/flight-booking/booking-statistics';
 import { flightManagementPaths } from '@/features/flight-management/routes';
 import { useQueryHandle } from '@/hooks/use-query-handle';
 import { Tooltip } from 'antd';
@@ -43,7 +42,7 @@ export const FlightBookingListPage = () => {
       <div className="space-y-6">
         <FlightBookingListFilter />
         {!!flightId && <BookingFlightInfo flightId={flightId} />}
-        <FlightBookingStatistics />
+        {/* <FlightBookingStatistics /> */}
         <FlightBookingList />
       </div>
     </>

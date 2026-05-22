@@ -11,3 +11,8 @@ export const PAGINATION_QUERY_KEY = {
   PAGE_INDEX: 'page',
   PAGE_SIZE: 'pageSize',
 } as const;
+
+export const ACTIVE_STATUS_OPTIONS = [
+  { value: true, label: 'Hoạt động' },
+  { value: false, label: 'Không hoạt động' },
+];

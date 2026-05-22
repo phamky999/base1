@@ -3,7 +3,9 @@ import { Button } from '@/components/ui/button';
 import {
   Command,
   CommandEmpty,
+  CommandGroup,
   CommandInput,
+  CommandItem,
   CommandList,
 } from '@/components/ui/command';
 import {
@@ -17,16 +19,48 @@ import {
   FORM_VALIDATIONS,
 } from '@/features/flight-management/components/add-edit-flight-form/add-edit-flight-form.schema';
 import { FARE_RULE_TYPE_OPTIONS } from '@/features/flight-management/constants';
-import { Col, Form, Input, Row, Select } from 'antd';
+import {
+  useGetFareRulesQuery,
+  useLazyGetFareRuleDetailQuery,
+} from '@/features/flight-management/query';
+import { appendParentToKeys } from '@/lib/helpers/object';
+import type { ObjectType } from '@/lib/types';
+import { Col, Form, Input, Row, Select, Spin } from 'antd';
 import { CircleMinusIcon, PlusCircleIcon } from 'lucide-react';
+import { toast } from 'sonner';
 
 type FareRulesSectionProps = {
   className?: string;
 };
 
 export const FareRulesSection = ({ className }: FareRulesSectionProps) => {
+  const form = Form.useFormInstance();
+
+  const { data } = useGetFareRulesQuery();
+  const [triggerGetFareRuleDetail, { isFetching }] =
+    useLazyGetFareRuleDetailQuery();
+
+  const fareRules = data?.data || [];
+
+  const handleSelectedTemplate = async (id: string) => {
+    try {
+      const { data } = await triggerGetFareRuleDetail(id);
+      const mapFareRulesToFormValues = (data?.data?.rules || []).map(
+        (fareRule: ObjectType) => appendParentToKeys(fareRule, 'fareRule')
+      );
+
+      const currentFareRules = form.getFieldValue(FORM_FIELDS.FARE_RULES) || [];
+
+      const allFareRules = [...currentFareRules, ...mapFareRulesToFormValues];
+      form.setFieldValue(FORM_FIELDS.FARE_RULES, allFareRules);
+      toast.success('Áp dụng mẫu thành công');
+    } catch (e) {
+      console.error('Faile to load fare rule', e);
+    }
+  };
+
   return (
-    <section className={className}>
+    <Spin spinning={isFetching} className={className}>
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-base font-semibold">Cấu hình bộ điều kiện</h3>
 
@@ -36,11 +70,27 @@ export const FareRulesSection = ({ className }: FareRulesSectionProps) => {
               Dùng mẫu có sẵn
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-62.5 p-0" align="start">
+          <PopoverContent className="w-80 p-0" align="start">
             <Command>
               <CommandInput placeholder="Tìm kiếm" />
               <CommandList>
                 <CommandEmpty>Không tìm thấy kết quả</CommandEmpty>
+                {!!fareRules?.length && (
+                  <CommandGroup>
+                    {fareRules.map(option => {
+                      return (
+                        <CommandItem
+                          key={option.id}
+                          onSelect={() => {
+                            handleSelectedTemplate(option.id);
+                          }}
+                        >
+                          <span title={option.name}>{option.name}</span>
+                        </CommandItem>
+                      );
+                    })}
+                  </CommandGroup>
+                )}
               </CommandList>
             </Command>
           </PopoverContent>
@@ -106,6 +156,6 @@ export const FareRulesSection = ({ className }: FareRulesSectionProps) => {
           </>
         )}
       </Form.List>
-    </section>
+    </Spin>
   );
 };

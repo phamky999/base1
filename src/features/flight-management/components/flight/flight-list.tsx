@@ -2,6 +2,7 @@ import { AppDateTimeLabel } from '@/components/app-date-time-label';
 import { AppTable } from '@/components/app-table';
 import { FlightDetailActionGroups } from '@/features/flight-management/components/flight/flight-detail-action-groups';
 import {
+  FLIGHT_ITINERARY_TYPE,
   FLIGHT_STATUS_COLOR,
   FLIGHT_STATUS_LABEL,
   GET_FLIGHT_FILTER_KEYS,
@@ -20,6 +21,8 @@ import { formatDisplayCurrency } from '@/lib/helpers/string';
 import { Tag, type TableProps } from 'antd';
 import {
   EyeIcon,
+  MoveHorizontalIcon,
+  MoveRightIcon,
   PlaneLandingIcon,
   PlaneTakeoffIcon,
   UsersRoundIcon,
@@ -94,7 +97,11 @@ export const FlightList = () => {
           <div>
             <div className="flex items-center justify-start gap-2">
               <span className="font-semibold">{record?.startPoint}</span>
-              <span>→</span>
+              {record?.itineraryType === FLIGHT_ITINERARY_TYPE.ROUND_TRIP ? (
+                <MoveHorizontalIcon className="size-4" />
+              ) : (
+                <MoveRightIcon className="size-4" />
+              )}
               <span className="font-semibold">{record?.endPoint}</span>
             </div>
             <p className="text-xs text-gray-400">
@@ -183,8 +190,7 @@ export const FlightList = () => {
         title: 'Tác vụ',
         key: 'table_action',
         fixed: 'right',
-        align: 'center',
-        width: 120,
+        width: 100,
         render: (record: TFlightListItem) => (
           <FlightDetailActionGroups
             flight={record}

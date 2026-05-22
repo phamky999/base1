@@ -3,6 +3,7 @@ import type {
   FLIGHT_BOOKING_ACTION,
   FLIGHT_BOOKING_STATUS,
   FLIGHT_DETAIL_ACTION,
+  FLIGHT_ITINERARY_TYPE,
   FLIGHT_STATUS,
 } from '@/features/flight-management/constants';
 import type { TPaginationRequest } from '@/lib/types';
@@ -21,6 +22,9 @@ export type TFlightDetailAction =
 
 export type TFlightBookingAction =
   (typeof FLIGHT_BOOKING_ACTION)[keyof typeof FLIGHT_BOOKING_ACTION];
+
+export type TFlightItineraryType =
+  (typeof FLIGHT_ITINERARY_TYPE)[keyof typeof FLIGHT_ITINERARY_TYPE];
 
 export type TAirportItem = {
   code: string;
@@ -44,7 +48,7 @@ export type TCreateFlightPayload = {
   priceAdult: number;
   priceChild: number;
   priceInfant: number;
-  segments: Array<{
+  departureSegments: Array<{
     airlineCode: string;
     startPoint: string;
     endPoint: string;
@@ -55,6 +59,18 @@ export type TCreateFlightPayload = {
     plane: string;
     duration: number;
   }>;
+  returnSegments?: Array<{
+    airlineCode: string;
+    startPoint: string;
+    endPoint: string;
+    startDate: string;
+    endDate: string;
+    flightNumber: string;
+    seatClass: string;
+    plane: string;
+    duration: number;
+  }>;
+  itineraryType: TFlightItineraryType;
 };
 
 export type TCreateFlightResponse = {
@@ -82,7 +98,6 @@ export type TFlightListItem = {
   startDate: string;
   endDate: string;
   bookingCode: string;
-  stops: number;
   seatTotal: number;
   seatAvailable: number;
   flightNumbers: string[];
@@ -98,11 +113,25 @@ export type TFlightListItem = {
   updatedAt: string;
   allowedStatuses: TFlightStatus[];
   allowedActions: TFlightDetailAction[];
+  itineraryType: TFlightItineraryType;
 };
 
 export type TGetFlightListResponse = {
   items: TFlightListItem[];
   totalItems: number;
+};
+
+export type TFlightSegment = {
+  airlineCode: string;
+  airlineName: string;
+  startPoint: string;
+  endPoint: string;
+  startDate: string;
+  endDate: string;
+  flightNumber: string;
+  seatClass: string;
+  plane: string;
+  duration: number;
 };
 
 export type TGetFlightDetailResponse = {
@@ -115,7 +144,6 @@ export type TGetFlightDetailResponse = {
   startDate: string;
   endDate: string;
   bookingCode: string;
-  stops: number;
   seatTotal: number;
   seatAvailable: number;
   flightNumbers: string[];
@@ -138,20 +166,11 @@ export type TGetFlightDetailResponse = {
   bookingTotalCount: number;
   bookingHoldCount: number;
   bookingIssuedCount: number;
-  segments: Array<{
-    airlineCode: string;
-    airlineName: string;
-    startPoint: string;
-    endPoint: string;
-    startDate: string;
-    endDate: string;
-    flightNumber: string;
-    seatClass: string;
-    plane: string;
-    duration: number;
-  }>;
+  departureSegments: Array<TFlightSegment>;
+  returnSegments?: Array<TFlightSegment>;
   allowedStatuses: TFlightStatus[];
   allowedActions: TFlightDetailAction[];
+  itineraryType: TFlightItineraryType;
 };
 
 export type TUpdateFlightPayload = TCreateFlightPayload & {

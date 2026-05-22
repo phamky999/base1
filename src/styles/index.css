@@ -146,6 +146,10 @@
   html {
     @apply font-sans;
   }
+
+  .dialog-scroll-content {
+    @apply -mx-4 max-h-[50vh] overflow-y-auto px-4;
+  }
 }
 
 ::-webkit-scrollbar {

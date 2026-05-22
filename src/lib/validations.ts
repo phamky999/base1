@@ -17,7 +17,8 @@ type RegexKey =
   | 'PROMO_CODE'
   | 'ASCII_TEXT'
   | 'IDENTIFICATION_PASSPORT'
-  | 'DOMAIN';
+  | 'DOMAIN'
+  | 'MERCHANT_CODE';
 
 export const Regex: Record<RegexKey, RegExp> = {
   AIRLINE_CODE: /^[A-Za-z0-9]{2}$/,
@@ -40,6 +41,7 @@ export const Regex: Record<RegexKey, RegExp> = {
   ASCII_TEXT: /^[\x00-\x7F]+$/,
   IDENTIFICATION_PASSPORT: /^(\d{10}(\d{2})?|[A-Z0-9]{6,9})$/,
   DOMAIN: /^((www.)?([a-zA-Z0-9-]+.)+[a-zA-Z]+(.[a-zA-Z]+)*)$/,
+  MERCHANT_CODE: /^[A-Za-z0-9]{2,20}$/,
 };
 
 export const RegexValidationMessage: Record<RegexKey, string> = {
@@ -66,4 +68,6 @@ export const RegexValidationMessage: Record<RegexKey, string> = {
   IDENTIFICATION_PASSPORT:
     'Vui lòng nhập đúng định dạng số CCCD (10-12 số) hoặc hộ chiếu (6-9 ký tự)',
   DOMAIN: 'Vui lòng nhập đúng định dạng tên miền',
+  MERCHANT_CODE:
+    'Vui lòng chỉ nhập từ 2 đến 20 ký tự chữ không dấu, chữ số, dấu gạch dưới',
 };

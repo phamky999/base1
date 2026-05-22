@@ -7,37 +7,30 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { USER_ROLES_OPTIONS } from '@/features/auth/constants';
+import { useCreateMerchantMutation } from '@/features/merchant-management/query';
+import type { TCreateMerchantParams } from '@/features/merchant-management/types';
+import { ACTIVE_STATUS_OPTIONS } from '@/lib/constants';
+import type { ObjectType } from '@/lib/types';
+import { Form, Input, Select } from 'antd';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 import {
   FORM_FIELDS,
   FORM_LABELS,
   FORM_VALIDATIONS,
-} from '@/features/system-management/components/account-management/update-account-modal/update-account-modal.schema';
-import { useUpdateAccountMutation } from '@/features/system-management/query';
-import type {
-  TAccountListItem,
-  TUpdateAccountParams,
-} from '@/features/system-management/types';
-import { ACTIVE_STATUS_OPTIONS } from '@/lib/constants';
-import type { ObjectType } from '@/lib/types';
-import { Form, Input, Select } from 'antd';
-import { SquareUserIcon } from 'lucide-react';
-import { useEffect } from 'react';
-import { toast } from 'sonner';
+} from './create-merchant-modal.schema';
+import { MonitorCogIcon } from 'lucide-react';
 
-type UpdateAccountModalProps = {
+type CreateMerchantModalProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  account: TAccountListItem;
 };
 
-export const UpdateAccountModal = ({
+export const CreateMerchantModal = ({
   open,
   onOpenChange,
-  account,
-}: UpdateAccountModalProps) => {
-  const [updateAccountFn, { isLoading }] = useUpdateAccountMutation();
-
+}: CreateMerchantModalProps) => {
+  const [createMerchantFn, { isLoading }] = useCreateMerchantMutation();
   const [form] = Form.useForm();
 
   const handleOpenChange = (o: boolean) => {
@@ -47,17 +40,10 @@ export const UpdateAccountModal = ({
     onOpenChange(o);
   };
 
-  const handleUpdateProfile = async (values: ObjectType) => {
+  const handleCreateMerchant = async (values: ObjectType) => {
     try {
-      if (!account?.id) {
-        toast.error('Không tìm thấy thông tin tài khoản');
-        return;
-      }
-      await updateAccountFn({
-        id: account.id,
-        data: values as TUpdateAccountParams,
-      }).unwrap();
-      toast.success('Cập nhật thông tin tài khoản thành công');
+      await createMerchantFn(values as TCreateMerchantParams).unwrap();
+      toast.success('Tạo kênh bán thành công');
       handleOpenChange(false);
     } catch (error) {
       console.error(error);
@@ -65,40 +51,42 @@ export const UpdateAccountModal = ({
   };
 
   useEffect(() => {
-    if (open && account) {
+    if (open) {
       form.setFieldsValue({
-        [FORM_FIELDS.DISPLAY_NAME]: account.displayName,
-        [FORM_FIELDS.EMAIL]: account.email,
-        [FORM_FIELDS.PHONE]: account.phone,
-        [FORM_FIELDS.ROLE]: account.role,
-        [FORM_FIELDS.IS_ACTIVE]: account.isActive,
+        [FORM_FIELDS.IS_ACTIVE]: true,
       });
     }
-  }, [account, form, open]);
+  }, [open, form]);
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent showCloseButton={false} className="sm:max-w-sm">
+      <DialogContent showCloseButton={false} className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <SquareUserIcon className="size-5 text-primary" />
-            <span>Cập nhật tài khoản</span>
+            <MonitorCogIcon className="size-5 text-primary" />
+            <span>Tạo kênh bán mới</span>
           </DialogTitle>
           <DialogDescription>
-            Cập nhật thông tin cho tài khoản{' '}
-            <span className="font-semibold text-primary">
-              {account?.displayName}
-            </span>
+            Nhập thông tin để thêm kênh bán mới
           </DialogDescription>
         </DialogHeader>
+
         <div className="dialog-scroll-content max-h-[60vh]!">
-          <Form form={form} layout="vertical" onFinish={handleUpdateProfile}>
+          <Form form={form} layout="vertical" onFinish={handleCreateMerchant}>
             <Form.Item
-              name={FORM_FIELDS.DISPLAY_NAME}
-              label={FORM_LABELS[FORM_FIELDS.DISPLAY_NAME]}
-              rules={FORM_VALIDATIONS[FORM_FIELDS.DISPLAY_NAME]}
+              name={FORM_FIELDS.MERCHANT_CODE}
+              label={FORM_LABELS[FORM_FIELDS.MERCHANT_CODE]}
+              rules={FORM_VALIDATIONS[FORM_FIELDS.MERCHANT_CODE]}
             >
-              <Input placeholder={FORM_LABELS[FORM_FIELDS.DISPLAY_NAME]} />
+              <Input placeholder={FORM_LABELS[FORM_FIELDS.MERCHANT_CODE]} />
+            </Form.Item>
+
+            <Form.Item
+              name={FORM_FIELDS.NAME}
+              label={FORM_LABELS[FORM_FIELDS.NAME]}
+              rules={FORM_VALIDATIONS[FORM_FIELDS.NAME]}
+            >
+              <Input placeholder={FORM_LABELS[FORM_FIELDS.NAME]} />
             </Form.Item>
 
             <Form.Item
@@ -115,22 +103,6 @@ export const UpdateAccountModal = ({
               rules={FORM_VALIDATIONS[FORM_FIELDS.PHONE]}
             >
               <Input placeholder={FORM_LABELS[FORM_FIELDS.PHONE]} />
-            </Form.Item>
-
-            <Form.Item
-              name={FORM_FIELDS.ROLE}
-              label={FORM_LABELS[FORM_FIELDS.ROLE]}
-              rules={FORM_VALIDATIONS[FORM_FIELDS.ROLE]}
-            >
-              <Select
-                classNames={{
-                  popup: {
-                    root: 'pointer-events-auto',
-                  },
-                }}
-                placeholder={FORM_LABELS[FORM_FIELDS.ROLE]}
-                options={USER_ROLES_OPTIONS}
-              />
             </Form.Item>
 
             <Form.Item
@@ -163,7 +135,7 @@ export const UpdateAccountModal = ({
             loading={isLoading}
             onClick={() => form.submit()}
           >
-            Cập nhật
+            Tạo mới
           </Button>
         </DialogFooter>
       </DialogContent>

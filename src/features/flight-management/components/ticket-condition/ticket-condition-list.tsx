@@ -6,7 +6,7 @@ import {
   useGetFareRulesQuery,
 } from '@/features/flight-management/query';
 import type { TGetFareRulesResponse } from '@/features/flight-management/types';
-import { Modal, type TableProps } from 'antd';
+import { Modal, Tooltip, type TableProps } from 'antd';
 import { PenSquareIcon, Trash2Icon } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -57,7 +57,8 @@ export const TicketConditionList = () => {
         title: 'Tên bộ điều kiện',
         dataIndex: 'name',
         key: 'name',
-        render: value => <span className="font-semibold">{value}</span>,
+        ellipsis: true,
+        width: 250,
       },
       {
         title: 'Mã hãng bay',
@@ -69,27 +70,31 @@ export const TicketConditionList = () => {
       {
         title: 'Tác vụ',
         key: 'actions',
-        width: 140,
-        align: 'center',
+        width: 80,
         render: (_, record) => (
           <>
-            <Button
-              size="icon-sm"
-              variant="ghost"
-              onClick={() => {
-                setSelectedTicketConditionId(record.id);
-                setIsAddEditModalOpen(true);
-              }}
-            >
-              <PenSquareIcon />
-            </Button>
-            <Button
-              size="icon-sm"
-              variant="ghost"
-              onClick={() => handleDeleteFareRule(record.id)}
-            >
-              <Trash2Icon />
-            </Button>
+            <Tooltip title="Chỉnh sửa">
+              <Button
+                size="icon-sm"
+                variant="ghost"
+                onClick={() => {
+                  setSelectedTicketConditionId(record.id);
+                  setIsAddEditModalOpen(true);
+                }}
+              >
+                <PenSquareIcon />
+              </Button>
+            </Tooltip>
+
+            <Tooltip title="Xoá">
+              <Button
+                size="icon-sm"
+                variant="ghost"
+                onClick={() => handleDeleteFareRule(record.id)}
+              >
+                <Trash2Icon />
+              </Button>
+            </Tooltip>
           </>
         ),
       },
