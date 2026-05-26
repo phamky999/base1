@@ -10,7 +10,7 @@ export const FlightDetailPage = () => {
       <PageHelmet title="Chi tiết chuyến bay | Danh sách chuyến bay" />
       <AppPageHeader title="Chi tiết chuyến bay" />
 
-      <AddEditFlightForm id={id} />
+      <AddEditFlightForm actionType="edit" id={id} />
     </>
   );
 };

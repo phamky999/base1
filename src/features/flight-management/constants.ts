@@ -57,6 +57,8 @@ export const FLIGHT_DETAIL_ACTION = {
   //front-end
   VIEW_BOOKING_LIST: 'VIEW_BOOKING_LIST',
   VIEW_LOGS: 'VIEW_LOGS',
+  VIEW_DETAIL: 'VIEW_DETAIL',
+  DUPLICATE: 'DUPLICATE',
 } as const;
 
 export const FLIGHT_DETAIL_ACTION_LABEL = {
@@ -71,6 +73,8 @@ export const FLIGHT_DETAIL_ACTION_LABEL = {
   //front-end
   [FLIGHT_DETAIL_ACTION.VIEW_BOOKING_LIST]: 'Xem danh sách đơn hàng',
   [FLIGHT_DETAIL_ACTION.VIEW_LOGS]: 'Xem lịch sử thay đổi',
+  [FLIGHT_DETAIL_ACTION.VIEW_DETAIL]: 'Xem chi tiết',
+  [FLIGHT_DETAIL_ACTION.DUPLICATE]: 'Nhân bản chuyến bay',
 } as const;
 
 export const FLIGHT_DETAIL_ACTION_COLOR = {
@@ -85,6 +89,8 @@ export const FLIGHT_DETAIL_ACTION_COLOR = {
   //front-end
   [FLIGHT_DETAIL_ACTION.VIEW_BOOKING_LIST]: 'blue',
   [FLIGHT_DETAIL_ACTION.VIEW_LOGS]: 'blue',
+  [FLIGHT_DETAIL_ACTION.VIEW_DETAIL]: 'blue',
+  [FLIGHT_DETAIL_ACTION.DUPLICATE]: 'blue',
 };
 
 export const FLIGHT_BOOKING_STATUS = {

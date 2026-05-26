@@ -12,6 +12,7 @@ import type { TCreateMerchantParams } from '@/features/merchant-management/types
 import { ACTIVE_STATUS_OPTIONS } from '@/lib/constants';
 import type { ObjectType } from '@/lib/types';
 import { Form, Input, Select } from 'antd';
+import { PenSquareIcon } from 'lucide-react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 import {
@@ -19,7 +20,6 @@ import {
   FORM_LABELS,
   FORM_VALIDATIONS,
 } from './create-merchant-modal.schema';
-import { MonitorCogIcon } from 'lucide-react';
 
 type CreateMerchantModalProps = {
   open: boolean;
@@ -63,7 +63,7 @@ export const CreateMerchantModal = ({
       <DialogContent showCloseButton={false} className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <MonitorCogIcon className="size-5 text-primary" />
+            <PenSquareIcon className="size-5 text-primary" />
             <span>Tạo kênh bán mới</span>
           </DialogTitle>
           <DialogDescription>

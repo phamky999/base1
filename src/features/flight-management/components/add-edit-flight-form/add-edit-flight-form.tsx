@@ -1,5 +1,11 @@
+import { normalizeQueryParamValue } from '@/components/app-filter/helper';
 import { Button } from '@/components/ui/button';
-import { FORM_FIELDS } from '@/features/flight-management/components/add-edit-flight-form/add-edit-flight-form.schema';
+import {
+  FARE_RULE_FORM_LIST_ITEM_PREFIX,
+  FORM_FIELDS,
+  SEGMENT_FORM_LIST_ITEM_PREFIX,
+} from '@/features/flight-management/components/add-edit-flight-form/add-edit-flight-form.schema';
+import { FLIGHT_ITINERARY_TYPE } from '@/features/flight-management/constants';
 import {
   useCreateFlightMutation,
   useGetFlightDetailQuery,
@@ -8,14 +14,18 @@ import {
 import { flightManagementPaths } from '@/features/flight-management/routes';
 import type {
   TCreateFlightPayload,
+  TFareRule,
+  TFlightSegment,
   TUpdateFlightPayload,
 } from '@/features/flight-management/types';
 import { FLIGHT_DATE_TIME_FORMAT } from '@/lib/date/constants';
 import dayjs from '@/lib/date/dayjs-config';
 import { appendParentToKeys, removeParentFromKeys } from '@/lib/helpers/object';
 import type { ObjectType } from '@/lib/types';
-import { Form, Spin } from 'antd';
-import { type Dayjs } from 'dayjs';
+import { Regex } from '@/lib/validations';
+import { skipToken } from '@reduxjs/toolkit/query';
+import { Form, Skeleton } from 'antd';
+import type { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -23,16 +33,47 @@ import { FareRulesSection } from './fare-rules';
 import { GeneralInfoSection } from './general-info';
 import { PriceInfoSection } from './price-info';
 import { SegmentsSection } from './segments';
-import { normalizeQueryParamValue } from '@/components/app-filter/helper';
-import { skipToken } from '@reduxjs/toolkit/query';
-import { Regex } from '@/lib/validations';
-import { FLIGHT_ITINERARY_TYPE } from '@/features/flight-management/constants';
 
 type AddEditFlightFormProps = {
   id?: string;
+  actionType: 'create' | 'edit';
 };
 
-export const AddEditFlightForm = ({ id }: AddEditFlightFormProps) => {
+const SECTION_CLS = 'rounded-xl border bg-card p-4 shadow-xs';
+
+const SEGMENT_FIELD_KEYS = [
+  FORM_FIELDS.DEPARTURE_SEGMENTS,
+  FORM_FIELDS.RETURN_SEGMENTS,
+] as const;
+
+const formatSegmentToFormValue = (segment: TFlightSegment) => {
+  return appendParentToKeys(
+    {
+      ...segment,
+      startDate: dayjs(segment.startDate),
+      endDate: dayjs(segment.endDate),
+    },
+    SEGMENT_FORM_LIST_ITEM_PREFIX
+  );
+};
+
+const mapSegmentToPayload = (segment: ObjectType) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { airlineCodeAutoFilled, ...restItem } = removeParentFromKeys(segment);
+
+  return {
+    ...restItem,
+    startDate: (restItem.startDate as Dayjs)?.format(FLIGHT_DATE_TIME_FORMAT),
+    endDate: (restItem.endDate as Dayjs)?.format(FLIGHT_DATE_TIME_FORMAT),
+  };
+};
+
+export const AddEditFlightForm = ({
+  id,
+  actionType,
+}: AddEditFlightFormProps) => {
+  const isEditForm = actionType === 'edit';
+
   const navigate = useNavigate();
 
   const [form] = Form.useForm();
@@ -50,97 +91,57 @@ export const AddEditFlightForm = ({ id }: AddEditFlightFormProps) => {
   const [updateFlightMutationFn] = useUpdateFlightMutation();
 
   useEffect(() => {
-    if (!id || !data) return;
+    if (!id || !data?.data) return;
 
-    const flightDetail = data?.data;
+    const flightDetail = data.data;
 
     form.setFieldsValue({
-      [FORM_FIELDS.AIRLINE_CODE]: flightDetail?.airlineCode,
-      [FORM_FIELDS.BOOKING_CODE]: flightDetail?.bookingCode,
-      [FORM_FIELDS.SEAT_TOTAL]: flightDetail?.seatTotal,
-      [FORM_FIELDS.TIME_LIMIT]: flightDetail?.timeLimit,
+      [FORM_FIELDS.AIRLINE_CODE]: flightDetail.airlineCode,
+      [FORM_FIELDS.BOOKING_CODE]: isEditForm
+        ? flightDetail.bookingCode
+        : undefined,
+      [FORM_FIELDS.SEAT_TOTAL]: flightDetail.seatTotal,
+      [FORM_FIELDS.TIME_LIMIT]: flightDetail.timeLimit,
       [FORM_FIELDS.CLOSING_DAYS_BEFORE_DEPARTURE]:
-        flightDetail?.closingDaysBeforeDeparture,
-      [FORM_FIELDS.FARE_RULES]: (flightDetail?.fareRules || []).map(
-        (fareRule: ObjectType) => appendParentToKeys(fareRule, 'fareRule')
+        flightDetail.closingDaysBeforeDeparture,
+      [FORM_FIELDS.FARE_RULES]: (flightDetail.fareRules || []).map(
+        (fareRule: TFareRule) =>
+          appendParentToKeys(fareRule, FARE_RULE_FORM_LIST_ITEM_PREFIX)
       ),
-      [FORM_FIELDS.PRICE_ADULT]: flightDetail?.priceAdult,
-      [FORM_FIELDS.PRICE_CHILD]: flightDetail?.priceChild,
-      [FORM_FIELDS.PRICE_INFANT]: flightDetail?.priceInfant,
+      [FORM_FIELDS.PRICE_ADULT]: flightDetail.priceAdult,
+      [FORM_FIELDS.PRICE_CHILD]: flightDetail.priceChild,
+      [FORM_FIELDS.PRICE_INFANT]: flightDetail.priceInfant,
       [FORM_FIELDS.ITINERARY_TYPE]:
-        flightDetail?.itineraryType || FLIGHT_ITINERARY_TYPE.ONE_WAY,
+        flightDetail.itineraryType || FLIGHT_ITINERARY_TYPE.ONE_WAY,
       [FORM_FIELDS.DEPARTURE_SEGMENTS]: (
-        flightDetail?.departureSegments || []
-      ).map((segment: ObjectType) => {
-        const item = {
-          ...segment,
-          startDate: dayjs(segment?.startDate),
-          endDate: dayjs(segment?.endDate),
-        };
-
-        return appendParentToKeys(item, 'segment');
-      }),
-      [FORM_FIELDS.RETURN_SEGMENTS]: (flightDetail?.returnSegments || []).map(
-        (segment: ObjectType) => {
-          const item = {
-            ...segment,
-            startDate: dayjs(segment?.startDate),
-            endDate: dayjs(segment?.endDate),
-          };
-
-          return appendParentToKeys(item, 'segment');
-        }
+        flightDetail.departureSegments || []
+      ).map(formatSegmentToFormValue),
+      [FORM_FIELDS.RETURN_SEGMENTS]: (flightDetail.returnSegments || []).map(
+        formatSegmentToFormValue
       ),
     });
-  }, [id, data, form]);
+  }, [data, form, id, isEditForm]);
 
   const onFinish = async (values: ObjectType) => {
     if (isSubmitting) return;
 
     try {
       setIsSubmitting(true);
-      const isUpdate = !!id;
-      const { departureSegments, fareRules, returnSegments, ...restValues } =
+
+      const { departureSegments, returnSegments, fareRules, ...restValues } =
         values || {};
 
       const payload = {
         ...restValues,
-        departureSegments: (departureSegments || []).map(
-          (segment: ObjectType) => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { airlineCodeAutoFilled, ...restItem } =
-              removeParentFromKeys(segment);
-            return {
-              ...restItem,
-              startDate: (restItem?.startDate as Dayjs)?.format(
-                FLIGHT_DATE_TIME_FORMAT
-              ),
-              endDate: (restItem?.endDate as Dayjs)?.format(
-                FLIGHT_DATE_TIME_FORMAT
-              ),
-            };
-          }
-        ),
-        returnSegments: (returnSegments || []).map((segment: ObjectType) => {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { airlineCodeAutoFilled, ...restItem } =
-            removeParentFromKeys(segment);
-          return {
-            ...restItem,
-            startDate: (restItem?.startDate as Dayjs)?.format(
-              FLIGHT_DATE_TIME_FORMAT
-            ),
-            endDate: (restItem?.endDate as Dayjs)?.format(
-              FLIGHT_DATE_TIME_FORMAT
-            ),
-          };
-        }),
-        fareRules: fareRules?.map((fareRule: ObjectType) =>
-          removeParentFromKeys(fareRule)
-        ),
+        departureSegments: departureSegments?.map(mapSegmentToPayload) || [],
+        returnSegments: returnSegments?.map(mapSegmentToPayload) || [],
+        fareRules:
+          fareRules?.map((fareRule: ObjectType) =>
+            removeParentFromKeys(fareRule)
+          ) || [],
       };
 
-      if (isUpdate) {
+      if (isEditForm) {
         await updateFlightMutationFn({
           ...payload,
           id,
@@ -150,7 +151,7 @@ export const AddEditFlightForm = ({ id }: AddEditFlightFormProps) => {
       }
 
       toast.success(
-        isUpdate
+        isEditForm
           ? 'Cập nhật chuyến bay thành công'
           : 'Tạo chuyến bay thành công'
       );
@@ -167,120 +168,168 @@ export const AddEditFlightForm = ({ id }: AddEditFlightFormProps) => {
     changedValues: Partial<ObjectType>,
     allValues: ObjectType
   ) => {
-    if (id) return;
+    // AIRLINE CODE SYNC
+    if (
+      !isEditForm &&
+      Object.prototype.hasOwnProperty.call(
+        changedValues,
+        FORM_FIELDS.AIRLINE_CODE
+      )
+    ) {
+      const airlineCode = allValues?.[FORM_FIELDS.AIRLINE_CODE];
 
-    const airlineCode = allValues?.[FORM_FIELDS.AIRLINE_CODE];
-    const hasAirlineCodeChanged = Object.prototype.hasOwnProperty.call(
-      changedValues,
-      FORM_FIELDS.AIRLINE_CODE
-    );
-    const isValidAirlineCode = Regex.AIRLINE_CODE.test(airlineCode);
+      if (Regex.AIRLINE_CODE.test(airlineCode)) {
+        SEGMENT_FIELD_KEYS.forEach(fieldKey => {
+          const segments = allValues?.[fieldKey];
 
-    // Danh sách các mảng segment cần xử lý trên Form
-    const segmentFieldKeys = [
-      FORM_FIELDS.DEPARTURE_SEGMENTS,
-      FORM_FIELDS.RETURN_SEGMENTS, // Thêm returnSegments vào đây để tự động chạy chung logic
-    ];
+          if (!Array.isArray(segments)) {
+            return;
+          }
 
-    segmentFieldKeys.forEach(fieldKey => {
-      const segments = allValues?.[fieldKey];
-      if (!Array.isArray(segments)) return;
+          const nextSegments = segments.map((segment: ObjectType) => {
+            const currentAirlineCode =
+              segment?.[FORM_FIELDS.SEGMENT_AIRLINE_CODE];
 
-      // --- LOGIC 1: ĐỒNG BỘ AIRLINE CODE (Nếu có thay đổi) ---
-      if (hasAirlineCodeChanged && isValidAirlineCode) {
-        const nextSegments = segments.map((segment: ObjectType | undefined) => {
-          const isAutoFilled =
-            segment?.[FORM_FIELDS.SEGMENT_AIRLINE_CODE_AUTO_FILLED] === true;
+            if (currentAirlineCode) {
+              return segment;
+            }
 
-          if (!isAutoFilled) return segment;
+            return {
+              ...segment,
+              [FORM_FIELDS.SEGMENT_AIRLINE_CODE]: airlineCode,
+            };
+          });
 
-          return {
-            ...(segment ?? {}),
-            [FORM_FIELDS.SEGMENT_AIRLINE_CODE]: airlineCode,
-            [FORM_FIELDS.SEGMENT_AIRLINE_CODE_AUTO_FILLED]: true,
-          };
+          form.setFieldValue(fieldKey, nextSegments);
         });
-
-        form.setFieldValue(fieldKey, nextSegments);
       }
+    }
 
-      // --- LOGIC 2: TÍNH DURATION (Thời gian bay) ---
-      segments.forEach((segment: ObjectType, index: number) => {
-        const startDate = segment?.[FORM_FIELDS.SEGMENT_START_DATE] as
-          | Dayjs
-          | undefined;
-        const endDate = segment?.[FORM_FIELDS.SEGMENT_END_DATE] as
-          | Dayjs
-          | undefined;
+    // ROUND TRIP SYNC
+    const itineraryType = allValues?.[FORM_FIELDS.ITINERARY_TYPE];
 
-        if (
-          dayjs.isDayjs(startDate) &&
-          dayjs.isDayjs(endDate) &&
-          endDate.isAfter(startDate)
-        ) {
-          const durationInMinutes = endDate.diff(startDate, 'minute');
+    const isRoundTrip = itineraryType === FLIGHT_ITINERARY_TYPE.ROUND_TRIP;
 
-          form.setFieldValue(
-            [fieldKey, index, FORM_FIELDS.SEGMENT_DURATION],
-            durationInMinutes
-          );
-        }
+    if (!isRoundTrip) {
+      return;
+    }
+
+    const hasDepartureChanged = Object.prototype.hasOwnProperty.call(
+      changedValues,
+      FORM_FIELDS.DEPARTURE_SEGMENTS
+    );
+
+    const hasTypeChanged = Object.prototype.hasOwnProperty.call(
+      changedValues,
+      FORM_FIELDS.ITINERARY_TYPE
+    );
+
+    if (!hasDepartureChanged && !hasTypeChanged) {
+      return;
+    }
+
+    const departureSegments =
+      form.getFieldValue(FORM_FIELDS.DEPARTURE_SEGMENTS) || [];
+
+    const lastValidDepartureSegment = [...departureSegments]
+      .reverse()
+      .find(segment => {
+        const startDate = segment?.[FORM_FIELDS.SEGMENT_START_DATE];
+        const endDate = segment?.[FORM_FIELDS.SEGMENT_END_DATE];
+        return dayjs.isDayjs(startDate) && dayjs.isDayjs(endDate);
       });
-    });
+
+    if (!lastValidDepartureSegment) {
+      return;
+    }
+    const depStartDate =
+      lastValidDepartureSegment?.[FORM_FIELDS.SEGMENT_START_DATE];
+
+    const depEndDate =
+      lastValidDepartureSegment?.[FORM_FIELDS.SEGMENT_END_DATE];
+
+    if (!dayjs.isDayjs(depStartDate) || !dayjs.isDayjs(depEndDate)) {
+      return;
+    }
+
+    const nextReturnStartDate = depStartDate.add(3, 'day');
+
+    const nextReturnEndDate = depEndDate.add(3, 'day');
+
+    const firstReturnSegment = form.getFieldValue([
+      FORM_FIELDS.RETURN_SEGMENTS,
+      0,
+    ]);
+
+    if (!firstReturnSegment?.[FORM_FIELDS.SEGMENT_START_DATE]) {
+      form.setFields([
+        {
+          name: [
+            FORM_FIELDS.RETURN_SEGMENTS,
+            0,
+            FORM_FIELDS.SEGMENT_START_DATE,
+          ],
+          value: nextReturnStartDate,
+        },
+        {
+          name: [FORM_FIELDS.RETURN_SEGMENTS, 0, FORM_FIELDS.SEGMENT_END_DATE],
+          value: nextReturnEndDate,
+        },
+      ]);
+    }
   };
 
-  const sectionCls = 'rounded-xl border bg-card p-4 shadow-xs';
-
   return (
-    <Spin spinning={isFetching}>
+    <Skeleton loading={isFetching} active>
       <Form
-        disabled={isSubmitting}
         form={form}
         layout="vertical"
-        onFinish={onFinish}
+        disabled={isSubmitting}
         scrollToFirstError
+        onFinish={onFinish}
         onValuesChange={handleFormValueChange}
-        {...(id
-          ? {}
-          : {
-              initialValues: {
-                [FORM_FIELDS.DEPARTURE_SEGMENTS]: [
-                  {
-                    [FORM_FIELDS.SEGMENT_AIRLINE_CODE_AUTO_FILLED]: true,
-                  },
-                ],
-              },
-            })}
+        onKeyDown={e => {
+          if (e.key === 'Enter' && !(e.target instanceof HTMLTextAreaElement)) {
+            e.preventDefault();
+          }
+        }}
+        {...(!isEditForm && {
+          initialValues: {
+            [FORM_FIELDS.DEPARTURE_SEGMENTS]: [undefined],
+            [FORM_FIELDS.RETURN_SEGMENTS]: [undefined],
+          },
+        })}
       >
         <div className="space-y-4">
-          <GeneralInfoSection className={sectionCls} />
+          <GeneralInfoSection className={SECTION_CLS} />
 
-          <SegmentsSection className={sectionCls} />
+          <SegmentsSection className={SECTION_CLS} isCreate={!isEditForm} />
 
-          <PriceInfoSection className={sectionCls} />
+          <PriceInfoSection className={SECTION_CLS} />
 
-          <FareRulesSection className={sectionCls} />
+          <FareRulesSection className={SECTION_CLS} />
         </div>
 
         <div className="sticky bottom-0 z-1 mt-6 flex items-center justify-between gap-4 bg-(--main-background) p-4">
           <Button
             type="button"
-            variant={'outline'}
-            onClick={() => navigate(-1)}
+            variant="outline"
             className="min-w-25"
+            onClick={() => navigate(-1)}
           >
             Hủy
           </Button>
+
           <Button
-            variant={'default'}
             type="submit"
-            loading={isSubmitting}
+            variant="default"
             className="min-w-25"
+            loading={isSubmitting}
           >
-            {id ? 'Cập nhật' : 'Tạo chuyến bay'}
+            {isEditForm ? 'Cập nhật' : 'Tạo chuyến bay'}
           </Button>
         </div>
       </Form>
-    </Spin>
+    </Skeleton>
   );
 };

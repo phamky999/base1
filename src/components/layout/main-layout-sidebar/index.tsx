@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/sidebar';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { Tag } from 'antd';
 
 export const MainLayoutSidebar = ({
   ...props
@@ -51,8 +52,15 @@ export const MainLayoutSidebar = ({
                   <span className="truncate text-base leading-[20px] font-semibold">
                     Việt An
                   </span>
-                  <span className="truncate text-xs">Kho sản phẩm</span>
+                  <span className="truncate text-xs">Kho sản phẩm </span>
                 </div>
+                <Tag
+                  className="shrink-0 text-[10px]"
+                  color="blue"
+                  variant="outlined"
+                >
+                  Beta
+                </Tag>
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>

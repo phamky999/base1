@@ -48,6 +48,7 @@ export const App = () => {
               richColors
               offset={{
                 top: 65,
+                right: 8,
               }}
             />
 

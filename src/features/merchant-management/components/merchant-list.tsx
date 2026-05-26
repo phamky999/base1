@@ -1,11 +1,12 @@
 import { AppTable } from '@/components/app-table';
+import { AppTooltip } from '@/components/app-tooltip';
 import { Button } from '@/components/ui/button';
 import { MerchantCredentialsModal } from '@/features/merchant-management/components/merchant-credentials-modal';
 import { UpdateMerchantModal } from '@/features/merchant-management/components/update-merchant-modal';
 import { useGetMerchantListQuery } from '@/features/merchant-management/query';
 import type { TMerchantListItem } from '@/features/merchant-management/types';
-import { Tag, Tooltip, type TableProps } from 'antd';
-import { KeyRoundIcon, UserPenIcon } from 'lucide-react';
+import { Tag, type TableProps } from 'antd';
+import { KeyRoundIcon, PenSquareIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 export const MerchantList = () => {
@@ -15,7 +16,7 @@ export const MerchantList = () => {
     useState(false);
   const [isApiInfoModalOpen, setIsApiInfoModalOpen] = useState(false);
 
-  const { data, isFetching, isLoading } = useGetMerchantListQuery();
+  const { data, isFetching } = useGetMerchantListQuery();
 
   const columns = useMemo(
     (): TableProps<TMerchantListItem>['columns'] => [
@@ -69,10 +70,10 @@ export const MerchantList = () => {
         title: 'Tác vụ',
         key: 'table_action',
         fixed: 'right',
-        width: 80,
+        width: 100,
         render: (record: TMerchantListItem) => (
           <>
-            <Tooltip title="Cập nhật thông tin">
+            <AppTooltip content="Cập nhật thông tin">
               <Button
                 variant={'ghost'}
                 onClick={() => {
@@ -80,12 +81,12 @@ export const MerchantList = () => {
                   setIsUpdateMerchantModalOpen(true);
                 }}
               >
-                <UserPenIcon className="size-4" />
+                <PenSquareIcon className="size-4" />
               </Button>
-            </Tooltip>
+            </AppTooltip>
 
             {!!record?.isActive && (
-              <Tooltip title="Thông tin API">
+              <AppTooltip content="Thông tin API">
                 <Button
                   variant={'ghost'}
                   onClick={() => {
@@ -95,7 +96,7 @@ export const MerchantList = () => {
                 >
                   <KeyRoundIcon className="size-3.5" />
                 </Button>
-              </Tooltip>
+              </AppTooltip>
             )}
           </>
         ),
@@ -112,8 +113,7 @@ export const MerchantList = () => {
         dataSource={data?.data}
         totalCount={data?.data?.length}
         columns={columns}
-        loading={isFetching}
-        isShowSkeleton={isLoading}
+        isShowSkeleton={isFetching}
         pagination={false}
       />
       {!!selectedMerchant && (

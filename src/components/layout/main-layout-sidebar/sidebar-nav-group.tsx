@@ -159,7 +159,12 @@ function SidebarMenuCollapsedDropdown({
             <ChevronRight className="ms-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
           </SidebarMenuButton>
         </DropdownMenuTrigger>
-        <DropdownMenuContent side="right" align="start" sideOffset={4}>
+        <DropdownMenuContent
+          side="right"
+          align="start"
+          sideOffset={4}
+          className="min-w-max"
+        >
           <DropdownMenuLabel>
             {item.title} {item.badge ? `(${item.badge})` : ''}
           </DropdownMenuLabel>

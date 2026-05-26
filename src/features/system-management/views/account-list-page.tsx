@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { AccountList } from '@/features/system-management/components/account-management/account-list';
 import { AccountListFilter } from '@/features/system-management/components/account-management/account-list-filter';
 import { CreateAccountModal } from '@/features/system-management/components/account-management/create-account-modal';
-import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 
 export const AccountListPage = () => {
@@ -21,7 +20,6 @@ export const AccountListPage = () => {
               variant={'default'}
               onClick={() => setIsAddEditModalOpen(true)}
             >
-              <PlusIcon className="mr-2 size-4" />
               Thêm mới
             </Button>
             <AccountListFilter />

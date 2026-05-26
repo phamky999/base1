@@ -1,25 +1,37 @@
+import { AppTooltip } from '@/components/app-tooltip';
 import { Button } from '@/components/ui/button';
+import { BookingDetailDrawer } from '@/features/flight-management/components/flight-booking/booking-detail-drawer';
 import { BookingDetailLogsDrawer } from '@/features/flight-management/components/flight-booking/booking-detail-logs-drawer';
-import { Tooltip } from 'antd';
-import { HistoryIcon } from 'lucide-react';
-import { useState, type ReactNode } from 'react';
+import { EyeIcon, HistoryIcon } from 'lucide-react';
+import { useState } from 'react';
 
 type BookingDetailActionGroupsProps = {
   bookingId: string;
-  addon?: ReactNode;
+  hiddenViewDetail?: boolean;
 };
 
 export const BookingDetailActionGroups = ({
   bookingId,
-  addon,
+  hiddenViewDetail,
 }: BookingDetailActionGroupsProps) => {
   const [isLogDrawerOpen, setIsLogDrawerOpen] = useState(false);
+  const [isViewDetailOpen, setIsViewDetailOpen] = useState(false);
+
+  const handleViewDetail = () => {
+    setIsViewDetailOpen(true);
+  };
 
   return (
     <div onClick={e => e.stopPropagation()}>
-      {!!addon && addon}
+      {!hiddenViewDetail && (
+        <AppTooltip content="Chi tiết đơn hàng">
+          <Button size={'icon-sm'} variant={'ghost'} onClick={handleViewDetail}>
+            <EyeIcon className="size-4" />
+          </Button>
+        </AppTooltip>
+      )}
 
-      <Tooltip title="Lịch sử cập nhật">
+      <AppTooltip content="Lịch sử cập nhật">
         <Button
           size={'icon-sm'}
           variant={'ghost'}
@@ -27,12 +39,17 @@ export const BookingDetailActionGroups = ({
         >
           <HistoryIcon className="size-4" />
         </Button>
-      </Tooltip>
+      </AppTooltip>
 
       <BookingDetailLogsDrawer
         bookingId={bookingId}
         open={isLogDrawerOpen}
         onOpenChange={() => setIsLogDrawerOpen(false)}
+      />
+      <BookingDetailDrawer
+        bookingId={bookingId}
+        open={isViewDetailOpen}
+        onOpenChange={setIsViewDetailOpen}
       />
     </div>
   );

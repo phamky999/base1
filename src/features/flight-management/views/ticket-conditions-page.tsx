@@ -3,7 +3,6 @@ import { AppPageHeader } from '@/components/app-page-header';
 import { Button } from '@/components/ui/button';
 import { AddEditTicketConditionDrawer } from '@/features/flight-management/components/ticket-condition/add-edit-ticket-condition-form';
 import { TicketConditionList } from '@/features/flight-management/components/ticket-condition/ticket-condition-list';
-import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 
 export const TicketConditionsPage = () => {
@@ -21,7 +20,6 @@ export const TicketConditionsPage = () => {
         addon={
           <div className="flex justify-end gap-4">
             <Button variant={'default'} onClick={handleOpenCreateDrawer}>
-              <PlusIcon className="mr-2 size-4" />
               Thêm mới
             </Button>
           </div>

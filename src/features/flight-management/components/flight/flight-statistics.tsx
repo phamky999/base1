@@ -34,19 +34,8 @@ export const FlightStatistics = ({
       {statistics.map((item, index) => (
         <div key={index} className="rounded-lg border bg-card p-4 shadow-xs">
           <div className="flex items-center justify-between">
-            {isShowSkeleton ? (
-              <>
-                <Skeleton className="h-5 flex-1" />
-                <Skeleton className="h-4 w-4 shrink-0" />
-              </>
-            ) : (
-              <>
-                <p className="text-sm font-medium text-gray-400">
-                  {item.label}
-                </p>
-                <item.icon className="size-4" />
-              </>
-            )}
+            <p className="text-sm font-medium text-gray-400">{item.label}</p>
+            <item.icon className="size-4" />
           </div>
 
           <div className="mt-2">

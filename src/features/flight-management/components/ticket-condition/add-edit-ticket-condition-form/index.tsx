@@ -44,6 +44,10 @@ export const AddEditTicketConditionDrawer = ({
   open,
   onOpenChange,
 }: AddEditTicketConditionDrawerProps) => {
+  const actionLabel = selectedId
+    ? 'Cập nhật bộ điều kiện vé'
+    : 'Tạo bộ điều kiện vé';
+
   const [form] = Form.useForm();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -106,11 +110,7 @@ export const AddEditTicketConditionDrawer = ({
         ).unwrap();
       }
 
-      toast.success(
-        selectedId
-          ? 'Cập nhật bộ điều kiện vé thành công'
-          : 'Tạo bộ điều kiện vé thành công'
-      );
+      toast.success(`${actionLabel} thành công`);
 
       handleOpenChange(false);
     } catch (error) {
@@ -122,11 +122,9 @@ export const AddEditTicketConditionDrawer = ({
 
   return (
     <Drawer direction="right" open={open} onOpenChange={handleOpenChange}>
-      <DrawerContent className="max-w-200! max-md:w-full!">
+      <DrawerContent className="max-w-150! max-md:w-full!">
         <DrawerHeader className="flex flex-row items-center justify-between gap-2">
-          <DrawerTitle className="mr-auto">
-            {selectedId ? 'Cập nhật bộ điều kiện vé' : 'Tạo bộ điều kiện vé'}
-          </DrawerTitle>
+          <DrawerTitle className="mr-auto">{actionLabel}</DrawerTitle>
           <DrawerClose asChild>
             <Button variant="ghost" onClick={() => onOpenChange(false)}>
               <XIcon className="size-4" />
@@ -150,7 +148,7 @@ export const AddEditTicketConditionDrawer = ({
                   })}
             >
               <div className="space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-x-4 sm:grid-cols-2">
                   <Form.Item
                     name={FORM_FIELDS.NAME}
                     label={FORM_LABELS[FORM_FIELDS.NAME]}
@@ -194,7 +192,7 @@ export const AddEditTicketConditionDrawer = ({
                               </div>
                             }
                           >
-                            <div className="popup-container grid gap-4 sm:grid-cols-2">
+                            <div className="popup-container grid gap-x-4 sm:grid-cols-2">
                               <Form.Item
                                 {...restField}
                                 name={[name, FORM_FIELDS.FARE_RULE_TYPE]}

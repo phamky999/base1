@@ -3,7 +3,6 @@ import { AppPageHeader } from '@/components/app-page-header';
 import { Button } from '@/components/ui/button';
 import { CreateMerchantModal } from '@/features/merchant-management/components/create-merchant-modal';
 import { MerchantList } from '@/features/merchant-management/components/merchant-list';
-import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 
 export const MerchantListPage = () => {
@@ -21,7 +20,6 @@ export const MerchantListPage = () => {
               variant={'default'}
               onClick={() => setIsCreateModalOpen(true)}
             >
-              <PlusIcon className="mr-2 size-4" />
               Thêm mới
             </Button>
           </div>

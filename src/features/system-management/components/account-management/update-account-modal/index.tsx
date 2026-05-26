@@ -21,7 +21,7 @@ import type {
 import { ACTIVE_STATUS_OPTIONS } from '@/lib/constants';
 import type { ObjectType } from '@/lib/types';
 import { Form, Input, Select } from 'antd';
-import { SquareUserIcon } from 'lucide-react';
+import { PenSquareIcon } from 'lucide-react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
@@ -81,7 +81,7 @@ export const UpdateAccountModal = ({
       <DialogContent showCloseButton={false} className="sm:max-w-sm">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <SquareUserIcon className="size-5 text-primary" />
+            <PenSquareIcon className="size-5 text-primary" />
             <span>Cập nhật tài khoản</span>
           </DialogTitle>
           <DialogDescription>

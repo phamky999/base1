@@ -14,6 +14,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import {
+  FARE_RULE_FORM_LIST_ITEM_PREFIX,
   FORM_FIELDS,
   FORM_LABELS,
   FORM_VALIDATIONS,
@@ -46,7 +47,8 @@ export const FareRulesSection = ({ className }: FareRulesSectionProps) => {
     try {
       const { data } = await triggerGetFareRuleDetail(id);
       const mapFareRulesToFormValues = (data?.data?.rules || []).map(
-        (fareRule: ObjectType) => appendParentToKeys(fareRule, 'fareRule')
+        (fareRule: ObjectType) =>
+          appendParentToKeys(fareRule, FARE_RULE_FORM_LIST_ITEM_PREFIX)
       );
 
       const currentFareRules = form.getFieldValue(FORM_FIELDS.FARE_RULES) || [];

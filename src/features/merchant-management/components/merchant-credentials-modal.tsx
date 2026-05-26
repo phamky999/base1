@@ -21,7 +21,6 @@ import {
   EyeIcon,
   EyeOffIcon,
   KeyRoundIcon,
-  RefreshCwIcon,
 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -80,6 +79,7 @@ export const MerchantCredentialsModal = ({
 
   const handleRegenerate = async () => {
     Modal.confirm({
+      icon: null,
       title: 'Xác nhận',
       content: (
         <p>
@@ -222,21 +222,15 @@ export const MerchantCredentialsModal = ({
         </div>
 
         <DialogFooter className="flex-row justify-between">
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            className="w-full sm:w-auto"
-          >
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
             Đóng
           </Button>
           {hasCredentials && (
             <Button
-              size="sm"
               variant="default"
               loading={isRegenerating}
               onClick={handleRegenerate}
             >
-              <RefreshCwIcon className="mr-2 size-3.5" />
               Cấp lại
             </Button>
           )}

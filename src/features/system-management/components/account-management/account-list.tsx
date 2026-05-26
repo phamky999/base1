@@ -1,4 +1,5 @@
 import { AppTable } from '@/components/app-table';
+import { AppTooltip } from '@/components/app-tooltip';
 import { Button } from '@/components/ui/button';
 import { USER_ROLES_LABEL } from '@/features/auth/constants';
 import type { TUserRole } from '@/features/auth/types';
@@ -10,8 +11,8 @@ import type {
   TGetAccountListParams,
 } from '@/features/system-management/types';
 import { useQueryHandle } from '@/hooks/use-query-handle';
-import { Tooltip, type TableProps } from 'antd';
-import { UserLockIcon, UserPenIcon } from 'lucide-react';
+import { type TableProps } from 'antd';
+import { PenSquareIcon, UserLockIcon } from 'lucide-react';
 import { useState } from 'react';
 
 export const AccountList = () => {
@@ -30,7 +31,7 @@ export const AccountList = () => {
   const [isUpdateAccountModalOpen, setIsUpdateAccountModalOpen] =
     useState(false);
 
-  const { data, isFetching, isLoading } = useGetAccountListQuery(params);
+  const { data, isFetching } = useGetAccountListQuery(params);
 
   const items = data?.data?.users || [];
 
@@ -78,10 +79,10 @@ export const AccountList = () => {
       title: 'Tác vụ',
       key: 'table_action',
       fixed: 'right',
-      width: 80,
+      width: 100,
       render: (record: TAccountListItem) => (
         <>
-          <Tooltip title="Cập nhật tài khoản">
+          <AppTooltip content="Cập nhật tài khoản">
             <Button
               variant={'ghost'}
               onClick={() => {
@@ -89,11 +90,11 @@ export const AccountList = () => {
                 setIsUpdateAccountModalOpen(true);
               }}
             >
-              <UserPenIcon className="size-4" />
+              <PenSquareIcon className="size-4" />
             </Button>
-          </Tooltip>
+          </AppTooltip>
 
-          <Tooltip title="Đặt lại mật khẩu">
+          <AppTooltip content="Đặt lại mật khẩu">
             <Button
               variant={'ghost'}
               onClick={() => {
@@ -103,7 +104,7 @@ export const AccountList = () => {
             >
               <UserLockIcon className="size-4" />
             </Button>
-          </Tooltip>
+          </AppTooltip>
         </>
       ),
     },
@@ -117,9 +118,8 @@ export const AccountList = () => {
         dataSource={items}
         totalCount={items?.length}
         columns={columns}
-        loading={isFetching}
         pagination={false}
-        isShowSkeleton={isLoading}
+        isShowSkeleton={isFetching}
       />
       {!!selectedAccount && (
         <>

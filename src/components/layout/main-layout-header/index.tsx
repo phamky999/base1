@@ -11,7 +11,7 @@ export const MainLayoutHeader = () => {
 
   return (
     <header className="sticky top-0 z-50 flex w-full items-center bg-(--main-background) md:pt-2 md:pr-2 md:pl-2">
-      <div className="flex h-12.5 w-full items-center gap-2 border-b bg-background px-4 md:rounded-lg md:border md:shadow-sm md:ring-sidebar-border">
+      <div className="flex h-12.5 w-full items-center gap-2 border-b bg-background px-4 md:rounded-lg md:border md:shadow-xs">
         <Button
           className="h-8 w-8"
           variant="ghost"

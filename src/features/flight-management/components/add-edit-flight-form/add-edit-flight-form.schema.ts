@@ -2,6 +2,10 @@ import { OBJECT_KEY_SEPARATOR } from '@/lib/constants';
 import { Regex, RegexValidationMessage } from '@/lib/validations';
 import type { Rule } from 'antd/es/form';
 
+export const FARE_RULE_FORM_LIST_ITEM_PREFIX = 'fareRule';
+
+export const SEGMENT_FORM_LIST_ITEM_PREFIX = 'segment';
+
 export const FORM_FIELDS = {
   AIRLINE_CODE: 'airlineCode',
   BOOKING_CODE: 'bookingCode',
@@ -9,26 +13,43 @@ export const FORM_FIELDS = {
   TIME_LIMIT: 'timeLimit',
   CLOSING_DAYS_BEFORE_DEPARTURE: 'closingDaysBeforeDeparture',
   FARE_RULES: 'fareRules',
-  FARE_RULE_TYPE: ['fareRule', 'type'].join(OBJECT_KEY_SEPARATOR),
-  FARE_RULE_TEXT: ['fareRule', 'text'].join(OBJECT_KEY_SEPARATOR),
+  FARE_RULE_TYPE: [FARE_RULE_FORM_LIST_ITEM_PREFIX, 'type'].join(
+    OBJECT_KEY_SEPARATOR
+  ),
+  FARE_RULE_TEXT: [FARE_RULE_FORM_LIST_ITEM_PREFIX, 'text'].join(
+    OBJECT_KEY_SEPARATOR
+  ),
   PRICE_ADULT: 'priceAdult',
   PRICE_CHILD: 'priceChild',
   PRICE_INFANT: 'priceInfant',
   ITINERARY_TYPE: 'itineraryType',
   DEPARTURE_SEGMENTS: 'departureSegments',
   RETURN_SEGMENTS: 'returnSegments',
-  SEGMENT_AIRLINE_CODE: ['segment', 'airlineCode'].join(OBJECT_KEY_SEPARATOR),
-  SEGMENT_START_POINT: ['segment', 'startPoint'].join(OBJECT_KEY_SEPARATOR),
-  SEGMENT_END_POINT: ['segment', 'endPoint'].join(OBJECT_KEY_SEPARATOR),
-  SEGMENT_START_DATE: ['segment', 'startDate'].join(OBJECT_KEY_SEPARATOR),
-  SEGMENT_END_DATE: ['segment', 'endDate'].join(OBJECT_KEY_SEPARATOR),
-  SEGMENT_FLIGHT_NUMBER: ['segment', 'flightNumber'].join(OBJECT_KEY_SEPARATOR),
-  SEGMENT_SEAT_CLASS: ['segment', 'seatClass'].join(OBJECT_KEY_SEPARATOR),
-  SEGMENT_PLANE: ['segment', 'plane'].join(OBJECT_KEY_SEPARATOR),
-  SEGMENT_DURATION: ['segment', 'duration'].join(OBJECT_KEY_SEPARATOR),
-
-  // FE STATE Fields
-  SEGMENT_AIRLINE_CODE_AUTO_FILLED: ['segment', 'airlineCodeAutoFilled'].join(
+  SEGMENT_AIRLINE_CODE: [SEGMENT_FORM_LIST_ITEM_PREFIX, 'airlineCode'].join(
+    OBJECT_KEY_SEPARATOR
+  ),
+  SEGMENT_START_POINT: [SEGMENT_FORM_LIST_ITEM_PREFIX, 'startPoint'].join(
+    OBJECT_KEY_SEPARATOR
+  ),
+  SEGMENT_END_POINT: [SEGMENT_FORM_LIST_ITEM_PREFIX, 'endPoint'].join(
+    OBJECT_KEY_SEPARATOR
+  ),
+  SEGMENT_START_DATE: [SEGMENT_FORM_LIST_ITEM_PREFIX, 'startDate'].join(
+    OBJECT_KEY_SEPARATOR
+  ),
+  SEGMENT_END_DATE: [SEGMENT_FORM_LIST_ITEM_PREFIX, 'endDate'].join(
+    OBJECT_KEY_SEPARATOR
+  ),
+  SEGMENT_FLIGHT_NUMBER: [SEGMENT_FORM_LIST_ITEM_PREFIX, 'flightNumber'].join(
+    OBJECT_KEY_SEPARATOR
+  ),
+  SEGMENT_SEAT_CLASS: [SEGMENT_FORM_LIST_ITEM_PREFIX, 'seatClass'].join(
+    OBJECT_KEY_SEPARATOR
+  ),
+  SEGMENT_PLANE: [SEGMENT_FORM_LIST_ITEM_PREFIX, 'plane'].join(
+    OBJECT_KEY_SEPARATOR
+  ),
+  SEGMENT_DURATION: [SEGMENT_FORM_LIST_ITEM_PREFIX, 'duration'].join(
     OBJECT_KEY_SEPARATOR
   ),
 } as const;

@@ -1,6 +1,6 @@
 import { AppDateTimeLabel } from '@/components/app-date-time-label';
 import { AppTable } from '@/components/app-table';
-import { Button } from '@/components/ui/button';
+import { AppTooltip } from '@/components/app-tooltip';
 import { BookingDetailActionGroups } from '@/features/flight-management/components/flight-booking/booking-detail-action-groups';
 import {
   FLIGHT_BOOKING_STATUS_COLOR,
@@ -14,8 +14,8 @@ import type {
 } from '@/features/flight-management/types';
 import { useQueryHandle } from '@/hooks/use-query-handle';
 import { formatDisplayCurrency } from '@/lib/helpers/string';
-import { Tag, Tooltip, type TableProps } from 'antd';
-import { EyeIcon, PlaneLandingIcon, PlaneTakeoffIcon } from 'lucide-react';
+import { Tag, type TableProps } from 'antd';
+import { PlaneLandingIcon, PlaneTakeoffIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { BookingDetailDrawer } from './booking-detail-drawer';
 
@@ -38,7 +38,7 @@ export const FlightBookingList = () => {
     ],
   });
 
-  const { data, isFetching, isLoading } = useGetFlightBookingListQuery(
+  const { data, isFetching } = useGetFlightBookingListQuery(
     queryParams as TGetFlightBookingListRequestParams
   );
 
@@ -160,21 +160,23 @@ export const FlightBookingList = () => {
         width: 180,
         render: record => (
           <div className="space-y-0.5">
-            <Tooltip
-              title={
-                <>
+            <AppTooltip
+              content={
+                <div>
                   <p>{record?.contactName}</p>
                   <span>{record?.contactEmail}</span>
-                </>
+                </div>
               }
             >
-              <p className="line-clamp-1 max-w-40 font-semibold">
-                {record?.contactName}
-              </p>
-              <p className="line-clamp-1 max-w-40 text-xs text-gray-400">
-                {record?.contactEmail}
-              </p>
-            </Tooltip>
+              <div>
+                <p className="line-clamp-1 max-w-40 font-semibold">
+                  {record?.contactName}
+                </p>
+                <p className="line-clamp-1 max-w-40 text-xs text-gray-400">
+                  {record?.contactEmail}
+                </p>
+              </div>
+            </AppTooltip>
           </div>
         ),
       },
@@ -185,20 +187,7 @@ export const FlightBookingList = () => {
         fixed: 'right',
         width: 100,
         render: (record: TFlightBookingListItem) => (
-          <BookingDetailActionGroups
-            bookingId={record.id}
-            addon={
-              <Tooltip title="Chi tiết">
-                <Button
-                  size={'icon-sm'}
-                  variant={'ghost'}
-                  onClick={() => handleRowClick(record)}
-                >
-                  <EyeIcon className="size-4" />
-                </Button>
-              </Tooltip>
-            }
-          />
+          <BookingDetailActionGroups bookingId={record.id} />
         ),
       },
     ];
@@ -212,8 +201,7 @@ export const FlightBookingList = () => {
         dataSource={data?.data?.items}
         totalCount={data?.data?.totalItems}
         columns={columns}
-        loading={isFetching}
-        isShowSkeleton={isLoading}
+        isShowSkeleton={isFetching}
         onRow={record => ({
           onClick: () => handleRowClick(record),
           className: 'cursor-pointer',

@@ -49,7 +49,7 @@ export const EmailConfig = () => {
   };
 
   return (
-    <div className="mx-auto max-w-2xl rounded-xl border bg-card p-6 shadow-sm">
+    <div className="rounded-xl border bg-card p-6 shadow-xs">
       <div className="mb-6">
         <h2 className="text-lg leading-none font-semibold tracking-tight">
           Cấu hình Email

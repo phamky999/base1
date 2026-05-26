@@ -1,3 +1,4 @@
+import { AppTooltip } from '@/components/app-tooltip';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -5,6 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { FlightDetailDrawer } from '@/features/flight-management/components/flight/flight-detail-drawer';
 import { FlightDetailLogsDrawer } from '@/features/flight-management/components/flight/flight-detail-logs-drawer';
 import { UpdateFlightStatusModal } from '@/features/flight-management/components/flight/update-flight-status-modal';
 import {
@@ -20,44 +22,32 @@ import type {
 } from '@/features/flight-management/types';
 import type { StrictUnion } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { Modal, Tooltip } from 'antd';
+import { Modal } from 'antd';
 import {
   CircleSlashIcon,
   ClipboardListIcon,
+  CopyIcon,
   EllipsisVerticalIcon,
+  EyeIcon,
   HistoryIcon,
-  PlusIcon,
   SquarePenIcon,
   TicketCheckIcon,
   TicketXIcon,
   Trash2Icon,
 } from 'lucide-react';
-import { useState, type ReactNode } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 type FlightDetailActionGroupsProps = {
   flight: StrictUnion<TFlightListItem | TFlightListItem> | null;
   onActionSuccess?: () => void;
-  addon?: ReactNode;
+  ignoredActions?: TFlightDetailAction[];
 };
 
-const FLIGHT_DETAIL_ACTION_CONFIG: Record<
-  TFlightDetailAction,
-  TFlightDetailActionConfig
+const FLIGHT_DETAIL_ACTION_CONFIG: Partial<
+  Record<TFlightDetailAction, TFlightDetailActionConfig>
 > = {
-  [FLIGHT_DETAIL_ACTION.ADD]: {
-    label: FLIGHT_DETAIL_ACTION_LABEL[FLIGHT_DETAIL_ACTION.ADD],
-    icon: <PlusIcon className="size-4" />,
-    manualRender: true,
-    priority: 0,
-  },
-  [FLIGHT_DETAIL_ACTION.VIEW_LOGS]: {
-    label: FLIGHT_DETAIL_ACTION_LABEL[FLIGHT_DETAIL_ACTION.VIEW_LOGS],
-    icon: <HistoryIcon className="size-4" />,
-    manualRender: true,
-    priority: 994,
-  },
   [FLIGHT_DETAIL_ACTION.VIEW_BOOKING_LIST]: {
     label: FLIGHT_DETAIL_ACTION_LABEL[FLIGHT_DETAIL_ACTION.VIEW_BOOKING_LIST],
     icon: <ClipboardListIcon className="size-4" />,
@@ -70,6 +60,46 @@ const FLIGHT_DETAIL_ACTION_CONFIG: Record<
     manualRender: true,
     priority: 998,
   },
+  [FLIGHT_DETAIL_ACTION.VIEW_DETAIL]: {
+    label: FLIGHT_DETAIL_ACTION_LABEL[FLIGHT_DETAIL_ACTION.VIEW_DETAIL],
+    icon: <EyeIcon className="size-4" />,
+    manualRender: true,
+    priority: 997,
+  },
+  [FLIGHT_DETAIL_ACTION.DUPLICATE]: {
+    label: FLIGHT_DETAIL_ACTION_LABEL[FLIGHT_DETAIL_ACTION.DUPLICATE],
+    icon: <CopyIcon className="size-4" />,
+    priority: 996,
+    manualRender: true,
+  },
+  [FLIGHT_DETAIL_ACTION.VIEW_LOGS]: {
+    label: FLIGHT_DETAIL_ACTION_LABEL[FLIGHT_DETAIL_ACTION.VIEW_LOGS],
+    icon: <HistoryIcon className="size-4" />,
+    manualRender: true,
+    priority: 995,
+  },
+
+  [FLIGHT_DETAIL_ACTION.PUBLISH]: {
+    label: FLIGHT_DETAIL_ACTION_LABEL[FLIGHT_DETAIL_ACTION.PUBLISH],
+    icon: <TicketCheckIcon className="size-4" />,
+    priority: 994,
+  },
+  [FLIGHT_DETAIL_ACTION.REOPEN]: {
+    label: FLIGHT_DETAIL_ACTION_LABEL[FLIGHT_DETAIL_ACTION.REOPEN],
+    icon: <TicketCheckIcon className="size-4" />,
+    priority: 993,
+  },
+  [FLIGHT_DETAIL_ACTION.CLOSE]: {
+    label: FLIGHT_DETAIL_ACTION_LABEL[FLIGHT_DETAIL_ACTION.CLOSE],
+    icon: <TicketXIcon className="size-4" />,
+    priority: 992,
+  },
+  [FLIGHT_DETAIL_ACTION.CANCEL]: {
+    label: FLIGHT_DETAIL_ACTION_LABEL[FLIGHT_DETAIL_ACTION.CANCEL],
+    icon: <CircleSlashIcon className="size-4" />,
+    danger: true,
+    priority: 991,
+  },
   [FLIGHT_DETAIL_ACTION.DELETE]: {
     label: FLIGHT_DETAIL_ACTION_LABEL[FLIGHT_DETAIL_ACTION.DELETE],
     icon: <Trash2Icon className="size-4" />,
@@ -77,37 +107,17 @@ const FLIGHT_DETAIL_ACTION_CONFIG: Record<
     manualRender: true,
     priority: 1,
   },
-  [FLIGHT_DETAIL_ACTION.PUBLISH]: {
-    label: FLIGHT_DETAIL_ACTION_LABEL[FLIGHT_DETAIL_ACTION.PUBLISH],
-    icon: <TicketCheckIcon className="size-4" />,
-    priority: 997,
-  },
-  [FLIGHT_DETAIL_ACTION.CLOSE]: {
-    label: FLIGHT_DETAIL_ACTION_LABEL[FLIGHT_DETAIL_ACTION.CLOSE],
-    icon: <TicketXIcon className="size-4" />,
-    priority: 995,
-  },
-  [FLIGHT_DETAIL_ACTION.REOPEN]: {
-    label: FLIGHT_DETAIL_ACTION_LABEL[FLIGHT_DETAIL_ACTION.REOPEN],
-    icon: <TicketCheckIcon className="size-4" />,
-    priority: 996,
-  },
-  [FLIGHT_DETAIL_ACTION.CANCEL]: {
-    label: FLIGHT_DETAIL_ACTION_LABEL[FLIGHT_DETAIL_ACTION.CANCEL],
-    icon: <CircleSlashIcon className="size-4" />,
-    danger: true,
-    priority: 2,
-  },
 };
 
 export const FlightDetailActionGroups = ({
   flight,
   onActionSuccess,
-  addon,
+  ignoredActions,
 }: FlightDetailActionGroupsProps) => {
   const navigate = useNavigate();
 
   const [isLogDrawerOpen, setIsLogDrawerOpen] = useState(false);
+  const [isDetailDrawerOpen, setIsDetailDrawerOpen] = useState(false);
 
   const [selectedAction, setSelectedAction] =
     useState<TFlightDetailAction | null>(null);
@@ -152,16 +162,28 @@ export const FlightDetailActionGroups = ({
     });
   };
 
-  const handleUpdate = () => {
+  const handleNavigateToAddEditPage = (isDuplicate?: boolean) => {
     if (!flight?.id) return;
+
+    if (isDuplicate) {
+      navigate({
+        pathname: flightManagementPaths.createFlight.fullPath,
+        search: `duplicateId=${flight.id}`,
+      });
+      return;
+    }
     navigate(flightManagementPaths.flightDetail.buildFullPath(flight.id));
   };
 
   const isActionVisible = (key: TFlightDetailAction): boolean => {
-    if (key === FLIGHT_DETAIL_ACTION.ADD) return false;
     const config = FLIGHT_DETAIL_ACTION_CONFIG[key];
-    if (!config.manualRender) return can(key);
-    if (key === FLIGHT_DETAIL_ACTION.VIEW_BOOKING_LIST) return true;
+    if (!config?.manualRender) return can(key);
+    if (
+      key === FLIGHT_DETAIL_ACTION.VIEW_BOOKING_LIST ||
+      key === FLIGHT_DETAIL_ACTION.DUPLICATE ||
+      key === FLIGHT_DETAIL_ACTION.VIEW_DETAIL
+    )
+      return true;
     if (key === FLIGHT_DETAIL_ACTION.VIEW_LOGS) return true;
     if (key === FLIGHT_DETAIL_ACTION.UPDATE) return can(key);
     if (key === FLIGHT_DETAIL_ACTION.DELETE) return can(key);
@@ -169,6 +191,7 @@ export const FlightDetailActionGroups = ({
   };
 
   const allRenderableActions = Object.entries(FLIGHT_DETAIL_ACTION_CONFIG)
+    .filter(([key]) => !ignoredActions?.includes(key as TFlightDetailAction))
     .filter(([key]) => isActionVisible(key as TFlightDetailAction))
     .map(([key, value]) => ({ key: key as TFlightDetailAction, ...value }))
     .sort((a, b) => b.priority - a.priority);
@@ -182,10 +205,17 @@ export const FlightDetailActionGroups = ({
   const dropdownActions = useDropdown ? allRenderableActions.slice(2) : [];
 
   const handleActionClick = (key: TFlightDetailAction) => {
+    if (key === FLIGHT_DETAIL_ACTION.VIEW_DETAIL)
+      return setIsDetailDrawerOpen(true);
+
+    if (key === FLIGHT_DETAIL_ACTION.DUPLICATE)
+      return handleNavigateToAddEditPage(true);
+
     if (key === FLIGHT_DETAIL_ACTION.VIEW_BOOKING_LIST)
       return handleViewBookings();
     if (key === FLIGHT_DETAIL_ACTION.VIEW_LOGS) return setIsLogDrawerOpen(true);
-    if (key === FLIGHT_DETAIL_ACTION.UPDATE) return handleUpdate();
+    if (key === FLIGHT_DETAIL_ACTION.UPDATE)
+      return handleNavigateToAddEditPage();
     if (key === FLIGHT_DETAIL_ACTION.DELETE) return handleDelete();
     setSelectedAction(key);
   };
@@ -193,7 +223,7 @@ export const FlightDetailActionGroups = ({
   return (
     <div className="flex items-center" onClick={e => e.stopPropagation()}>
       {iconButtonActions.map(action => (
-        <Tooltip key={action.key} title={action.label}>
+        <AppTooltip key={action.key} content={action.label}>
           <Button
             size={'icon-sm'}
             variant={'ghost'}
@@ -202,10 +232,10 @@ export const FlightDetailActionGroups = ({
           >
             {action.icon}
           </Button>
-        </Tooltip>
+        </AppTooltip>
       ))}
 
-      {(!!addon || Boolean(useDropdown && dropdownActions.length > 0)) && (
+      {Boolean(useDropdown && dropdownActions.length > 0) && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant={'ghost'} size={'icon-sm'}>
@@ -213,7 +243,6 @@ export const FlightDetailActionGroups = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="z-1001 min-w-50">
-            {!!addon && addon}
             {dropdownActions.map(action => (
               <DropdownMenuItem
                 key={action.key}
@@ -254,6 +283,12 @@ export const FlightDetailActionGroups = ({
           }}
         />
       )}
+
+      <FlightDetailDrawer
+        flightId={flight?.id}
+        open={isDetailDrawerOpen}
+        onOpenChange={setIsDetailDrawerOpen}
+      />
     </div>
   );
 };

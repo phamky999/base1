@@ -13,6 +13,7 @@ import { useSidebar } from '@/components/ui/sidebar';
 import { FlightDetailActionGroups } from '@/features/flight-management/components/flight/flight-detail-action-groups';
 import {
   FARE_RULE_TYPE_LABEL,
+  FLIGHT_DETAIL_ACTION,
   FLIGHT_ITINERARY_TYPE,
   FLIGHT_STATUS_COLOR,
   FLIGHT_STATUS_LABEL,
@@ -112,6 +113,7 @@ export const FlightDetailDrawer = ({
           </div>
         ) : (
           <AppTable
+            className="border-none"
             dataSource={segments}
             pagination={false}
             rowKey={record => record.flightNumber + record.startDate}
@@ -186,6 +188,7 @@ export const FlightDetailDrawer = ({
 
           <FlightDetailActionGroups
             flight={detail as TGetFlightDetailResponse}
+            ignoredActions={[FLIGHT_DETAIL_ACTION.VIEW_DETAIL]}
           />
         </DrawerHeader>
         <div className="overflow-y-auto p-4">

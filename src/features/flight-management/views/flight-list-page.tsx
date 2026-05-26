@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { FlightList } from '@/features/flight-management/components/flight/flight-list';
 import { FlightListFilter } from '@/features/flight-management/components/flight/flight-list-filter';
 import { flightManagementPaths } from '@/features/flight-management/routes';
-import { PlusIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export const FlightListPage = () => {
@@ -22,7 +21,6 @@ export const FlightListPage = () => {
                 navigate(flightManagementPaths.createFlight.fullPath)
               }
             >
-              <PlusIcon className="mr-2 size-4" />
               Thêm mới
             </Button>
           </div>

@@ -53,7 +53,10 @@ export const BookingDetailDrawer = ({
           </DrawerClose>
           <DrawerTitle className="mr-auto">Thông tin đơn hàng</DrawerTitle>
 
-          <BookingDetailActionGroups bookingId={bookingId || ''} />
+          <BookingDetailActionGroups
+            bookingId={bookingId || ''}
+            hiddenViewDetail
+          />
         </DrawerHeader>
         <div className="overflow-y-auto p-4">
           <Skeleton loading={isFetching} active>
@@ -117,7 +120,7 @@ export const BookingDetailDrawer = ({
                       <AppDateTimeLabel value={detail.lastTicketDate} />
                     </Descriptions.Item>
                     <Descriptions.Item label="Số lượng">
-                      <div className="flex flex-col gap-4">
+                      <div className="flex flex-col gap-2">
                         <span>Người lớn: {detail.adult}</span>
                         <span>Trẻ em: {detail.children}</span>
                         <span>Em bé: {detail.infant}</span>
@@ -220,6 +223,7 @@ export const BookingDetailDrawer = ({
                     </div>
                   ) : (
                     <AppTable
+                      className="border-none"
                       dataSource={detail.passengers}
                       pagination={false}
                       rowKey={record => record.id}

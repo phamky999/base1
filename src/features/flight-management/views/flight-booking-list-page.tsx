@@ -1,12 +1,12 @@
 import { PageHelmet } from '@/components/app-helmet';
 import { AppPageHeader } from '@/components/app-page-header';
+import { AppTooltip } from '@/components/app-tooltip';
 import { Button } from '@/components/ui/button';
 import { BookingFlightInfo } from '@/features/flight-management/components/flight-booking/booking-flight-info';
 import { FlightBookingList } from '@/features/flight-management/components/flight-booking/booking-list';
 import { FlightBookingListFilter } from '@/features/flight-management/components/flight-booking/booking-list-filter';
 import { flightManagementPaths } from '@/features/flight-management/routes';
 import { useQueryHandle } from '@/hooks/use-query-handle';
-import { Tooltip } from 'antd';
 import { ArrowLeftIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -23,7 +23,7 @@ export const FlightBookingListPage = () => {
         title={
           <span className="flex items-center gap-2">
             {flightId ? (
-              <Tooltip title="Xem tất cả đơn hàng">
+              <AppTooltip content="Xem tất cả đơn hàng">
                 <Button
                   size={'icon-sm'}
                   variant={'ghost'}
@@ -33,7 +33,7 @@ export const FlightBookingListPage = () => {
                 >
                   <ArrowLeftIcon className="size-4" />
                 </Button>
-              </Tooltip>
+              </AppTooltip>
             ) : null}
             Danh sách đơn hàng
           </span>

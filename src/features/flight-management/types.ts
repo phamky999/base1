@@ -134,6 +134,11 @@ export type TFlightSegment = {
   duration: number;
 };
 
+export type TFareRule = {
+  type: TFareRuleType;
+  text: string;
+};
+
 export type TGetFlightDetailResponse = {
   id: string;
   status: TFlightStatus;
@@ -149,10 +154,7 @@ export type TGetFlightDetailResponse = {
   flightNumbers: string[];
   seatClasses: string[];
   planes: string[];
-  fareRules: Array<{
-    type: TFareRuleType;
-    text: string;
-  }>;
+  fareRules: Array<TFareRule>;
   priceAdult: number;
   priceChild: number;
   priceInfant: number;

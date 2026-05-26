@@ -2,6 +2,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useQueryHandle } from '@/hooks/use-query-handle';
 import { PAGINATION_QUERY_KEY } from '@/lib/constants';
 import { fillArrayWithNumber } from '@/lib/helpers/object';
+import { cn } from '@/lib/utils';
 import { Table, type TableProps } from 'antd';
 import { useMemo } from 'react';
 
@@ -11,9 +12,18 @@ type AppTableProps<T> = TableProps<T> & {
 };
 
 export const AppTable = <T,>(props: AppTableProps<T>) => {
-  const { totalCount, isShowSkeleton, ...restProps } = props || {};
-  const { handleChangePageSize, handleChangePageIndex, pagination } =
-    useQueryHandle();
+  const {
+    totalCount,
+    isShowSkeleton,
+    pagination: paginationProps,
+    className: classNameProps,
+    ...restProps
+  } = props || {};
+  const {
+    handleChangePageSize,
+    handleChangePageIndex,
+    pagination: queryPagination,
+  } = useQueryHandle();
 
   const tableScrollWidth = useMemo(() => {
     const hasWidthDefined = props?.columns?.some(col => col?.width != null);
@@ -39,27 +49,34 @@ export const AppTable = <T,>(props: AppTableProps<T>) => {
         className="custom-ant-table"
         scroll={{ x: tableScrollWidth }}
         pagination={false}
-        dataSource={fillArrayWithNumber(5) as T[]}
+        rowKey="id"
+        dataSource={fillArrayWithNumber(5).map(
+          (_, index) => ({ id: index }) as T
+        )}
       />
     );
   }
 
   return (
     <Table<T>
-      className="custom-ant-table"
+      className={cn('custom-ant-table', classNameProps)}
       scroll={{ x: tableScrollWidth }}
-      pagination={{
-        total: totalCount ?? 0,
-        current: pagination[PAGINATION_QUERY_KEY.PAGE_INDEX],
-        pageSize: pagination[PAGINATION_QUERY_KEY.PAGE_SIZE],
-        showSizeChanger: true,
-        hideOnSinglePage: false,
-        onChange: (p, ps) => {
-          handleChangePageIndex(p);
-          handleChangePageSize(ps);
-        },
-        ...restProps.pagination,
-      }}
+      pagination={
+        !paginationProps
+          ? false
+          : {
+              total: totalCount ?? 0,
+              current: queryPagination[PAGINATION_QUERY_KEY.PAGE_INDEX],
+              pageSize: queryPagination[PAGINATION_QUERY_KEY.PAGE_SIZE],
+              showSizeChanger: true,
+              hideOnSinglePage: false,
+              onChange: (p, ps) => {
+                handleChangePageIndex(p);
+                handleChangePageSize(ps);
+              },
+              ...paginationProps,
+            }
+      }
       {...restProps}
     />
   );

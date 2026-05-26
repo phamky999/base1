@@ -1,4 +1,5 @@
 import { AppTable } from '@/components/app-table';
+import { AppTooltip } from '@/components/app-tooltip';
 import { Button } from '@/components/ui/button';
 import { AddEditTicketConditionDrawer } from '@/features/flight-management/components/ticket-condition/add-edit-ticket-condition-form';
 import {
@@ -6,7 +7,7 @@ import {
   useGetFareRulesQuery,
 } from '@/features/flight-management/query';
 import type { TGetFareRulesResponse } from '@/features/flight-management/types';
-import { Modal, Tooltip, type TableProps } from 'antd';
+import { Modal, type TableProps } from 'antd';
 import { PenSquareIcon, Trash2Icon } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -70,10 +71,11 @@ export const TicketConditionList = () => {
       {
         title: 'Tác vụ',
         key: 'actions',
-        width: 80,
+        fixed: 'right',
+        width: 100,
         render: (_, record) => (
           <>
-            <Tooltip title="Chỉnh sửa">
+            <AppTooltip content="Chỉnh sửa">
               <Button
                 size="icon-sm"
                 variant="ghost"
@@ -84,9 +86,9 @@ export const TicketConditionList = () => {
               >
                 <PenSquareIcon />
               </Button>
-            </Tooltip>
+            </AppTooltip>
 
-            <Tooltip title="Xoá">
+            <AppTooltip content="Xoá">
               <Button
                 size="icon-sm"
                 variant="ghost"
@@ -94,7 +96,7 @@ export const TicketConditionList = () => {
               >
                 <Trash2Icon />
               </Button>
-            </Tooltip>
+            </AppTooltip>
           </>
         ),
       },
@@ -110,7 +112,6 @@ export const TicketConditionList = () => {
           columns={columns}
           dataSource={fareRules}
           totalCount={fareRules.length}
-          loading={isFetching}
           isShowSkeleton={isFetching}
         />
       </div>

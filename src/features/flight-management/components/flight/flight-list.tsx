@@ -1,6 +1,7 @@
 import { AppDateTimeLabel } from '@/components/app-date-time-label';
 import { AppTable } from '@/components/app-table';
 import { FlightDetailActionGroups } from '@/features/flight-management/components/flight/flight-detail-action-groups';
+import { FlightStatistics } from '@/features/flight-management/components/flight/flight-statistics';
 import {
   FLIGHT_ITINERARY_TYPE,
   FLIGHT_STATUS_COLOR,
@@ -20,7 +21,6 @@ import { useQueryHandle } from '@/hooks/use-query-handle';
 import { formatDisplayCurrency } from '@/lib/helpers/string';
 import { Tag, type TableProps } from 'antd';
 import {
-  EyeIcon,
   MoveHorizontalIcon,
   MoveRightIcon,
   PlaneLandingIcon,
@@ -29,8 +29,6 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { FlightDetailDrawer } from './flight-detail-drawer';
-import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import { FlightStatistics } from '@/features/flight-management/components/flight/flight-statistics';
 
 export const FlightList = () => {
   const [selectedFlightId, setSelectedFlightId] = useState<string>();
@@ -44,18 +42,25 @@ export const FlightList = () => {
     noPagination: true,
   });
 
-  const { data, isFetching, isLoading } = useGetFlightListQuery({
-    ...params,
-    ...pagination,
-  } as TGetFlightListRequestParams);
+  const { data, isFetching } = useGetFlightListQuery(
+    {
+      ...params,
+      ...pagination,
+    } as TGetFlightListRequestParams,
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
 
-  const {
-    data: statisticsDataResponse,
-    isFetching: isFetchingStatistics,
-    isLoading: isLoadingStatistics,
-  } = useGetFlightStaticsQuery({
-    ...params,
-  } as TGetFlightListRequestParams);
+  const { data: statisticsDataResponse, isFetching: isFetchingStatistics } =
+    useGetFlightStaticsQuery(
+      {
+        ...params,
+      } as TGetFlightListRequestParams,
+      {
+        refetchOnMountOrArgChange: true,
+      }
+    );
 
   const { items: flightList, totalItems } = data?.data || {};
 
@@ -192,17 +197,7 @@ export const FlightList = () => {
         fixed: 'right',
         width: 100,
         render: (record: TFlightListItem) => (
-          <FlightDetailActionGroups
-            flight={record}
-            addon={
-              <DropdownMenuItem onClick={() => handleViewDetail(record)}>
-                <span className="mb-0.5">
-                  <EyeIcon />
-                </span>
-                Xem chi tiết
-              </DropdownMenuItem>
-            }
-          />
+          <FlightDetailActionGroups flight={record} />
         ),
       },
     ],
@@ -213,16 +208,15 @@ export const FlightList = () => {
     <>
       <FlightStatistics
         data={statisticsDataResponse?.data}
-        isShowSkeleton={isLoadingStatistics || isFetchingStatistics}
+        isShowSkeleton={isFetchingStatistics}
       />
       <AppTable<TFlightListItem>
         size="small"
-        rowKey={record => record.id}
+        rowKey={'id'}
         dataSource={flightList}
         totalCount={totalItems}
         columns={columns}
-        loading={isFetching}
-        isShowSkeleton={isLoading}
+        isShowSkeleton={isFetching}
         onRow={record => ({
           onClick: () => handleViewDetail(record),
           className: 'cursor-pointer',

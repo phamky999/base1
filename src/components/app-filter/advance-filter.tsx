@@ -1,15 +1,10 @@
 import { normalizeQueryParamValue } from '@/components/app-filter/helper';
 import { Button } from '@/components/ui/button';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 import { DEFAULT_PAGE_INDEX, PAGINATION_QUERY_KEY } from '@/lib/constants';
 import { DEFAULT_DATE_FORMAT } from '@/lib/date/constants';
 import dayjs from '@/lib/date/dayjs-config';
 import type { ObjectType } from '@/lib/types';
-import { Form, Tooltip } from 'antd';
+import { Form, Popover } from 'antd';
 import { FunnelPlusIcon } from 'lucide-react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -50,6 +45,7 @@ export const AdvanceFilter = ({
             const formattedValue = dayjs.isDayjs(v)
               ? v.format(DEFAULT_DATE_FORMAT)
               : String(v);
+
             newParams.append(key, formattedValue);
           });
         } else if (dayjs.isDayjs(value)) {
@@ -63,14 +59,19 @@ export const AdvanceFilter = ({
     newParams.set(PAGINATION_QUERY_KEY.PAGE_INDEX, String(DEFAULT_PAGE_INDEX));
 
     setSearchParams(newParams, { replace: true });
+
     setOpen(false);
   };
 
   const handleReset = () => {
     const newParams = new URLSearchParams(searchParams);
+
     advanceFilterKeys.forEach(key => newParams.delete(key));
+
     form.resetFields();
+
     setSearchParams(newParams, { replace: true });
+
     setOpen(false);
   };
 
@@ -78,8 +79,10 @@ export const AdvanceFilter = ({
     if (!open) return;
 
     const values: ObjectType = {};
+
     advanceFilterKeys.forEach(key => {
       const value = searchParams.getAll(key);
+
       if (value.length > 0) {
         values[key] = normalizeQueryParamValue(value);
       } else {
@@ -91,34 +94,47 @@ export const AdvanceFilter = ({
   }, [searchParams, advanceFilterKeys, form, open]);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <Tooltip title="Bộ lọc">
-        <PopoverTrigger asChild>
-          <Button variant="outline" size="sm" className="relative h-8">
-            <FunnelPlusIcon className="size-4" />
-            {isFiltered && (
-              <div className="absolute -top-0.5 -right-0.5 size-2 rounded-full bg-red-600" />
-            )}
-          </Button>
-        </PopoverTrigger>
-      </Tooltip>
-      <PopoverContent align="end" className="w-80">
+    <Popover
+      trigger="click"
+      arrow={false}
+      open={open}
+      onOpenChange={setOpen}
+      placement="bottomRight"
+      classNames={{
+        container:
+          'rounded-lg bg-popover p-2.5 shadow-md ring-1 ring-foreground/10 outline-hidden duration-100',
+      }}
+      content={
         <Form form={form} layout="vertical" onFinish={onFinish}>
-          <div className="no-scrollbar max-h-72 overflow-y-auto px-1">
+          <div className="no-scrollbar max-h-72 w-80 overflow-y-auto px-1">
             {formElements}
           </div>
+
           <div className="mb-3 h-px bg-border" />
+
           <div className="flex items-center justify-between gap-2.5">
-            <Button type="reset" variant="outline" onClick={handleReset}>
+            <Button type="button" variant="outline" onClick={handleReset}>
               Bỏ lọc
             </Button>
 
-            <Button type="submit" variant="default">
+            <Button
+              type="button"
+              variant="default"
+              onClick={() => form.submit()}
+            >
               Áp dụng
             </Button>
           </div>
         </Form>
-      </PopoverContent>
+      }
+    >
+      <Button variant="outline" size="sm" className="relative h-8">
+        <FunnelPlusIcon className="size-4" />
+
+        {isFiltered && (
+          <div className="absolute -top-0.5 -right-0.5 size-2 rounded-full bg-red-600" />
+        )}
+      </Button>
     </Popover>
   );
 };
