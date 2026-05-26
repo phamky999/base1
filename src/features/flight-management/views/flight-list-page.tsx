@@ -1,5 +1,6 @@
 import { PageHelmet } from '@/components/app-helmet';
 import { AppPageHeader } from '@/components/app-page-header';
+import { AppTooltip } from '@/components/app-tooltip';
 import { Button } from '@/components/ui/button';
 import { FlightList } from '@/features/flight-management/components/flight/flight-list';
 import { FlightListFilter } from '@/features/flight-management/components/flight/flight-list-filter';
@@ -15,6 +16,17 @@ export const FlightListPage = () => {
         title="Danh sách chuyến bay"
         addon={
           <div className="flex justify-end gap-4">
+            <AppTooltip content="Tạo mới chuyến bay từ file excel">
+              <Button
+                variant={'outline'}
+                onClick={() =>
+                  navigate(flightManagementPaths.importExcel.fullPath)
+                }
+              >
+                Import Excel
+              </Button>
+            </AppTooltip>
+
             <Button
               variant={'default'}
               onClick={() =>

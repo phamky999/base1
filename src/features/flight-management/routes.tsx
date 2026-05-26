@@ -11,6 +11,11 @@ const CreateFlightPage = lazyNamedExport(
   'CreateFlightPage'
 );
 
+const FlightImportExcelPage = lazyNamedExport(
+  () => import('@/features/flight-management/views/flight-import-excel-page'),
+  'FlightImportExcelPage'
+);
+
 const FlightDetailPage = lazyNamedExport(
   () => import('@/features/flight-management/views/flight-detail-page'),
   'FlightDetailPage'
@@ -39,6 +44,11 @@ export const flightManagementPaths = {
   createFlight: {
     path: 'create',
     fullPath: '/flight-management/list/create',
+  },
+
+  importExcel: {
+    path: 'import-excel',
+    fullPath: '/flight-management/list/import-excel',
   },
 
   flightDetail: {
@@ -88,6 +98,14 @@ export const flightManagementRoutes: RouteObject[] = [
               crumb: () => 'Tạo chuyến bay',
             },
           },
+          {
+            path: flightManagementPaths.importExcel.path,
+            element: <FlightImportExcelPage />,
+            handle: {
+              crumb: () => 'Import Excel',
+            },
+          },
+
           {
             path: flightManagementPaths.flightDetail.path,
             element: <FlightDetailPage />,
