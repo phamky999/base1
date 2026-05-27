@@ -39,7 +39,7 @@ type AddEditFlightFormProps = {
   actionType: 'create' | 'edit';
 };
 
-const SECTION_CLS = 'rounded-xl border bg-card p-4 shadow-xs';
+const SECTION_CLS = 'rounded-lg border bg-card p-4 shadow-xs';
 
 const SEGMENT_FIELD_KEYS = [
   FORM_FIELDS.DEPARTURE_SEGMENTS,

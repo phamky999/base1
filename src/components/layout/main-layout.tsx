@@ -60,7 +60,7 @@ const MainLayoutInner = ({ children }: { children?: React.ReactNode }) => {
           )}
         >
           <MainLayoutHeader />
-          <div className="min-h-svh flex-1 bg-(--main-background) p-4 pt-4! md:p-2">
+          <div className="min-h-svh flex-1 bg-(--main-background) p-4 py-4! md:p-2">
             <Suspense fallback={<AppScreenLoader isFullScreen={false} />}>
               <div className="mx-auto max-w-412">{children ?? <Outlet />}</div>
             </Suspense>

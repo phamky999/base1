@@ -20,7 +20,7 @@ export const AppErrorBoundary = () => {
             'bg-error-lighter text-error',
             'border-error border',
             'text-sm wrap-break-word',
-            'max-h-50 overflow-x-hidden overflow-y-auto rounded-xl'
+            'max-h-50 overflow-x-hidden overflow-y-auto rounded-lg'
           )}
         >
           {(error as ObjectType)?.stack}

@@ -20,7 +20,7 @@ export const AuthLayout = ({ children }: { children?: React.ReactNode }) => {
     <div className="relative grid h-screen w-screen items-center bg-[#023E8A]">
       <div className="z-1 flex items-center justify-center p-4">
         <AppGridShapeBackground />
-        <div className="w-full flex-col rounded-xl bg-white px-4 py-8 shadow-xl md:w-120 md:px-8">
+        <div className="w-full flex-col rounded-lg bg-white px-4 py-8 shadow-xl md:w-120 md:px-8">
           {children ?? <Outlet />}
         </div>
       </div>

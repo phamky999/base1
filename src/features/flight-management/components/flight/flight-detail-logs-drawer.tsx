@@ -46,7 +46,7 @@ export const FlightDetailLogsDrawer = ({
           </DrawerClose>
           <DrawerTitle>Lịch sử cập nhật</DrawerTitle>
         </DrawerHeader>
-        <div className="overflow-y-auto p-4">
+        <div data-vaul-no-drag className="overflow-y-auto p-4">
           <Skeleton loading={isFetching} active>
             {logs?.length ? (
               <Timeline

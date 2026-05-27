@@ -1,4 +1,4 @@
-import { FARE_RULE_TYPE } from '@/features/flight-management/constants';
+import { FARE_RULE_TYPE_LABEL } from '@/features/flight-management/constants';
 import ExcelJS from 'exceljs';
 
 export const generateFlightTemplateExcel = async () => {
@@ -186,44 +186,6 @@ export const generateFlightTemplateExcel = async () => {
     { width: 15 }, // X
   ];
 
-  // FORCE TEXT FORMAT
-  const textColumns = [
-    'B', // airline
-    'C', // booking code
-
-    // departure
-    'K',
-    'L',
-    'M',
-    'N',
-
-    // return
-    'R',
-    'S',
-    'T',
-    'U',
-
-    'O',
-    'P',
-    'V',
-    'W',
-  ];
-
-  textColumns.forEach(col => {
-    for (let row = 3; row <= 1000; row++) {
-      const cell = flightSheet.getCell(`${col}${row}`);
-
-      // force excel text format
-      cell.numFmt = '@';
-
-      // optional:
-      // align left like text
-      cell.alignment = {
-        ...centerAlignmentBase,
-      };
-    }
-  });
-
   // SHEET 2 - DANH SÁCH BỘ ĐIỀU KIỆN
   const fareRuleSheet = workbook.addWorksheet('Danh sách bộ điều kiện', {
     views: [{ state: 'frozen', ySplit: 1 }],
@@ -239,13 +201,27 @@ export const generateFlightTemplateExcel = async () => {
     applyHeaderStyle(cell);
   });
 
-  const fareRuleOptions = Object.values(FARE_RULE_TYPE).join(',');
+  const fareRuleOptions = Object.values(FARE_RULE_TYPE_LABEL).join(',');
 
   for (let row = 2; row <= 1000; row++) {
+    fareRuleSheet.getCell(`A${row}`).dataValidation = {
+      type: 'list',
+      allowBlank: true,
+      formulae: ["'Danh sách chuyến bay'!$A$3:$A$1000"],
+      showErrorMessage: true,
+      errorStyle: 'stop',
+      errorTitle: 'Giá trị không hợp lệ',
+      error: 'Vui lòng chọn mã chuyến bay từ danh sách',
+    };
+
     fareRuleSheet.getCell(`B${row}`).dataValidation = {
       type: 'list',
       allowBlank: true,
       formulae: [`"${fareRuleOptions}"`],
+      showErrorMessage: true,
+      errorStyle: 'stop',
+      errorTitle: 'Giá trị không hợp lệ',
+      error: 'Vui lòng chọn loại điều kiện từ danh sách',
     };
   }
 
@@ -262,27 +238,47 @@ export const generateFlightTemplateExcel = async () => {
   // SHEET 3 - HƯỚNG DẪN
   const instructionSheet = workbook.addWorksheet('Hướng dẫn nhập thông tin');
 
-  instructionSheet.columns = [{ width: 40 }, { width: 100 }];
+  instructionSheet.columns = [{ width: 50 }, { width: 200 }];
 
   instructionSheet.addRows([
     ['Mục', 'Hướng dẫn'],
 
-    ['Danh sách chuyến bay', 'Mỗi dòng là 1 segment của chuyến bay'],
-
     [
-      'Mã chuyến bay',
-      'Các dòng cùng mã chuyến bay sẽ được nhóm thành 1 chuyến bay',
+      'Danh sách chuyến bay - STT',
+      'Người dùng tự định nghĩa, dữ liệu người dùng nhập sẽ được dùng làm đầu vào của cột "Mã chuyến bay" trong sheet 2 để cài đặt bộ điều kiện cho các chuyến bay có STT tương ứng',
     ],
 
-    ['Chiều bay', 'DEPARTURE = chiều đi, RETURN = chiều về'],
+    ['Danh sách chuyến bay - Mã hãng', 'Nhập mã hãng hàng không'],
 
-    ['Chặng số', 'Dùng để xác định thứ tự segment'],
+    [
+      'Danh sách chuyến bay - Thời gian giữ chỗ',
+      'Nhập thời gian giữ chỗ tối đa của 1 đơn hàng (Đơn vị: Phút)',
+    ],
 
-    ['Fare rule', 'Nhập tại sheet "Danh sách bộ điều kiện"'],
+    [
+      'Danh sách chuyến bay - Đóng bán trước (ngày)',
+      'Số ngày trước thời gian khởi hành mà hệ thống sẽ tự động đóng bán vé máy bay  (Đơn vị: Ngày)',
+    ],
 
-    ['Định dạng ngày giờ', 'YYYY-MM-DD HH:mm'],
+    [
+      'Danh sách chuyến bay - Hành trình',
+      'Nhập liên tục các mã sân bay lần lượt theo chiều đi, chiều về. Ví dụ: HANSGN, HOẶC HANSGNHAN',
+    ],
 
-    ['Loại hành trình', 'ONE_WAY hoặc ROUND_TRIP'],
+    [
+      'Định dạng ngày',
+      'Vui lòng nhập đúng định dạng [ngày/tháng/năm]. Ví dụ: 12/5/2026, hoặc 12/05/2026',
+    ],
+
+    [
+      'Định dạng thời gian',
+      'Vui lòng nhập đúng định dạng [giờ:phút] (24h). Ví dụ: 10:00, hoặc 22:30',
+    ],
+
+    [
+      'Danh sách bộ điều kiện',
+      'Nhập các điều kiện của chuyến bay, có thể bỏ qua và cập nhật sau trên hệ thống',
+    ],
 
     ['Lưu ý', 'Không xóa tiêu đề cột hoặc đổi tên sheet'],
   ]);
@@ -294,8 +290,6 @@ export const generateFlightTemplateExcel = async () => {
   instructionSheet.eachRow(row => {
     row.eachCell(cell => {
       cell.border = borderBase;
-
-      cell.alignment = centerAlignmentBase;
     });
   });
 

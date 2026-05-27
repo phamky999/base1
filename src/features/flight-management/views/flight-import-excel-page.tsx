@@ -1,500 +1,304 @@
-// import { Button, Upload, message } from 'antd';
-// import ExcelJS from 'exceljs';
-// import dayjs from 'dayjs';
-// import { generateFlightTemplateExcel } from '@/features/flight-management/helper/generate-flight-template-excel';
-// import { DEFAULT_DATE_FORMAT } from '@/lib/date/constants';
-
-// type TFlightImportRow = {
-//   airlineCode: string;
-//   bookingCode: string;
-//   seatTotal: number;
-//   holdTime: number;
-//   closeBeforeDays: number;
-//   adultPrice: number;
-//   childPrice: number;
-//   infantPrice: number;
-//   itinerary: string;
-
-//   departureSegment: {
-//     departureDate: string;
-//     departureTime: string;
-//     arrivalDate: string;
-//     arrivalTime: string;
-//     flightNumber: string;
-//     bookingClass: string;
-//     aircraft: string;
-//   };
-
-//   returnSegment: {
-//     departureDate: string;
-//     departureTime: string;
-//     arrivalDate: string;
-//     arrivalTime: string;
-//     flightNumber: string;
-//     bookingClass: string;
-//     aircraft: string;
-//   };
-// };
-
-// const COLUMN = {
-//   AIRLINE_CODE: 2,
-//   BOOKING_CODE: 3,
-//   SEAT_TOTAL: 4,
-//   HOLD_TIME: 5,
-//   CLOSE_BEFORE_DAYS: 6,
-//   ADULT_PRICE: 7,
-//   CHILD_PRICE: 8,
-//   INFANT_PRICE: 9,
-//   ITINERARY: 10,
-
-//   DEPARTURE_DATE: 11,
-//   DEPARTURE_TIME: 12,
-//   ARRIVAL_DATE: 13,
-//   ARRIVAL_TIME: 14,
-//   FLIGHT_NUMBER: 15,
-//   BOOKING_CLASS: 16,
-//   AIRCRAFT: 17,
-
-//   RETURN_DEPARTURE_DATE: 18,
-//   RETURN_DEPARTURE_TIME: 19,
-//   RETURN_ARRIVAL_DATE: 20,
-//   RETURN_ARRIVAL_TIME: 21,
-//   RETURN_FLIGHT_NUMBER: 22,
-//   RETURN_BOOKING_CLASS: 23,
-//   RETURN_AIRCRAFT: 24,
-// };
-
-// export const FlightImportExcelPage = () => {
-//   const getCellString = (row: ExcelJS.Row, index: number) => {
-//     const value = row.getCell(index).value;
-
-//     if (value == null) return '';
-
-//     // rich text
-//     if (typeof value === 'object' && value && 'text' in value) {
-//       return String(value.text).trim();
-//     }
-
-//     // date
-//     if (value instanceof Date) {
-//       return dayjs(value).format(DEFAULT_DATE_FORMAT);
-//     }
-
-//     return String(value).trim();
-//   };
-
-//   const getCellNumber = (row: ExcelJS.Row, index: number) => {
-//     const value = row.getCell(index).value;
-
-//     if (value == null || value === '') return 0;
-
-//     return Number(value);
-//   };
-
-//   const parseFlightSheet = (worksheet: ExcelJS.Worksheet) => {
-//     const result: TFlightImportRow[] = [];
-
-//     worksheet.eachRow((row, rowNumber) => {
-//       // skip header rows
-//       if (rowNumber <= 2) return;
-
-//       // skip empty rows
-//       if (rowNumber <= 2) return;
-
-//       if (row.actualCellCount === 0) return;
-
-//       const item: TFlightImportRow = {
-//         airlineCode: getCellString(row, COLUMN.AIRLINE_CODE),
-
-//         bookingCode: getCellString(row, COLUMN.BOOKING_CODE),
-
-//         seatTotal: getCellNumber(row, COLUMN.SEAT_TOTAL),
-
-//         holdTime: getCellNumber(row, COLUMN.HOLD_TIME),
-
-//         closeBeforeDays: getCellNumber(row, COLUMN.CLOSE_BEFORE_DAYS),
-
-//         adultPrice: getCellNumber(row, COLUMN.ADULT_PRICE),
-
-//         childPrice: getCellNumber(row, COLUMN.CHILD_PRICE),
-
-//         infantPrice: getCellNumber(row, COLUMN.INFANT_PRICE),
-
-//         itinerary: getCellString(row, COLUMN.ITINERARY),
-
-//         departureSegment: {
-//           departureDate: getCellString(row, COLUMN.DEPARTURE_DATE),
-
-//           departureTime: getCellString(row, COLUMN.DEPARTURE_TIME),
-
-//           arrivalDate: getCellString(row, COLUMN.ARRIVAL_DATE),
-
-//           arrivalTime: getCellString(row, COLUMN.ARRIVAL_TIME),
-
-//           flightNumber: getCellString(row, COLUMN.FLIGHT_NUMBER),
-
-//           bookingClass: getCellString(row, COLUMN.BOOKING_CLASS),
-
-//           aircraft: getCellString(row, COLUMN.AIRCRAFT),
-//         },
-
-//         returnSegment: {
-//           departureDate: getCellString(row, COLUMN.RETURN_DEPARTURE_DATE),
-
-//           departureTime: getCellString(row, COLUMN.RETURN_DEPARTURE_TIME),
-
-//           arrivalDate: getCellString(row, COLUMN.RETURN_ARRIVAL_DATE),
-
-//           arrivalTime: getCellString(row, COLUMN.RETURN_ARRIVAL_TIME),
-
-//           flightNumber: getCellString(row, COLUMN.RETURN_FLIGHT_NUMBER),
-
-//           bookingClass: getCellString(row, COLUMN.RETURN_BOOKING_CLASS),
-
-//           aircraft: getCellString(row, COLUMN.RETURN_AIRCRAFT),
-//         },
-//       };
-
-//       result.push(item);
-//     });
-
-//     return result;
-//   };
-
-//   const handleImport = async (file: File) => {
-//     try {
-//       const buffer = await file.arrayBuffer();
-
-//       const workbook = new ExcelJS.Workbook();
-
-//       await workbook.xlsx.load(buffer);
-
-//       const worksheet = workbook.getWorksheet('Danh sách chuyến bay');
-
-//       if (!worksheet) {
-//         message.error('Không tìm thấy sheet Danh sách chuyến bay');
-
-//         return false;
-//       }
-
-//       const rows = parseFlightSheet(worksheet);
-
-//       console.log('IMPORT DATA:', rows);
-
-//       message.success(`Import thành công ${rows.length} dòng`);
-//     } catch (error) {
-//       console.error(error);
-
-//       message.error('Đọc file excel thất bại');
-//     }
-
-//     return false;
-//   };
-
-//   return (
-//     <div className="p-4">
-//       <Button onClick={() => generateFlightTemplateExcel()}>
-//         Download Excel mẫu
-//       </Button>
-//       <Upload accept=".xlsx" beforeUpload={handleImport} showUploadList={false}>
-//         <Button type="primary">Import Flight Excel</Button>
-//       </Upload>
-//     </div>
-//   );
-// };
-
+import { PageHelmet } from '@/components/app-helmet';
+import { AppPageHeader } from '@/components/app-page-header';
 import { Button } from '@/components/ui/button';
-import { generateFlightTemplateExcel } from '@/features/flight-management/helper/generate-flight-template-excel';
-import { message, Upload, type UploadProps } from 'antd';
-import dayjs from 'dayjs';
+import { PreviewDataStep } from '@/features/flight-management/components/import-excel/preview-data-step';
+import { ShowResultStep } from '@/features/flight-management/components/import-excel/show-result-step';
+import { UploadFileStep } from '@/features/flight-management/components/import-excel/upload-file-step';
+import {
+  getCellDateOnly,
+  getCellNumber,
+  getCellString,
+  getCellTimeOnly,
+} from '@/features/flight-management/helper/parse-excel-value-helper';
+import {
+  mapFlightDataImportToCreateFlightPayload,
+  validateFlightDataImport,
+} from '@/features/flight-management/helper/validate-flight-data-import-';
+import { useCreateFlightMutation } from '@/features/flight-management/query';
+import type {
+  TFlightExcelImportRow,
+  TImportResult,
+  TImportResultDetailItem,
+  TParsedFlightFromExcelData,
+} from '@/features/flight-management/types';
+import { Steps, type UploadProps } from 'antd';
+import { ArrowLeftIcon } from 'lucide-react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import * as XLSX from 'xlsx';
 
-type TFlightImportRow = {
-  airlineCode: string;
-  bookingCode: string;
-  seatTotal: number;
-  holdTime: number;
-  closeBeforeDays: number;
-  adultPrice: number;
-  childPrice: number;
-  infantPrice: number;
-  itinerary: string;
+export const FlightImportExcelPage = () => {
+  const navigate = useNavigate();
 
-  departureSegment: {
-    departureDate: string;
-    departureTime: string;
-    arrivalDate: string;
-    arrivalTime: string;
-    flightNumber: string;
-    bookingClass: string;
-    aircraft: string;
-  };
+  const [step, setStep] = useState<'UPLOAD' | 'PREVIEW' | 'RESULT'>('UPLOAD');
+  const [validatedFlights, setValidatedFlights] = useState<
+    TParsedFlightFromExcelData[]
+  >([]);
 
-  returnSegment: {
-    departureDate: string;
-    departureTime: string;
-    arrivalDate: string;
-    arrivalTime: string;
-    flightNumber: string;
-    bookingClass: string;
-    aircraft: string;
-  };
-};
+  const [isImporting, setIsImporting] = useState(false);
+  const [importProgress, setImportProgress] = useState(0);
+  const [importResults, setImportResults] = useState<TImportResult>({
+    success: 0,
+    fail: 0,
+    details: [],
+  });
 
-const COLUMN = {
-  AIRLINE_CODE: 'B',
-  BOOKING_CODE: 'C',
-  SEAT_TOTAL: 'D',
-  HOLD_TIME: 'E',
-  CLOSE_BEFORE_DAYS: 'F',
-  ADULT_PRICE: 'G',
-  CHILD_PRICE: 'H',
-  INFANT_PRICE: 'I',
-  ITINERARY: 'J',
+  const [createFlightMutationFn] = useCreateFlightMutation();
 
-  DEPARTURE_DATE: 'K',
-  DEPARTURE_TIME: 'L',
-  ARRIVAL_DATE: 'M',
-  ARRIVAL_TIME: 'N',
-  FLIGHT_NUMBER: 'O',
-  BOOKING_CLASS: 'P',
-  AIRCRAFT: 'Q',
+  const beforeUploadFlightExcel: UploadProps['beforeUpload'] = async file => {
+    try {
+      const buffer = await file.arrayBuffer();
 
-  RETURN_DEPARTURE_DATE: 'R',
-  RETURN_DEPARTURE_TIME: 'S',
-  RETURN_ARRIVAL_DATE: 'T',
-  RETURN_ARRIVAL_TIME: 'U',
-  RETURN_FLIGHT_NUMBER: 'V',
-  RETURN_BOOKING_CLASS: 'W',
-  RETURN_AIRCRAFT: 'X',
-};
+      const workbook = XLSX.read(buffer, {
+        type: 'array',
+        raw: false,
+        cellText: true,
+        cellDates: true,
+      });
 
-const normalizeCellValue = (value: unknown, format?: string) => {
-  if (value == null) return '';
+      const flightSheet = workbook.Sheets['Danh sách chuyến bay'];
+      const fareRuleSheet = workbook.Sheets['Danh sách bộ điều kiện'];
 
-  // excel date number
-  if (typeof value === 'number' && format) {
-    const date = XLSX.SSF.parse_date_code(value);
+      if (!flightSheet) {
+        toast.error(
+          'File Excel không đúng cấu trúc (thiếu sheet "Danh sách chuyến bay")'
+        );
 
-    if (date) {
-      return dayjs(
-        new Date(date.y, date.m - 1, date.d, date.H, date.M, date.S)
-      ).format(format);
-    }
-  }
+        return false;
+      }
 
-  return String(value).trim();
-};
+      const fareRulesGrouped: Record<
+        string,
+        Array<{ label: string; text: string }>
+      > = {};
 
-const getCell = (sheet: XLSX.WorkSheet, address: string) => {
-  return sheet[address];
-};
+      if (fareRuleSheet) {
+        const rawFareRuleRows = XLSX.utils.sheet_to_json<(string | number)[]>(
+          fareRuleSheet,
+          {
+            header: 1,
+            blankrows: false,
+            defval: '',
+          }
+        );
 
-const getCellString = (
-  sheet: XLSX.WorkSheet,
-  address: string,
-  format?: string
-) => {
-  const cell = getCell(sheet, address);
-
-  if (!cell) return '';
-
-  /**
-   * cell.w = formatted text excel display
-   * cell.v = raw value
-   */
-
-  // formatted display text
-  if (cell.w) {
-    return String(cell.w).trim();
-  }
-
-  return normalizeCellValue(cell.v, format);
-};
-
-const getCellNumber = (sheet: XLSX.WorkSheet, address: string) => {
-  const cell = getCell(sheet, address);
-
-  if (!cell) return 0;
-
-  return Number(cell.v || 0);
-};
-
-const beforeUploadFlightExcel: UploadProps['beforeUpload'] = async file => {
-  try {
-    const buffer = await file.arrayBuffer();
-
-    const workbook = XLSX.read(buffer, {
-      type: 'array',
+        rawFareRuleRows.slice(1).forEach((_, index) => {
+          const rowIndex = index + 2;
+          const airSTT = getCellString(fareRuleSheet, `A${rowIndex}`);
+          const ruleTypeLabel = getCellString(fareRuleSheet, `B${rowIndex}`);
+          const ruleText = getCellString(fareRuleSheet, `C${rowIndex}`);
+          if (airSTT && ruleTypeLabel && ruleText) {
+            if (!fareRulesGrouped[airSTT]) {
+              fareRulesGrouped[airSTT] = [];
+            }
+            fareRulesGrouped[airSTT].push({
+              label: ruleTypeLabel,
+              text: ruleText,
+            });
+          }
+        });
+      }
 
       /**
-       * important:
-       * preserve raw excel values
+       * get all rows
+       * header: 1 => array[][]
        */
-      raw: false,
-
-      /**
-       * preserve formatted text
-       */
-      cellText: true,
-
-      /**
-       * preserve date format
-       */
-      cellDates: true,
-    });
-
-    const sheet = workbook.Sheets['Danh sách chuyến bay'];
-
-    if (!sheet) {
-      message.error('Không tìm thấy sheet Danh sách chuyến bay');
-
-      return false;
-    }
-
-    const range = XLSX.utils.decode_range(sheet['!ref'] || 'A1:A1');
-
-    const rows: TFlightImportRow[] = [];
-
-    /**
-     * skip header rows
-     * start row = 3
-     */
-    for (let rowIndex = 3; rowIndex <= range.e.r + 1; rowIndex++) {
-      const airlineCode = getCellString(
-        sheet,
-        `${COLUMN.AIRLINE_CODE}${rowIndex}`
+      const rawFlightRows = XLSX.utils.sheet_to_json<(string | number)[]>(
+        flightSheet,
+        {
+          header: 1,
+          blankrows: false,
+          defval: '',
+        }
       );
 
-      // skip empty row
-      if (!airlineCode) continue;
+      const parsedFlights: TParsedFlightFromExcelData[] = [];
+      /**
+       * skip header rows
+       * excel row starts from 1
+       * data starts from row 3
+       */
+      rawFlightRows.slice(2).forEach((_, index) => {
+        const rowIndex = index + 3;
 
-      const item: TFlightImportRow = {
-        airlineCode,
+        const stt = getCellString(flightSheet, `A${rowIndex}`);
 
-        bookingCode: getCellString(sheet, `${COLUMN.BOOKING_CODE}${rowIndex}`),
+        if (!stt) return;
 
-        seatTotal: getCellNumber(sheet, `${COLUMN.SEAT_TOTAL}${rowIndex}`),
-
-        holdTime: getCellNumber(sheet, `${COLUMN.HOLD_TIME}${rowIndex}`),
-
-        closeBeforeDays: getCellNumber(
-          sheet,
-          `${COLUMN.CLOSE_BEFORE_DAYS}${rowIndex}`
-        ),
-
-        adultPrice: getCellNumber(sheet, `${COLUMN.ADULT_PRICE}${rowIndex}`),
-
-        childPrice: getCellNumber(sheet, `${COLUMN.CHILD_PRICE}${rowIndex}`),
-
-        infantPrice: getCellNumber(sheet, `${COLUMN.INFANT_PRICE}${rowIndex}`),
-
-        itinerary: getCellString(sheet, `${COLUMN.ITINERARY}${rowIndex}`),
-
-        departureSegment: {
-          departureDate: getCellString(
-            sheet,
-            `${COLUMN.DEPARTURE_DATE}${rowIndex}`,
-            'DD/MM/YYYY'
+        const item: TFlightExcelImportRow = {
+          stt,
+          airlineCode: getCellString(flightSheet, `B${rowIndex}`),
+          bookingCode: getCellString(flightSheet, `C${rowIndex}`),
+          seatTotal: getCellNumber(flightSheet, `D${rowIndex}`),
+          timeLimit: getCellNumber(flightSheet, `E${rowIndex}`),
+          closingDaysBeforeDeparture: getCellNumber(
+            flightSheet,
+            `F${rowIndex}`
           ),
+          priceAdult: getCellNumber(flightSheet, `G${rowIndex}`),
+          priceChild: getCellNumber(flightSheet, `H${rowIndex}`),
+          priceInfant: getCellNumber(flightSheet, `I${rowIndex}`),
+          itinerary: getCellString(flightSheet, `J${rowIndex}`),
+          departure: {
+            date: getCellDateOnly(flightSheet, `K${rowIndex}`),
+            time: getCellTimeOnly(flightSheet, `L${rowIndex}`),
+            arrDate: getCellDateOnly(flightSheet, `M${rowIndex}`),
+            arrTime: getCellTimeOnly(flightSheet, `N${rowIndex}`),
+            flightNum: getCellString(flightSheet, `O${rowIndex}`),
+            seatClass: getCellString(flightSheet, `P${rowIndex}`),
+            plane: getCellString(flightSheet, `Q${rowIndex}`),
+          },
+          return: {
+            date: getCellDateOnly(flightSheet, `R${rowIndex}`),
+            time: getCellTimeOnly(flightSheet, `S${rowIndex}`),
+            arrDate: getCellDateOnly(flightSheet, `T${rowIndex}`),
+            arrTime: getCellTimeOnly(flightSheet, `U${rowIndex}`),
+            flightNum: getCellString(flightSheet, `V${rowIndex}`),
+            seatClass: getCellString(flightSheet, `W${rowIndex}`),
+            plane: getCellString(flightSheet, `X${rowIndex}`),
+          },
+        };
 
-          departureTime: getCellString(
-            sheet,
-            `${COLUMN.DEPARTURE_TIME}${rowIndex}`
-          ),
+        const itemFareRules = fareRulesGrouped[item.stt || ''] || [];
 
-          arrivalDate: getCellString(
-            sheet,
-            `${COLUMN.ARRIVAL_DATE}${rowIndex}`,
-            'DD/MM/YYYY'
-          ),
+        const errors = validateFlightDataImport(item, itemFareRules);
+        const isValid = errors.length === 0;
 
-          arrivalTime: getCellString(
-            sheet,
-            `${COLUMN.ARRIVAL_TIME}${rowIndex}`
-          ),
+        const payload = isValid
+          ? mapFlightDataImportToCreateFlightPayload(item, itemFareRules)
+          : null;
+        parsedFlights.push({
+          id: `${item.stt}-${rowIndex}-${Date.now()}`,
+          rowRaw: item,
+          rules: itemFareRules,
+          errors,
+          isValid,
+          payload,
+        });
+      });
 
-          flightNumber: getCellString(
-            sheet,
-            `${COLUMN.FLIGHT_NUMBER}${rowIndex}`
-          ),
+      if (parsedFlights.length === 0) {
+        toast.error('Không tìm thấy dòng dữ liệu chuyến bay nào trong file.');
 
-          bookingClass: getCellString(
-            sheet,
-            `${COLUMN.BOOKING_CLASS}${rowIndex}`
-          ),
+        return false;
+      }
 
-          aircraft: getCellString(sheet, `${COLUMN.AIRCRAFT}${rowIndex}`),
-        },
-
-        returnSegment: {
-          departureDate: getCellString(
-            sheet,
-            `${COLUMN.RETURN_DEPARTURE_DATE}${rowIndex}`,
-            'DD/MM/YYYY'
-          ),
-
-          departureTime: getCellString(
-            sheet,
-            `${COLUMN.RETURN_DEPARTURE_TIME}${rowIndex}`
-          ),
-
-          arrivalDate: getCellString(
-            sheet,
-            `${COLUMN.RETURN_ARRIVAL_DATE}${rowIndex}`,
-            'DD/MM/YYYY'
-          ),
-
-          arrivalTime: getCellString(
-            sheet,
-            `${COLUMN.RETURN_ARRIVAL_TIME}${rowIndex}`
-          ),
-
-          flightNumber: getCellString(
-            sheet,
-            `${COLUMN.RETURN_FLIGHT_NUMBER}${rowIndex}`
-          ),
-
-          bookingClass: getCellString(
-            sheet,
-            `${COLUMN.RETURN_BOOKING_CLASS}${rowIndex}`
-          ),
-
-          aircraft: getCellString(
-            sheet,
-            `${COLUMN.RETURN_AIRCRAFT}${rowIndex}`
-          ),
-        },
-      };
-
-      rows.push(item);
+      setValidatedFlights(parsedFlights.slice(0, 20));
+      setStep('PREVIEW');
+      toast.success(
+        `Đã xử lý xong ${parsedFlights.length > 20 ? 20 : parsedFlights.length} dòng dữ liệu.`
+      );
+    } catch (error) {
+      console.error(error);
+      toast.error('Có lỗi xảy ra khi đọc tệp Excel');
     }
 
-    console.log('IMPORT_ROWS', rows);
+    return false;
+  };
 
-    message.success(`Import thành công ${rows.length} dòng`);
-  } catch (error) {
-    console.error(error);
+  // Run the batch import mutations
+  const handleImportSubmit = async () => {
+    const validRecords = validatedFlights.filter(x => x.isValid);
+    if (validRecords.length === 0) {
+      toast.error('Không có dòng dữ liệu hợp lệ nào để import.');
+      return;
+    }
 
-    message.error('Import excel thất bại');
-  }
+    setIsImporting(true);
+    setImportProgress(0);
+    let successCount = 0;
+    let failCount = 0;
+    const details: TImportResultDetailItem[] = [];
 
-  return false;
-};
+    for (let i = 0; i < validRecords.length; i++) {
+      const record = validRecords[i];
+      setImportProgress(Math.round((i / validRecords.length) * 100));
+      try {
+        const payload = record.payload;
+        if (!payload) throw new Error('Không có thông tin chuyến bay');
+        await createFlightMutationFn(payload).unwrap();
+        successCount++;
+        details.push({ bookingCode: payload.bookingCode, success: true });
 
-export const FlightImportExcelPage = () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (err: any) {
+        failCount++;
+        const errMsg = err?.data?.message || err?.message || 'Lỗi hệ thống';
+        details.push({
+          bookingCode: record.rowRaw.bookingCode || `STT ${record.rowRaw.stt}`,
+          success: false,
+          error: errMsg,
+        });
+      }
+    }
+
+    setImportProgress(100);
+    setIsImporting(false);
+    setImportResults({
+      success: successCount,
+      fail: failCount,
+      details,
+    });
+    setStep('RESULT');
+  };
+
   return (
-    <div className="p-4">
-      <Button onClick={() => generateFlightTemplateExcel()}>
-        Download Excel mẫu
-      </Button>
-      <Upload
-        accept=".xlsx"
-        beforeUpload={beforeUploadFlightExcel}
-        showUploadList={false}
-      >
-        <Button>Import Flight Excel</Button>
-      </Upload>
-    </div>
+    <>
+      <PageHelmet title="Import Excel | Kho vé máy bay" />
+      <AppPageHeader
+        title={
+          <span className="flex items-center gap-2">
+            <Button
+              size={'icon-sm'}
+              variant={'ghost'}
+              onClick={() => {
+                if (step === 'PREVIEW') setStep('UPLOAD');
+                else navigate(-1);
+              }}
+            >
+              <ArrowLeftIcon className="size-4" />
+            </Button>
+            Tạo chuyến bay từ Excel
+          </span>
+        }
+      />
+
+      <div className="space-y-6">
+        <div className="rounded-lg border bg-card p-4 py-6 shadow-xs">
+          <Steps
+            titlePlacement="vertical"
+            current={step === 'UPLOAD' ? 0 : step === 'PREVIEW' ? 1 : 2}
+            items={[
+              { title: 'Tải tệp tin mẫu & chọn file' },
+              { title: 'Xem trước & kiểm tra' },
+              { title: 'Hoàn tất import' },
+            ]}
+          />
+        </div>
+
+        {step === 'UPLOAD' && (
+          <UploadFileStep handleBeforeUpload={beforeUploadFlightExcel} />
+        )}
+
+        {step === 'PREVIEW' && (
+          <PreviewDataStep
+            importProgress={importProgress}
+            validatedFlights={validatedFlights}
+            setStep={setStep}
+            isImporting={isImporting}
+            onImport={handleImportSubmit}
+          />
+        )}
+
+        {step === 'RESULT' && (
+          <ShowResultStep
+            importResults={importResults}
+            setValidatedFlights={setValidatedFlights}
+            setStep={setStep}
+          />
+        )}
+      </div>
+    </>
   );
 };

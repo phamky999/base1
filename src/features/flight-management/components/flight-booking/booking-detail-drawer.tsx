@@ -58,7 +58,7 @@ export const BookingDetailDrawer = ({
             hiddenViewDetail
           />
         </DrawerHeader>
-        <div className="overflow-y-auto p-4">
+        <div data-vaul-no-drag className="overflow-y-auto p-4">
           <Skeleton loading={isFetching} active>
             {detail ? (
               <Space orientation="vertical" size="large" className="w-full">

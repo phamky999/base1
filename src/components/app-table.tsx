@@ -62,7 +62,7 @@ export const AppTable = <T,>(props: AppTableProps<T>) => {
       className={cn('custom-ant-table', classNameProps)}
       scroll={{ x: tableScrollWidth }}
       pagination={
-        !paginationProps
+        paginationProps === false
           ? false
           : {
               total: totalCount ?? 0,

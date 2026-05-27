@@ -35,6 +35,18 @@ export type TAirportItem = {
   countryName: string;
 };
 
+export type TCreateFlightSegmentItem = {
+  airlineCode: string;
+  startPoint: string;
+  endPoint: string;
+  startDate: string;
+  endDate: string;
+  flightNumber: string;
+  seatClass: string;
+  plane: string;
+  duration: number;
+};
+
 export type TCreateFlightPayload = {
   airlineCode: string;
   bookingCode: string;
@@ -48,28 +60,8 @@ export type TCreateFlightPayload = {
   priceAdult: number;
   priceChild: number;
   priceInfant: number;
-  departureSegments: Array<{
-    airlineCode: string;
-    startPoint: string;
-    endPoint: string;
-    startDate: string;
-    endDate: string;
-    flightNumber: string;
-    seatClass: string;
-    plane: string;
-    duration: number;
-  }>;
-  returnSegments?: Array<{
-    airlineCode: string;
-    startPoint: string;
-    endPoint: string;
-    startDate: string;
-    endDate: string;
-    flightNumber: string;
-    seatClass: string;
-    plane: string;
-    duration: number;
-  }>;
+  departureSegments: Array<TCreateFlightSegmentItem>;
+  returnSegments?: Array<TCreateFlightSegmentItem>;
   itineraryType: TFlightItineraryType;
 };
 
@@ -323,3 +315,57 @@ export type TGetFareRuleDetailResponse = {
 };
 
 export type TGetFareRulesResponse = Omit<TGetFareRuleDetailResponse, 'rules'>[];
+
+export type TFlightExcelImportRow = {
+  stt?: string;
+  airlineCode?: string;
+  bookingCode?: string;
+  seatTotal?: string | number;
+  timeLimit?: string | number;
+  closingDaysBeforeDeparture?: string | number;
+  priceAdult?: string | number;
+  priceChild?: string | number;
+  priceInfant?: string | number;
+  itinerary?: string;
+  departure?: {
+    date?: string;
+    time?: string;
+    arrDate?: string;
+    arrTime?: string;
+    flightNum?: string;
+    seatClass?: string;
+    plane?: string;
+  };
+  return?: {
+    date?: string;
+    time?: string;
+    arrDate?: string;
+    arrTime?: string;
+    flightNum?: string;
+    seatClass?: string;
+    plane?: string;
+  };
+};
+
+export type TParsedFlightFromExcelData = {
+  id: string;
+  rowRaw: TFlightExcelImportRow;
+  rules: Array<{
+    label: string;
+    text: string;
+  }>;
+  errors: string[];
+  isValid: boolean;
+  payload: TCreateFlightPayload | null;
+};
+
+export type TImportResultDetailItem = {
+  bookingCode: string;
+  success: boolean;
+  error?: string;
+};
+export type TImportResult = {
+  success: number;
+  fail: number;
+  details: Array<TImportResultDetailItem>;
+};

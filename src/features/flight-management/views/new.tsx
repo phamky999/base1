@@ -1045,7 +1045,7 @@ export const FlightImportExcelPage = () => {
 
       <div className="mx-auto max-w-7xl space-y-6">
         {/* Steps navigation */}
-        <div className="rounded-xl border bg-white p-6 shadow-xs">
+        <div className="rounded-lg border bg-white p-6 shadow-xs">
           <Steps
             current={step === 'UPLOAD' ? 0 : step === 'PREVIEW' ? 1 : 2}
             items={[
@@ -1061,7 +1061,7 @@ export const FlightImportExcelPage = () => {
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             {/* Left: Drag & Drop Zone */}
             <div className="space-y-6 lg:col-span-2">
-              <Card className="overflow-hidden rounded-xl border shadow-xs">
+              <Card className="overflow-hidden rounded-lg border shadow-xs">
                 <div className="border-b bg-linear-to-r from-blue-50/50 to-indigo-50/50 p-6">
                   <div className="flex items-start gap-4">
                     <div className="rounded-lg bg-indigo-500 p-3 text-white">
@@ -1085,7 +1085,7 @@ export const FlightImportExcelPage = () => {
                     accept=".xlsx"
                     showUploadList={false}
                     beforeUpload={handleExcelUpload}
-                    className="group rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/50 py-10 transition-all duration-300 hover:border-indigo-500 hover:bg-indigo-50/10"
+                    className="group rounded-lg border-2 border-dashed border-slate-200 bg-slate-50/50 py-10 transition-all duration-300 hover:border-indigo-500 hover:bg-indigo-50/10"
                   >
                     <div className="flex flex-col items-center gap-4 py-2">
                       <div className="rounded-full border bg-white p-4 text-slate-400 shadow-xs transition-all duration-300 group-hover:scale-105 group-hover:text-indigo-500 group-hover:shadow-md">
@@ -1102,7 +1102,7 @@ export const FlightImportExcelPage = () => {
                     </div>
                   </Upload.Dragger>
 
-                  <div className="mt-6 flex items-center justify-between rounded-xl border bg-slate-50 p-4">
+                  <div className="mt-6 flex items-center justify-between rounded-lg border bg-slate-50 p-4">
                     <div className="flex items-center gap-3">
                       <FileSpreadsheetIcon className="size-6 text-emerald-500" />
                       <div className="space-y-0.5">
@@ -1136,7 +1136,7 @@ export const FlightImportExcelPage = () => {
                     dẫn chuẩn hóa file
                   </span>
                 }
-                className="rounded-xl border shadow-xs"
+                className="rounded-lg border shadow-xs"
               >
                 <div className="space-y-4">
                   <div className="space-y-1 border-b border-dashed pb-3">
@@ -1206,7 +1206,7 @@ export const FlightImportExcelPage = () => {
         {step === 'PREVIEW' && (
           <div className="space-y-6">
             {/* Table Filtering & Main Container */}
-            <Card className="rounded-xl border shadow-xs">
+            <Card className="rounded-lg border shadow-xs">
               <div className="mb-5 flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <h4 className="text-sm font-bold text-slate-800">
@@ -1260,7 +1260,7 @@ export const FlightImportExcelPage = () => {
               </div>
 
               {/* Actions panel */}
-              <div className="mt-6 flex items-center justify-between rounded-xl border bg-slate-50 p-4">
+              <div className="mt-6 flex items-center justify-between rounded-lg border bg-slate-50 p-4">
                 <Button
                   variant="outline"
                   onClick={() => setStep('UPLOAD')}
@@ -1326,7 +1326,7 @@ export const FlightImportExcelPage = () => {
 
         {/* STEP 3: RESULT SCREEN */}
         {step === 'RESULT' && (
-          <Card className="mx-auto max-w-2xl space-y-6 rounded-xl border p-8 text-center shadow-xs">
+          <Card className="mx-auto max-w-2xl space-y-6 rounded-lg border p-8 text-center shadow-xs">
             <div className="flex flex-col items-center gap-3">
               {importResults.fail === 0 ? (
                 <div className="animate-bounce rounded-full bg-emerald-100 p-4 text-emerald-600">
@@ -1372,7 +1372,7 @@ export const FlightImportExcelPage = () => {
                 <span className="text-xs font-bold text-slate-700">
                   Chi tiết các chuyến bay thất bại:
                 </span>
-                <div className="max-h-40 space-y-1 divide-y overflow-y-auto rounded-xl border bg-slate-50/50 p-2">
+                <div className="max-h-40 space-y-1 divide-y overflow-y-auto rounded-lg border bg-slate-50/50 p-2">
                   {importResults.details
                     .filter(x => !x.success)
                     .map((item, idx) => (
