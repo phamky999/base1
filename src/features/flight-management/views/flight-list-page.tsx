@@ -3,7 +3,6 @@ import { AppPageHeader } from '@/components/app-page-header';
 import { AppTooltip } from '@/components/app-tooltip';
 import { Button } from '@/components/ui/button';
 import { FlightList } from '@/features/flight-management/components/flight/flight-list';
-import { FlightListFilter } from '@/features/flight-management/components/flight/flight-list-filter';
 import { flightManagementPaths } from '@/features/flight-management/routes';
 import { useNavigate } from 'react-router-dom';
 
@@ -23,7 +22,7 @@ export const FlightListPage = () => {
                   navigate(flightManagementPaths.importExcel.fullPath)
                 }
               >
-                Import Excel
+                Nhập Excel
               </Button>
             </AppTooltip>
 
@@ -38,11 +37,8 @@ export const FlightListPage = () => {
           </div>
         }
       />
-      <div className="space-y-6">
-        <FlightListFilter />
 
-        <FlightList />
-      </div>
+      <FlightList />
     </>
   );
 };

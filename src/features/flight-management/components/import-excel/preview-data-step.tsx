@@ -8,12 +8,19 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FARE_RULE_TYPE_LABEL } from '@/features/flight-management/constants';
 import { getFareRuleType } from '@/features/flight-management/helper/validate-flight-data-import-';
 import type { TParsedFlightFromExcelData } from '@/features/flight-management/types';
 import { formatDisplayCurrency } from '@/lib/helpers/string';
-import { Card, Descriptions, Progress, Tag, type TableProps } from 'antd';
-import { AlertTriangleIcon, CheckIcon, XIcon } from 'lucide-react';
+import { Descriptions, Progress, Tag, type TableProps } from 'antd';
+import {
+  AlertTriangleIcon,
+  CheckIcon,
+  PlaneLandingIcon,
+  PlaneTakeoffIcon,
+  XIcon,
+} from 'lucide-react';
 import { useState } from 'react';
 
 type PreviewDataStepProps = {
@@ -135,7 +142,7 @@ export const PreviewDataStep = ({
           it.length >= 6 && it.substring(0, 3) === it.substring(it.length - 3);
         return (
           <div className="space-y-1">
-            <div className="font-mono text-xs font-bold tracking-wider">
+            <div className="text-xs font-bold tracking-wider">
               {it || 'N/A'}
             </div>
             {it.length >= 6 ? (
@@ -153,7 +160,7 @@ export const PreviewDataStep = ({
     {
       title: 'Chiều đi',
       key: 'departure',
-      width: 260,
+      width: 200,
       render: (record: TParsedFlightFromExcelData) => {
         const data = record?.rowRaw?.departure;
 
@@ -175,18 +182,18 @@ export const PreviewDataStep = ({
               <span className="font-bold">{data?.plane || 'N/A'}</span>
             </div>
             <div className="flex flex-col gap-0.5">
-              <span>
-                <span className="text-gray-400">Khởi hành: </span>
+              <div className="flex items-center gap-1.5">
+                <PlaneTakeoffIcon className="size-3.5 shrink-0 text-gray-400" />
                 <strong>
                   {data?.time} {data?.date}
                 </strong>
-              </span>
-              <span>
-                <span className="text-gray-400">Hạ cánh: </span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <PlaneLandingIcon className="size-3.5 shrink-0 text-gray-400" />
                 <strong>
                   {data?.arrTime} {data?.arrDate}
                 </strong>
-              </span>
+              </div>
             </div>
           </div>
         );
@@ -195,7 +202,7 @@ export const PreviewDataStep = ({
     {
       title: 'Chiều về',
       key: 'return',
-      width: 260,
+      width: 200,
       render: (record: TParsedFlightFromExcelData) => {
         const row = record.rowRaw;
         const it = String(row.itinerary || '').toUpperCase();
@@ -230,25 +237,25 @@ export const PreviewDataStep = ({
               <span className="font-bold">{data?.plane || 'N/A'}</span>
             </div>
             <div className="flex flex-col gap-0.5">
-              <span>
-                <span className="text-gray-400">Khởi hành: </span>
+              <div className="flex items-center gap-1.5">
+                <PlaneTakeoffIcon className="size-3.5 shrink-0 text-gray-400" />
                 <strong>
                   {data?.time} {data?.date}
                 </strong>
-              </span>
-              <span>
-                <span className="text-gray-400">Hạ cánh: </span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <PlaneLandingIcon className="size-3.5 shrink-0 text-gray-400" />
                 <strong>
                   {data?.arrTime} {data?.arrDate}
                 </strong>
-              </span>
+              </div>
             </div>
           </div>
         );
       },
     },
     {
-      title: 'Số   Ghế',
+      title: 'Số Ghế',
       key: 'seatTotal',
       width: 80,
       render: (record: TParsedFlightFromExcelData) => {
@@ -258,7 +265,7 @@ export const PreviewDataStep = ({
       },
     },
     {
-      title: 'Giá vé',
+      title: 'Giá',
       key: 'prices',
       width: 200,
       render: (record: TParsedFlightFromExcelData) => {
@@ -269,19 +276,19 @@ export const PreviewDataStep = ({
             <div className="flex flex-col gap-0.5 text-xs text-gray-400">
               <span className="flex justify-between gap-1.5">
                 <span>Người lớn:</span>{' '}
-                <strong className="text-black">
+                <strong className="text-foreground">
                   {formatDisplayCurrency(Number(row?.priceAdult ?? 0))}
                 </strong>
               </span>
               <span className="flex justify-between gap-1.5">
                 <span>Trẻ em:</span>{' '}
-                <strong className="text-black">
+                <strong className="text-foreground">
                   {formatDisplayCurrency(Number(row?.priceChild ?? 0))}
                 </strong>
               </span>
               <span className="flex justify-between gap-1.5">
                 <span>Em bé:</span>{' '}
-                <strong className="text-black">
+                <strong className="text-foreground">
                   {formatDisplayCurrency(Number(row?.priceInfant ?? 0))}
                 </strong>
               </span>
@@ -325,41 +332,44 @@ export const PreviewDataStep = ({
   return (
     <div className="space-y-6">
       {/* Table Filtering & Main Container */}
-      <Card className="rounded-lg border shadow-xs">
+      <div className="card lg:p-6">
         <div className="mb-5 flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h4 className="text-sm font-bold text-slate-800">
-              Danh sách dữ liệu xem trước
-            </h4>
-            <p className="mt-0.5 text-xs text-slate-400">
+            <h4 className="text-sm font-bold">Danh sách dữ liệu xem trước</h4>
+            <p className="mt-0.5 text-xs text-gray-400">
               Vui lòng rà soát lại thông tin trước khi thực hiện import chính
               thức.
             </p>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="mr-1 text-xs font-semibold text-slate-500">
-              Bộ lọc nhanh:
+          <div className="flex flex-col gap-2 md:flex-row md:items-center">
+            <span className="mr-1 text-xs font-semibold text-gray-400">
+              Bộ lọc:
             </span>
-            <div className="inline-flex rounded-lg bg-slate-100 p-0.5 text-slate-700">
-              <button
-                onClick={() => setFilterType('ALL')}
-                className={`rounded-md px-3 py-1 text-xs font-semibold transition-all ${filterType === 'ALL' ? 'bg-white text-slate-800 shadow-xs' : 'text-slate-500 hover:text-slate-800'}`}
-              >
-                Tất cả ({totalCount})
-              </button>
-              <button
-                onClick={() => setFilterType('VALID')}
-                className={`rounded-md px-3 py-1 text-xs font-semibold transition-all ${filterType === 'VALID' ? 'bg-white text-slate-800 shadow-xs' : 'text-slate-500 hover:text-slate-800'}`}
-              >
-                Hợp lệ ({validCount})
-              </button>
-              <button
-                onClick={() => setFilterType('INVALID')}
-                className={`rounded-md px-3 py-1 text-xs font-semibold transition-all ${filterType === 'INVALID' ? 'bg-white text-slate-800 shadow-xs' : 'text-slate-500 hover:text-slate-800'}`}
-              >
-                Không hợp lệ ({invalidCount})
-              </button>
-            </div>
+            <Tabs value={filterType}>
+              <TabsList>
+                <TabsTrigger
+                  className="text-xs"
+                  value="ALL"
+                  onClick={() => setFilterType('ALL')}
+                >
+                  Tất cả ({totalCount})
+                </TabsTrigger>
+                <TabsTrigger
+                  className="text-xs"
+                  value="VALID"
+                  onClick={() => setFilterType('VALID')}
+                >
+                  Hợp lệ ({validCount})
+                </TabsTrigger>
+                <TabsTrigger
+                  className="text-xs"
+                  value="INVALID"
+                  onClick={() => setFilterType('INVALID')}
+                >
+                  Không hợp lệ ({invalidCount})
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
           </div>
         </div>
 
@@ -404,17 +414,15 @@ export const PreviewDataStep = ({
             </Button>
           </div>
         </div>
-      </Card>
+      </div>
 
       {/* Importing Progress overlay */}
       {isImporting && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-xs">
-          <Card className="w-full max-w-md space-y-6 rounded-2xl border-0 p-6 text-center shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-md space-y-6 rounded-lg border bg-card p-6 text-center shadow-xs">
             <div className="space-y-2">
-              <h3 className="text-lg font-bold text-slate-800">
-                Đang import dữ liệu...
-              </h3>
-              <p className="text-xs text-slate-500">
+              <h3 className="text-lg font-bold">Đang import dữ liệu...</h3>
+              <p className="text-xs text-gray-400">
                 Vui lòng không đóng trình duyệt lúc này.
               </p>
             </div>
@@ -422,16 +430,16 @@ export const PreviewDataStep = ({
             <div className="py-2">
               <Progress
                 percent={importProgress}
-                strokeColor={{ '0%': '#4F46E5', '100%': '#10B981' }}
+                strokeColor="#1447e6"
                 status="active"
               />
             </div>
 
-            <p className="text-xs font-medium text-slate-600">
+            <p className="text-xs font-medium text-gray-400">
               Đã hoàn thành {Math.round((importProgress / 100) * validCount)} /{' '}
               {validCount} chuyến bay hợp lệ
             </p>
-          </Card>
+          </div>
         </div>
       )}
 
@@ -446,7 +454,7 @@ export const PreviewDataStep = ({
             <DrawerClose asChild>
               <Button
                 variant="ghost"
-                size="sm"
+                size="icon-sm"
                 onClick={() =>
                   setConditionDrawer(prev => ({ ...prev, open: false }))
                 }

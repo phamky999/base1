@@ -17,3 +17,13 @@ export const DEFAULT_DATE_FORMATS = [
   'D/MM/YYYY',
   'DD/M/YYYY',
 ];
+
+export const WEEKDAY_MAP: Record<number, string> = {
+  0: 'Chủ nhật',
+  1: 'Thứ Hai',
+  2: 'Thứ Ba',
+  3: 'Thứ Tư',
+  4: 'Thứ Năm',
+  5: 'Thứ Sáu',
+  6: 'Thứ Bảy',
+};

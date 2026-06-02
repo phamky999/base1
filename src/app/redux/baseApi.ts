@@ -1,10 +1,10 @@
+import type { TCustomFetchArgs } from '@/app/redux/types';
 import { TOKEN } from '@/lib/constants';
 import type { ObjectType } from '@/lib/types';
 import { clearAuthToken, getAuthToken, setAuthToken } from '@/lib/utils';
 import type {
   BaseQueryApi,
   BaseQueryFn,
-  FetchArgs,
   FetchBaseQueryError,
 } from '@reduxjs/toolkit/query';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
@@ -41,10 +41,15 @@ const handleLogout = (api: BaseQueryApi) => {
 };
 
 const baseQueryWithInterceptor: BaseQueryFn<
-  string | FetchArgs,
+  string | TCustomFetchArgs,
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
+  const customConfig =
+    typeof args === 'string' ? undefined : args?.extraOptions;
+
+  const shouldHandleError = !customConfig?.skipGlobalErrorHandler;
+
   await mutex.waitForUnlock();
 
   let result = await baseQuery(args, api, extraOptions);
@@ -109,12 +114,14 @@ const baseQueryWithInterceptor: BaseQueryFn<
         result = await baseQuery(args, api, extraOptions);
       }
     } else {
-      const message =
-        (result?.error?.data as ObjectType)?.message ||
-        'Có lỗi xảy ra, vui lòn thử lại sau.';
-      void toast.error(message, {
-        id: message,
-      });
+      if (shouldHandleError) {
+        const message =
+          (result?.error?.data as ObjectType)?.message ||
+          'Có lỗi xảy ra, vui lòn thử lại sau.';
+        void toast.error(message, {
+          id: message,
+        });
+      }
       return result;
     }
   }

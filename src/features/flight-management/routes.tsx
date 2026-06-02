@@ -1,3 +1,5 @@
+import { store } from '@/app/redux/store';
+import { flightMasterDataQueryApi } from '@/features/flight-management/query';
 import { lazyNamedExport } from '@/lib/utils';
 import { generatePath, Navigate, type RouteObject } from 'react-router-dom';
 
@@ -6,9 +8,9 @@ const FlightListPage = lazyNamedExport(
   'FlightListPage'
 );
 
-const CreateFlightPage = lazyNamedExport(
-  () => import('@/features/flight-management/views/create-flight-page'),
-  'CreateFlightPage'
+const FlightCreatePage = lazyNamedExport(
+  () => import('@/features/flight-management/views/flight-create-page'),
+  'FlightCreatePage'
 );
 
 const FlightImportExcelPage = lazyNamedExport(
@@ -16,14 +18,19 @@ const FlightImportExcelPage = lazyNamedExport(
   'FlightImportExcelPage'
 );
 
-const FlightDetailPage = lazyNamedExport(
-  () => import('@/features/flight-management/views/flight-detail-page'),
-  'FlightDetailPage'
+const FlightUpdatePage = lazyNamedExport(
+  () => import('@/features/flight-management/views/flight-update-page'),
+  'FlightUpdatePage'
 );
 
 const FlightBookingListPage = lazyNamedExport(
   () => import('@/features/flight-management/views/flight-booking-list-page'),
   'FlightBookingListPage'
+);
+
+const FlightBookingCreatePage = lazyNamedExport(
+  () => import('@/features/flight-management/views/flight-booking-create-page'),
+  'FlightBookingCreatePage'
 );
 
 const TicketConditionsPage = lazyNamedExport(
@@ -62,10 +69,25 @@ export const flightManagementPaths = {
     fullPath: '/flight-management/booking-list',
   },
 
+  createBooking: {
+    path: 'create',
+    fullPath: '/flight-management/booking-list/create',
+  },
+
   ticketConditions: {
     path: 'ticket-conditions',
     fullPath: '/flight-management/ticket-conditions',
   },
+};
+
+const flightRouteLoader = async () => {
+  store.dispatch(flightMasterDataQueryApi.endpoints.GetAircrafts.initiate());
+  store.dispatch(flightMasterDataQueryApi.endpoints.GetAirlines.initiate());
+  store.dispatch(
+    flightMasterDataQueryApi.endpoints.GetAirlineClasses.initiate()
+  );
+
+  return null;
 };
 
 export const flightManagementRoutes: RouteObject[] = [
@@ -74,6 +96,7 @@ export const flightManagementRoutes: RouteObject[] = [
     handle: {
       crumb: () => 'Kho vé máy bay',
     },
+    loader: flightRouteLoader,
     children: [
       {
         index: true,
@@ -93,7 +116,7 @@ export const flightManagementRoutes: RouteObject[] = [
           },
           {
             path: flightManagementPaths.createFlight.path,
-            element: <CreateFlightPage />,
+            element: <FlightCreatePage />,
             handle: {
               crumb: () => 'Tạo chuyến bay',
             },
@@ -108,19 +131,31 @@ export const flightManagementRoutes: RouteObject[] = [
 
           {
             path: flightManagementPaths.flightDetail.path,
-            element: <FlightDetailPage />,
+            element: <FlightUpdatePage />,
             handle: {
-              crumb: () => 'Thông tin chuyến bay',
+              crumb: () => 'Cập nhật chuyến bay',
             },
           },
         ],
       },
       {
         path: flightManagementPaths.bookingList.path,
-        element: <FlightBookingListPage />,
         handle: {
           crumb: () => 'Danh sách đơn hàng',
         },
+        children: [
+          {
+            index: true,
+            element: <FlightBookingListPage />,
+          },
+          {
+            path: flightManagementPaths.createBooking.path,
+            element: <FlightBookingCreatePage />,
+            handle: {
+              crumb: () => 'Tạo đơn hàng',
+            },
+          },
+        ],
       },
       {
         path: flightManagementPaths.ticketConditions.path,

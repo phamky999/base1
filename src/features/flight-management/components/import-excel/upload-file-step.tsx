@@ -18,21 +18,21 @@ export const UploadFileStep = ({ handleBeforeUpload }: UploadFileStepProps) => {
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-8">
       {/* Left: Drag & Drop Zone */}
       <div className="space-y-6 lg:col-span-5">
-        <div className="overflow-hidden rounded-lg border bg-card p-6 shadow-xs">
-          <div className="flex items-center gap-2 border-b pb-4 text-base font-bold">
+        <div className="card overflow-hidden lg:p-6">
+          <div className="flex items-center gap-2 border-b pb-4 text-base leading-none font-bold">
             <UploadCloudIcon className="size-5 text-primary" />
             Tải lên tệp Excel
           </div>
 
-          <div className="py-10">
+          <div className="py-4 lg:py-10">
             <Upload.Dragger
               accept=".xlsx"
               showUploadList={false}
               beforeUpload={handleBeforeUpload}
-              className="py-10 transition-all duration-300 hover:border-indigo-500 hover:bg-indigo-50/10 [&_.ant-upload-drag]:bg-muted"
+              className="group py-10 transition-all duration-300 hover:border-blue-500 hover:bg-blue-50/10 [&_.ant-upload-drag]:bg-muted"
             >
               <div className="flex flex-col items-center gap-4 py-2">
-                <div className="rounded-full border bg-card p-4 text-slate-400 shadow-xs transition-all duration-300 group-hover:scale-105 group-hover:text-indigo-500 group-hover:shadow-md">
+                <div className="rounded-full border bg-card p-4 text-slate-400 shadow-xs transition-all duration-300 group-hover:scale-105 group-hover:text-blue-500 group-hover:shadow-md">
                   <UploadCloudIcon className="size-8" />
                 </div>
                 <div className="space-y-1">
@@ -46,7 +46,7 @@ export const UploadFileStep = ({ handleBeforeUpload }: UploadFileStepProps) => {
               </div>
             </Upload.Dragger>
 
-            <div className="mt-10 flex items-center justify-between rounded-lg border bg-muted p-6">
+            <div className="mt-4 flex flex-col items-center justify-between gap-4 rounded-lg border bg-muted p-4 md:flex-row lg:mt-10 lg:p-6">
               <div className="flex items-center gap-3">
                 <FileSpreadsheetIcon className="size-6 text-primary" />
                 <div className="space-y-0.5">
@@ -61,7 +61,7 @@ export const UploadFileStep = ({ handleBeforeUpload }: UploadFileStepProps) => {
               <Button
                 variant="outline"
                 onClick={generateFlightTemplateExcel}
-                className="flex items-center gap-1.5 text-xs hover:bg-white"
+                className="flex items-center gap-1.5 text-xs hover:bg-white max-md:w-full"
               >
                 <DownloadIcon className="size-3.5" /> Tải file mẫu
               </Button>
@@ -72,8 +72,8 @@ export const UploadFileStep = ({ handleBeforeUpload }: UploadFileStepProps) => {
 
       {/* Right: Instructions & Guidelines */}
       <div className="space-y-6 lg:col-span-3">
-        <div className="overflow-hidden rounded-lg border bg-card p-6 shadow-xs">
-          <div className="flex items-center gap-2 border-b pb-4 text-base font-bold">
+        <div className="card overflow-hidden lg:p-6">
+          <div className="flex items-center gap-2 border-b pb-4 text-base leading-none font-bold">
             <HelpCircleIcon className="size-5 text-primary" /> Hướng dẫn nhập
             liệu
           </div>

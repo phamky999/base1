@@ -43,3 +43,8 @@ export type TUpdateMerchantParams = {
   phone: string;
   isActive: boolean;
 };
+
+export type TGetMerchantParams = {
+  isActive?: boolean;
+  hasCredentials?: boolean;
+};

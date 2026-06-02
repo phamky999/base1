@@ -42,7 +42,8 @@ export const FlightDetailDrawer = ({
   const { isMobile } = useSidebar();
 
   const normalizeFlightId = normalizeQueryParamValue(flightId);
-  const queryArg = !normalizeFlightId ? skipToken : String(normalizeFlightId);
+  const queryArg =
+    !normalizeFlightId || !open ? skipToken : String(normalizeFlightId);
 
   const { data, isFetching } = useGetFlightDetailQuery(queryArg);
 
@@ -180,7 +181,11 @@ export const FlightDetailDrawer = ({
       <DrawerContent className="max-w-200! max-md:w-full!">
         <DrawerHeader className="flex flex-row items-center justify-start! gap-2">
           <DrawerClose asChild>
-            <Button variant="ghost" onClick={() => onOpenChange(false)}>
+            <Button
+              variant="ghost"
+              onClick={() => onOpenChange(false)}
+              size="icon-sm"
+            >
               <XIcon className="size-4" />
             </Button>
           </DrawerClose>

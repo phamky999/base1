@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type { PAGINATION_QUERY_KEY, TOKEN } from '@/lib/constants';
+import type {
+  GENDER,
+  PAGINATION_QUERY_KEY,
+  PASSENGER_TYPE,
+  TOKEN,
+} from '@/lib/constants';
 import type { ReactNode } from 'react';
 import type { UIMatch } from 'react-router-dom';
 
@@ -45,3 +50,8 @@ export type TPaginationRequest = {
   page: number;
   pageSize: number;
 };
+
+export type TGender = (typeof GENDER)[keyof typeof GENDER];
+
+export type TPassengerType =
+  (typeof PASSENGER_TYPE)[keyof typeof PASSENGER_TYPE];

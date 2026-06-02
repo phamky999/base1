@@ -1,7 +1,7 @@
 import { PageHelmet } from '@/components/app-helmet';
 import { AppPageHeader } from '@/components/app-page-header';
 import { Button } from '@/components/ui/button';
-import { AddEditTicketConditionDrawer } from '@/features/flight-management/components/ticket-condition/add-edit-ticket-condition-form';
+import { TicketConditionForm } from '@/features/flight-management/components/ticket-condition/ticket-condition-form/index';
 import { TicketConditionList } from '@/features/flight-management/components/ticket-condition/ticket-condition-list';
 import { useState } from 'react';
 
@@ -28,7 +28,7 @@ export const TicketConditionsPage = () => {
 
       <TicketConditionList />
 
-      <AddEditTicketConditionDrawer
+      <TicketConditionForm
         selectedId={null}
         open={isAddEditModalOpen}
         onOpenChange={setIsAddEditModalOpen}

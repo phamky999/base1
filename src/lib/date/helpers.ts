@@ -2,6 +2,7 @@ import {
   DEFAULT_DATE_FORMAT,
   DEFAULT_DATE_TIME_FORMAT,
   EMPTY_DATE_TIME_PLACEHOLDER,
+  WEEKDAY_MAP,
 } from '@/lib/date/constants';
 import dayjs from '@/lib/date/dayjs-config';
 import type { FormInstance } from 'antd';
@@ -140,4 +141,59 @@ export const formatDisplayDateTime = (
   if (!dayjs(date).isValid()) return date as string;
 
   return dayjs(date).format(displayFormat || DEFAULT_DATE_TIME_FORMAT);
+};
+
+type TCustomDateFormatType = 'weekday' | 'fullDateText';
+
+type TFormatDateType = TCustomDateFormatType | string;
+
+type TFormatDateOptions = {
+  /**
+   * Format của dữ liệu đầu vào
+   * Ví dụ:
+   * - DD/MM/YYYY
+   * - YYYY-MM-DD
+   */
+  inputFormat?: string;
+
+  /**
+   * Format output
+   *
+   * Hỗ trợ:
+   * - custom type:
+   *    + weekday
+   *    + fullDateText
+   *
+   * - hoặc toàn bộ format của dayjs:
+   *    + DD/MM/YYYY
+   *    + HH:mm
+   *    + HH:mm DD/MM/YYYY
+   */
+  type?: TFormatDateType;
+};
+
+export const parseDisplayDate = (
+  date?: string | Date | number | null | Dayjs,
+  options?: TFormatDateOptions
+): string => {
+  if (!date) return '';
+
+  const { inputFormat, type = DEFAULT_DATE_FORMAT } = options || {};
+
+  const parsedDate = inputFormat ? dayjs(date, inputFormat) : dayjs(date);
+
+  if (!parsedDate.isValid()) return '';
+
+  switch (type) {
+    case 'weekday':
+      return WEEKDAY_MAP[parsedDate.day()];
+
+    case 'fullDateText':
+      return `ngày ${parsedDate.format('DD')}, tháng ${parsedDate.format(
+        'MM'
+      )}, năm ${parsedDate.format('YYYY')}`;
+
+    default:
+      return parsedDate.format(type);
+  }
 };

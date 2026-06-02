@@ -217,7 +217,12 @@ export const FlightImportExcelPage = () => {
       try {
         const payload = record.payload;
         if (!payload) throw new Error('Không có thông tin chuyến bay');
-        await createFlightMutationFn(payload).unwrap();
+        await createFlightMutationFn({
+          payload,
+          extraOptions: {
+            skipGlobalErrorHandler: true,
+          },
+        }).unwrap();
         successCount++;
         details.push({ bookingCode: payload.bookingCode, success: true });
 

@@ -38,6 +38,16 @@ export const FlightBookingListPage = () => {
             Danh sách đơn hàng
           </span>
         }
+        addon={
+          <Button
+            variant={'default'}
+            onClick={() =>
+              navigate(flightManagementPaths.createBooking.fullPath)
+            }
+          >
+            Thêm mới
+          </Button>
+        }
       />
       <div className="space-y-6">
         <FlightBookingListFilter />

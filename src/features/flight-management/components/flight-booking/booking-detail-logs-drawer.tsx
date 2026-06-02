@@ -40,7 +40,11 @@ export const BookingDetailLogsDrawer = ({
       <DrawerContent className="max-w-150! max-md:w-full!">
         <DrawerHeader className="flex flex-row items-center justify-start! gap-2">
           <DrawerClose asChild>
-            <Button variant="ghost" onClick={() => onOpenChange(false)}>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => onOpenChange(false)}
+            >
               <XIcon className="size-4" />
             </Button>
           </DrawerClose>

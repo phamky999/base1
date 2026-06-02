@@ -15,7 +15,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { UpdatePasswordModal } from '@/features/auth/components/update-password-modal';
+import { PasswordUpdateModal } from '@/features/auth/components/password-update-modal';
 import { UserProfileModal } from '@/features/auth/components/user-profile-modal';
 import { useRevokeAuthTokenMutation } from '@/features/auth/query';
 import { currentUserSelector } from '@/features/auth/selector';
@@ -164,7 +164,7 @@ export const SidebarUser = ({ showInHeader }: { showInHeader?: boolean }) => {
         open={openUserProfileDialog}
         onOpenChange={setOpenUserProfileDialog}
       />
-      <UpdatePasswordModal
+      <PasswordUpdateModal
         open={openPasswordDialog}
         onOpenChange={setOpenPasswordDialog}
       />

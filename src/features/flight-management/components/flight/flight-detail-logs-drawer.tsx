@@ -40,7 +40,11 @@ export const FlightDetailLogsDrawer = ({
       <DrawerContent className="max-w-150! max-md:w-full!">
         <DrawerHeader className="flex flex-row items-center justify-start! gap-2">
           <DrawerClose asChild>
-            <Button variant="ghost" onClick={() => onOpenChange(false)}>
+            <Button
+              variant="ghost"
+              onClick={() => onOpenChange(false)}
+              size="icon-sm"
+            >
               <XIcon className="size-4" />
             </Button>
           </DrawerClose>

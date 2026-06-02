@@ -7,13 +7,13 @@ import { systemManagementRoutes } from '@/features/system-management/routes';
 import { lazyNamedExport } from '@/lib/utils';
 import { createBrowserRouter } from 'react-router-dom';
 
-const PortalPage = lazyNamedExport(
-  () => import('@/pages/PortalPage'),
-  'PortalPage'
+const DashboardPage = lazyNamedExport(
+  () => import('@/features/dashboard/views/dashboard-page'),
+  'DashboardPage'
 );
 
 const NotFoundPage = lazyNamedExport(
-  () => import('@/pages/NotFoundPage'),
+  () => import('@/pages/not-found-page'),
   'NotFoundPage'
 );
 
@@ -29,7 +29,7 @@ export const appRoutes = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <PortalPage />,
+        element: <DashboardPage />,
       },
       // declare app features routes
       ...flightManagementRoutes,

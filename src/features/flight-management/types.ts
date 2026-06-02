@@ -1,3 +1,4 @@
+import type { TCustomExtraOptions } from '@/app/redux/types';
 import type {
   FARE_RULE_TYPE,
   FLIGHT_BOOKING_ACTION,
@@ -6,7 +7,7 @@ import type {
   FLIGHT_ITINERARY_TYPE,
   FLIGHT_STATUS,
 } from '@/features/flight-management/constants';
-import type { TPaginationRequest } from '@/lib/types';
+import type { TGender, TPaginationRequest } from '@/lib/types';
 import type { ReactElement } from 'react';
 
 export type TFlightStatus = (typeof FLIGHT_STATUS)[keyof typeof FLIGHT_STATUS];
@@ -25,6 +26,24 @@ export type TFlightBookingAction =
 
 export type TFlightItineraryType =
   (typeof FLIGHT_ITINERARY_TYPE)[keyof typeof FLIGHT_ITINERARY_TYPE];
+
+export type TAirlineItem = {
+  code: string;
+  name: string;
+};
+
+export type TAirlineClassItem = {
+  bookingClass: string;
+  cabinClass: string;
+};
+
+export type TAircraftItem = {
+  icaoCode: string;
+  iataCode: string;
+  name: string;
+};
+
+export type TGetAirlineClassesResponse = Record<string, TAirlineClassItem[]>;
 
 export type TAirportItem = {
   code: string;
@@ -63,6 +82,11 @@ export type TCreateFlightPayload = {
   departureSegments: Array<TCreateFlightSegmentItem>;
   returnSegments?: Array<TCreateFlightSegmentItem>;
   itineraryType: TFlightItineraryType;
+};
+
+export type TCreateFlightMutationArg = {
+  payload: TCreateFlightPayload;
+  extraOptions?: TCustomExtraOptions;
 };
 
 export type TCreateFlightResponse = {
@@ -261,7 +285,7 @@ export type TGetFlightBookingDetailResponse = {
     bookingId: string;
     flightId: string;
     type: string;
-    gender: number;
+    gender: TGender;
     firstName: string;
     lastName: string;
     birthday: string | null;
@@ -364,8 +388,34 @@ export type TImportResultDetailItem = {
   success: boolean;
   error?: string;
 };
+
 export type TImportResult = {
   success: number;
   fail: number;
   details: Array<TImportResultDetailItem>;
+};
+
+export type TCreateFlightBookingPayload = {
+  flightId: string;
+  merchantCode: string;
+  passengers: Array<{
+    index: number;
+    type: string;
+    gender: TGender;
+    firstName: string;
+    lastName: string;
+    birthday?: string;
+    documentExpiryDate?: string;
+    documentIssuingCountry?: string;
+    documentNationality?: string;
+    documentNumber?: string;
+  }>;
+  contactInfo: {
+    gender: TGender;
+    firstName: string;
+    lastName: string;
+    address: string;
+    phone: string;
+    email: string;
+  };
 };

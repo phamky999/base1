@@ -2,12 +2,16 @@ import { baseApi } from '@/app/redux/baseApi';
 import { invalidatesTags, QUERY_TAGS } from '@/app/redux/constants';
 import type { QueryResponse } from '@/app/redux/types';
 import type {
+  TAircraftItem,
+  TAirlineItem,
   TAirportItem,
   TCreateFareRulePayload,
-  TCreateFlightPayload,
+  TCreateFlightBookingPayload,
+  TCreateFlightMutationArg,
   TCreateFlightResponse,
   TFlightBookingLogItem,
   TFlightDetailLogItem,
+  TGetAirlineClassesResponse,
   TGetFareRuleDetailResponse,
   TGetFareRulesResponse,
   TGetFlightBookingDetailResponse,
@@ -24,14 +28,58 @@ import type {
 
 const endpoint = '/FlightInventory';
 
+const MASTER_DATA_CACHE_TIME = 3600; // 1 hour
+
+export const flightMasterDataQueryApi = baseApi
+  .enhanceEndpoints({
+    addTagTypes: [],
+  })
+  .injectEndpoints({
+    endpoints: builder => ({
+      SearchAirports: builder.query<
+        QueryResponse<TAirportItem[]>,
+        { keyword: string }
+      >({
+        query: params => ({
+          url: `${endpoint}/Airports/Search`,
+          method: 'GET',
+          params,
+        }),
+        keepUnusedDataFor: MASTER_DATA_CACHE_TIME,
+      }),
+      GetAircrafts: builder.query<QueryResponse<TAircraftItem[]>, void>({
+        query: () => ({
+          url: `${endpoint}/Aircrafts`,
+          method: 'GET',
+        }),
+        keepUnusedDataFor: MASTER_DATA_CACHE_TIME,
+      }),
+      GetAirlines: builder.query<QueryResponse<TAirlineItem[]>, void>({
+        query: () => ({
+          url: `${endpoint}/Airlines`,
+          method: 'GET',
+        }),
+        keepUnusedDataFor: MASTER_DATA_CACHE_TIME,
+      }),
+      GetAirlineClasses: builder.query<
+        QueryResponse<TGetAirlineClassesResponse>,
+        void
+      >({
+        query: () => ({
+          url: `${endpoint}/AirlineClasses`,
+          method: 'GET',
+        }),
+        keepUnusedDataFor: MASTER_DATA_CACHE_TIME,
+      }),
+    }),
+  });
+
 export const flightManagementQueryApi = baseApi
   .enhanceEndpoints({
     addTagTypes: [
       QUERY_TAGS.FLIGHT_LIST,
       QUERY_TAGS.FLIGHT_DETAIL,
       QUERY_TAGS.FLIGHT_DETAIL_LOGS,
-      QUERY_TAGS.FARE_RULES,
-      QUERY_TAGS.FARE_RULE_DETAIL,
     ],
   })
   .injectEndpoints({
@@ -85,12 +133,15 @@ export const flightManagementQueryApi = baseApi
 
       CreateFlight: builder.mutation<
         QueryResponse<TCreateFlightResponse>,
-        TCreateFlightPayload
+        TCreateFlightMutationArg
       >({
-        query: payload => ({
+        query: ({ payload, extraOptions }) => ({
           url: `${endpoint}/Flights/Add`,
           method: 'POST',
           body: payload,
+          extraOptions: {
+            ...extraOptions,
+          },
         }),
 
         invalidatesTags: invalidatesTags([QUERY_TAGS.FLIGHT_LIST]),
@@ -203,7 +254,15 @@ export const flightManagementQueryApi = baseApi
           params,
         }),
       }),
+    }),
+  });
 
+export const flightBookingManagementQueryApi = baseApi
+  .enhanceEndpoints({
+    addTagTypes: [QUERY_TAGS.FLIGHT_BOOKING_LIST],
+  })
+  .injectEndpoints({
+    endpoints: builder => ({
       GetFlightBookingList: builder.query<
         QueryResponse<TGetFlightBookingListResponse>,
         TGetFlightBookingListRequestParams
@@ -213,6 +272,7 @@ export const flightManagementQueryApi = baseApi
           method: 'GET',
           params,
         }),
+        providesTags: [QUERY_TAGS.FLIGHT_BOOKING_LIST],
       }),
 
       GetFlightBookingDetail: builder.query<
@@ -235,6 +295,27 @@ export const flightManagementQueryApi = baseApi
         }),
       }),
 
+      CreateFlightBooking: builder.mutation<
+        QueryResponse<string>,
+        TCreateFlightBookingPayload
+      >({
+        query: payload => ({
+          url: `${endpoint}/Bookings/Add`,
+          method: 'POST',
+          body: payload,
+        }),
+
+        invalidatesTags: invalidatesTags([QUERY_TAGS.FLIGHT_BOOKING_LIST]),
+      }),
+    }),
+  });
+
+export const flightTicketConditionManagementQueryApi = baseApi
+  .enhanceEndpoints({
+    addTagTypes: [QUERY_TAGS.FARE_RULES, QUERY_TAGS.FARE_RULE_DETAIL],
+  })
+  .injectEndpoints({
+    endpoints: builder => ({
       GetFareRules: builder.query<QueryResponse<TGetFareRulesResponse>, void>({
         query: () => ({
           url: `${endpoint}/FareRules`,
@@ -299,9 +380,16 @@ export const flightManagementQueryApi = baseApi
     }),
   });
 
+//master data
 export const {
-  //flight
   useSearchAirportsQuery,
+  useGetAircraftsQuery,
+  useGetAirlinesQuery,
+  useGetAirlineClassesQuery,
+} = flightMasterDataQueryApi;
+
+//flight
+export const {
   useGetFlightListQuery,
   useGetFlightStaticsQuery,
   useGetFlightDetailLogsQuery,
@@ -313,16 +401,22 @@ export const {
   useCancelFlightMutation,
   useReopenFlightMutation,
   useDeleteFlightMutation,
-  //booking
+} = flightManagementQueryApi;
+
+//booking
+export const {
   useGetFlightBookingListQuery,
   useGetFlightBookingDetailQuery,
   useGetFlightBookingDetailLogsQuery,
+  useCreateFlightBookingMutation,
+} = flightBookingManagementQueryApi;
 
-  //fare rules
+//fare rules
+export const {
   useGetFareRulesQuery,
   useGetFareRuleDetailQuery,
   useLazyGetFareRuleDetailQuery,
   useCreateFareRuleMutation,
   useUpdateFareRuleMutation,
   useDeleteFareRuleMutation,
-} = flightManagementQueryApi;
+} = flightTicketConditionManagementQueryApi;

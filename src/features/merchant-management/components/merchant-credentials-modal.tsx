@@ -205,17 +205,9 @@ export const MerchantCredentialsModal = ({
                   </p>
                   <p className="text-xs text-muted-foreground">
                     kênh bán này chưa được cấp thông tin kết nối API (API Key và
-                    API Secret). Nhấn vào nút bên dưới để khởi tạo.
+                    API Secret).
                   </p>
                 </div>
-                <Button
-                  size="sm"
-                  loading={isGenerating}
-                  onClick={handleGenerate}
-                  className="mt-2"
-                >
-                  Khởi tạo thông tin kết nối
-                </Button>
               </div>
             )}
           </Skeleton>
@@ -225,13 +217,17 @@ export const MerchantCredentialsModal = ({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Đóng
           </Button>
-          {hasCredentials && (
+          {hasCredentials ? (
             <Button
               variant="default"
               loading={isRegenerating}
               onClick={handleRegenerate}
             >
               Cấp lại
+            </Button>
+          ) : (
+            <Button loading={isGenerating} onClick={handleGenerate}>
+              Tạo mới
             </Button>
           )}
         </DialogFooter>

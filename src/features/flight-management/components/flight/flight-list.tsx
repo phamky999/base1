@@ -4,6 +4,7 @@ import { FlightDetailActionGroups } from '@/features/flight-management/component
 import { FlightStatistics } from '@/features/flight-management/components/flight/flight-statistics';
 import {
   FLIGHT_ITINERARY_TYPE,
+  FLIGHT_STATUS,
   FLIGHT_STATUS_COLOR,
   FLIGHT_STATUS_LABEL,
   GET_FLIGHT_FILTER_KEYS,
@@ -29,8 +30,20 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { FlightDetailDrawer } from './flight-detail-drawer';
+import { FlightListFilter } from '@/features/flight-management/components/flight/flight-list-filter';
+import { Button } from '@/components/ui/button';
 
-export const FlightList = () => {
+type FlightListProps = {
+  showInSelectFlightDrawer?: boolean;
+  showFlightActiveOnly?: boolean;
+  customOnSelectRecord?: (record: TFlightListItem) => void;
+};
+
+export const FlightList = ({
+  showInSelectFlightDrawer = false,
+  showFlightActiveOnly = false,
+  customOnSelectRecord,
+}: FlightListProps) => {
   const [selectedFlightId, setSelectedFlightId] = useState<string>();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -40,11 +53,12 @@ export const FlightList = () => {
   const params = getApiQueryParamsFromUrlQuery({
     keys: GET_FLIGHT_FILTER_KEYS,
     noPagination: true,
-  });
+  }) as TGetFlightListRequestParams;
 
   const { data, isFetching } = useGetFlightListQuery(
     {
       ...params,
+      ...(showFlightActiveOnly && { status: FLIGHT_STATUS.ACTIVE }),
       ...pagination,
     } as TGetFlightListRequestParams,
     {
@@ -59,6 +73,7 @@ export const FlightList = () => {
       } as TGetFlightListRequestParams,
       {
         refetchOnMountOrArgChange: true,
+        skip: showInSelectFlightDrawer,
       }
     );
 
@@ -195,21 +210,35 @@ export const FlightList = () => {
         title: 'Tác vụ',
         key: 'table_action',
         fixed: 'right',
+        align: showInSelectFlightDrawer ? 'center' : 'left',
         width: 100,
-        render: (record: TFlightListItem) => (
-          <FlightDetailActionGroups flight={record} />
-        ),
+        render: (record: TFlightListItem) =>
+          showInSelectFlightDrawer ? (
+            <Button
+              variant={'outline'}
+              onClick={() => customOnSelectRecord?.(record)}
+            >
+              Chọn
+            </Button>
+          ) : (
+            <FlightDetailActionGroups flight={record} />
+          ),
       },
     ],
-    []
+    [customOnSelectRecord, showInSelectFlightDrawer]
   );
 
   return (
-    <>
-      <FlightStatistics
-        data={statisticsDataResponse?.data}
-        isShowSkeleton={isFetchingStatistics}
-      />
+    <div className="space-y-6">
+      <FlightListFilter showFilters={!showInSelectFlightDrawer} />
+
+      {!showInSelectFlightDrawer && (
+        <FlightStatistics
+          data={statisticsDataResponse?.data}
+          isShowSkeleton={isFetchingStatistics}
+        />
+      )}
+
       <AppTable<TFlightListItem>
         size="small"
         rowKey={'id'}
@@ -217,10 +246,14 @@ export const FlightList = () => {
         totalCount={totalItems}
         columns={columns}
         isShowSkeleton={isFetching}
-        onRow={record => ({
-          onClick: () => handleViewDetail(record),
-          className: 'cursor-pointer',
-        })}
+        onRow={record => {
+          if (showInSelectFlightDrawer) return {};
+
+          return {
+            onClick: () => handleViewDetail(record),
+            className: 'cursor-pointer',
+          };
+        }}
       />
 
       <FlightDetailDrawer
@@ -228,6 +261,6 @@ export const FlightList = () => {
         open={isDrawerOpen}
         onOpenChange={setIsDrawerOpen}
       />
-    </>
+    </div>
   );
 };

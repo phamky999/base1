@@ -7,6 +7,7 @@ import type {
   TGetMerchantCredentialResponse,
   TGetMerchantDetailResponse,
   TGetMerchantListResponse,
+  TGetMerchantParams,
   TMerchantListItem,
   TUpdateMerchantParams,
 } from '@/features/merchant-management/types';
@@ -25,11 +26,12 @@ export const merchantManagementQueryApi = baseApi
     endpoints: builder => ({
       GetMerchantList: builder.query<
         QueryResponse<TGetMerchantListResponse>,
-        void
+        TGetMerchantParams
       >({
-        query: () => ({
+        query: (params: TGetMerchantParams) => ({
           url: `${merchantEndpoint}`,
           method: 'GET',
+          params,
         }),
 
         providesTags: [QUERY_TAGS.MERCHANT_LIST],

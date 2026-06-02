@@ -104,6 +104,7 @@ export const AdvanceFilter = ({
         container:
           'rounded-lg bg-popover p-2.5 shadow-md ring-1 ring-foreground/10 outline-hidden duration-100',
       }}
+      getPopupContainer={trigger => trigger.parentElement!}
       content={
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <div className="no-scrollbar max-h-72 w-80 overflow-y-auto px-1">

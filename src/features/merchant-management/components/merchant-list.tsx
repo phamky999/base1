@@ -2,21 +2,33 @@ import { AppTable } from '@/components/app-table';
 import { AppTooltip } from '@/components/app-tooltip';
 import { Button } from '@/components/ui/button';
 import { MerchantCredentialsModal } from '@/features/merchant-management/components/merchant-credentials-modal';
-import { UpdateMerchantModal } from '@/features/merchant-management/components/update-merchant-modal';
+import { MerchantUpdateModal } from '@/features/merchant-management/components/merchant-update-modal';
 import { useGetMerchantListQuery } from '@/features/merchant-management/query';
 import type { TMerchantListItem } from '@/features/merchant-management/types';
 import { Tag, type TableProps } from 'antd';
 import { KeyRoundIcon, PenSquareIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
-export const MerchantList = () => {
+type MerchantListProps = {
+  showInSelectMerchantDrawer?: boolean;
+  showMerchantActiveOnly?: boolean;
+  customOnSelectRecord?: (record: TMerchantListItem) => void;
+};
+
+export const MerchantList = ({
+  showInSelectMerchantDrawer,
+  showMerchantActiveOnly,
+  customOnSelectRecord,
+}: MerchantListProps) => {
   const [selectedMerchant, setSelectedMerchant] =
     useState<TMerchantListItem | null>(null);
   const [isUpdateMerchantModalOpen, setIsUpdateMerchantModalOpen] =
     useState(false);
   const [isApiInfoModalOpen, setIsApiInfoModalOpen] = useState(false);
 
-  const { data, isFetching } = useGetMerchantListQuery();
+  const { data, isFetching } = useGetMerchantListQuery({
+    ...(showMerchantActiveOnly && { isActive: true, hasCredentials: true }),
+  });
 
   const columns = useMemo(
     (): TableProps<TMerchantListItem>['columns'] => [
@@ -70,39 +82,48 @@ export const MerchantList = () => {
         title: 'Tác vụ',
         key: 'table_action',
         fixed: 'right',
+        align: showInSelectMerchantDrawer ? 'center' : 'left',
         width: 100,
-        render: (record: TMerchantListItem) => (
-          <>
-            <AppTooltip content="Cập nhật thông tin">
-              <Button
-                variant={'ghost'}
-                onClick={() => {
-                  setSelectedMerchant(record);
-                  setIsUpdateMerchantModalOpen(true);
-                }}
-              >
-                <PenSquareIcon className="size-4" />
-              </Button>
-            </AppTooltip>
-
-            {!!record?.isActive && (
-              <AppTooltip content="Thông tin API">
+        render: (record: TMerchantListItem) =>
+          showInSelectMerchantDrawer ? (
+            <Button
+              variant={'outline'}
+              onClick={() => customOnSelectRecord?.(record)}
+            >
+              Chọn
+            </Button>
+          ) : (
+            <>
+              <AppTooltip content="Cập nhật thông tin">
                 <Button
                   variant={'ghost'}
                   onClick={() => {
                     setSelectedMerchant(record);
-                    setIsApiInfoModalOpen(true);
+                    setIsUpdateMerchantModalOpen(true);
                   }}
                 >
-                  <KeyRoundIcon className="size-3.5" />
+                  <PenSquareIcon className="size-4" />
                 </Button>
               </AppTooltip>
-            )}
-          </>
-        ),
+
+              {!!record?.isActive && (
+                <AppTooltip content="Thông tin API">
+                  <Button
+                    variant={'ghost'}
+                    onClick={() => {
+                      setSelectedMerchant(record);
+                      setIsApiInfoModalOpen(true);
+                    }}
+                  >
+                    <KeyRoundIcon className="size-3.5" />
+                  </Button>
+                </AppTooltip>
+              )}
+            </>
+          ),
       },
     ],
-    []
+    [customOnSelectRecord, showInSelectMerchantDrawer]
   );
 
   return (
@@ -116,9 +137,9 @@ export const MerchantList = () => {
         isShowSkeleton={isFetching}
         pagination={false}
       />
-      {!!selectedMerchant && (
+      {!!selectedMerchant && !showInSelectMerchantDrawer && (
         <>
-          <UpdateMerchantModal
+          <MerchantUpdateModal
             merchant={selectedMerchant}
             open={isUpdateMerchantModalOpen}
             onOpenChange={setIsUpdateMerchantModalOpen}

@@ -89,20 +89,20 @@ export const ShowResultStep = ({
           </div>
         )}
 
-        <div className="flex items-center justify-center gap-4 pt-4">
+        <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
           <Button
             variant="outline"
             onClick={() => {
               setValidatedFlights([]);
               setStep('UPLOAD');
             }}
-            className="px-5 text-xs"
+            className="px-5 text-xs max-md:w-full"
           >
             Tiếp tục nhập file khác
           </Button>
           <Button
             onClick={() => navigate(flightManagementPaths.flightList.fullPath)}
-            className="px-6 text-xs font-bold text-white"
+            className="px-6 text-xs font-bold text-white max-md:w-full"
           >
             Quay về danh sách chuyến bay
           </Button>

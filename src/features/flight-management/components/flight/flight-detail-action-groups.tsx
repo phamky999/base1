@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { FlightDetailDrawer } from '@/features/flight-management/components/flight/flight-detail-drawer';
 import { FlightDetailLogsDrawer } from '@/features/flight-management/components/flight/flight-detail-logs-drawer';
-import { UpdateFlightStatusModal } from '@/features/flight-management/components/flight/update-flight-status-modal';
+import { FlightStatusUpdateModal } from '@/features/flight-management/components/flight/flight-status-update-modal';
 import {
   FLIGHT_DETAIL_ACTION,
   FLIGHT_DETAIL_ACTION_LABEL,
@@ -274,7 +274,7 @@ export const FlightDetailActionGroups = ({
         />
       )}
       {!!selectedAction && flight && (
-        <UpdateFlightStatusModal
+        <FlightStatusUpdateModal
           action={selectedAction}
           flight={flight}
           open={!!selectedAction}

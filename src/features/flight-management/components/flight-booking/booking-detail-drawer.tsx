@@ -16,7 +16,9 @@ import {
   FLIGHT_BOOKING_STATUS_LABEL,
 } from '@/features/flight-management/constants';
 import { useGetFlightBookingDetailQuery } from '@/features/flight-management/query';
+import { GENDER_LABEL } from '@/lib/constants';
 import { formatDisplayCurrency } from '@/lib/helpers/string';
+import type { TGender } from '@/lib/types';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { Descriptions, Empty, Skeleton, Space, Tag } from 'antd';
 import { PlaneLandingIcon, PlaneTakeoffIcon, XIcon } from 'lucide-react';
@@ -47,7 +49,11 @@ export const BookingDetailDrawer = ({
       <DrawerContent className="max-w-200! max-md:w-full!">
         <DrawerHeader className="flex flex-row items-center justify-start! gap-2">
           <DrawerClose asChild>
-            <Button variant="ghost" onClick={() => onOpenChange(false)}>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => onOpenChange(false)}
+            >
               <XIcon className="size-4" />
             </Button>
           </DrawerClose>
@@ -187,7 +193,7 @@ export const BookingDetailDrawer = ({
                                   Giới tính
                                 </span>
                                 <span className="font-medium text-gray-700">
-                                  {passenger.gender === 0 ? 'Nữ' : 'Nam'}
+                                  {GENDER_LABEL[passenger.gender]}
                                 </span>
                               </div>
                               <div className="flex flex-col gap-0.5">
@@ -254,7 +260,7 @@ export const BookingDetailDrawer = ({
                           title: 'Giới tính',
                           dataIndex: 'gender',
                           width: 100,
-                          render: value => (value === 0 ? 'Nữ' : 'Nam'),
+                          render: (value: TGender) => GENDER_LABEL[value],
                         },
                         {
                           title: 'Ngày sinh',

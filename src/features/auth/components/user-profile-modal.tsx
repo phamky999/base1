@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { UpdateUserProfileModal } from '@/features/auth/components/update-user-profile-modal';
+import { UserProfileUpdateModal } from '@/features/auth/components/user-profile-update-modal';
 import { useGetCurrentUserQuery } from '@/features/auth/query';
 import { Skeleton } from 'antd';
 import { MailIcon, PhoneIcon, User2Icon } from 'lucide-react';
@@ -82,7 +82,7 @@ export const UserProfileModal = ({
         </DialogContent>
       </Dialog>
 
-      <UpdateUserProfileModal
+      <UserProfileUpdateModal
         open={openUpdateModal}
         onOpenChange={setOpenUpdateModal}
       />

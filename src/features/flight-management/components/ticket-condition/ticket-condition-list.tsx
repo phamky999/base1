@@ -1,7 +1,7 @@
 import { AppTable } from '@/components/app-table';
 import { AppTooltip } from '@/components/app-tooltip';
 import { Button } from '@/components/ui/button';
-import { AddEditTicketConditionDrawer } from '@/features/flight-management/components/ticket-condition/add-edit-ticket-condition-form';
+import { TicketConditionForm } from '@/features/flight-management/components/ticket-condition/ticket-condition-form';
 import {
   useDeleteFareRuleMutation,
   useGetFareRulesQuery,
@@ -116,7 +116,7 @@ export const TicketConditionList = () => {
         />
       </div>
 
-      <AddEditTicketConditionDrawer
+      <TicketConditionForm
         selectedId={selectedTicketConditionId}
         open={isAddEditModalOpen}
         onOpenChange={setIsAddEditModalOpen}

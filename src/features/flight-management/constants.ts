@@ -111,24 +111,12 @@ export const FLIGHT_BOOKING_STATUS_COLOR = {
   [FLIGHT_BOOKING_STATUS.ISSUED]: 'green',
 } as const;
 
-export const FLIGHT_BOOKING_ACTION = {
-  HOLD: 'HOLD',
-  CANCELLED: 'CANCELLED',
-  ISSUED: 'ISSUED',
-} as const;
+export const FLIGHT_BOOKING_ACTION = FLIGHT_BOOKING_STATUS;
 
 export const FLIGHT_BOOKING_ACTION_LABEL: Record<TFlightBookingAction, string> =
-  {
-    [FLIGHT_BOOKING_ACTION.HOLD]: 'Đang giữ chỗ',
-    [FLIGHT_BOOKING_ACTION.CANCELLED]: 'Đã hủy',
-    [FLIGHT_BOOKING_ACTION.ISSUED]: 'Đã thanh toán',
-  } as const;
+  FLIGHT_BOOKING_STATUS_LABEL;
 
-export const FLIGHT_BOOKING_ACTION_COLOR = {
-  [FLIGHT_BOOKING_ACTION.HOLD]: 'blue',
-  [FLIGHT_BOOKING_ACTION.CANCELLED]: 'red',
-  [FLIGHT_BOOKING_ACTION.ISSUED]: 'green',
-} as const;
+export const FLIGHT_BOOKING_ACTION_COLOR = FLIGHT_BOOKING_STATUS_COLOR;
 
 export const GET_FLIGHT_FILTER_KEYS: (keyof TGetFlightListRequestParams)[] = [
   'status',

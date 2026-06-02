@@ -6,7 +6,13 @@ import {
 import { Form, Input } from 'antd';
 import { useMemo } from 'react';
 
-export const FlightListFilter = () => {
+type TFlightListFilterProps = {
+  showFilters?: boolean;
+};
+
+export const FlightListFilter = ({
+  showFilters = true,
+}: TFlightListFilterProps) => {
   const advanceFilterConfig = useMemo(
     () => ({
       keys: ['bookingCode', 'startPoint', 'endPoint', 'flightNumber'],
@@ -52,16 +58,20 @@ export const FlightListFilter = () => {
           key: 'airlineCode',
           placeholder: 'Mã hãng hàng không...',
         }}
-        filters={[
-          {
-            title: 'Trạng thái',
-            filterKey: 'status',
-            options: Object.values(FLIGHT_STATUS).map(value => ({
-              label: FLIGHT_STATUS_LABEL[value],
-              value: value,
-            })),
-          },
-        ]}
+        filters={
+          showFilters
+            ? [
+                {
+                  title: 'Trạng thái',
+                  filterKey: 'status',
+                  options: Object.values(FLIGHT_STATUS).map(value => ({
+                    label: FLIGHT_STATUS_LABEL[value],
+                    value: value,
+                  })),
+                },
+              ]
+            : []
+        }
         advanceFilter={advanceFilterConfig}
       />
     </div>

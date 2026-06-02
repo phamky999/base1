@@ -7,6 +7,7 @@ import {
   FLIGHT_STATUS_LABEL,
 } from '@/features/flight-management/constants';
 import { useGetFlightDetailQuery } from '@/features/flight-management/query';
+import { cn } from '@/lib/utils';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { Tag } from 'antd';
 import { useState } from 'react';
@@ -33,7 +34,13 @@ const InfoItem = ({
   );
 };
 
-export const BookingFlightInfo = ({ flightId }: { flightId?: string }) => {
+export const BookingFlightInfo = ({
+  flightId,
+  className,
+}: {
+  flightId?: string;
+  className?: string;
+}) => {
   const [isDetailDrawerOpen, setIsDetailDrawerOpen] = useState(false);
 
   const normalizeFlightId = normalizeQueryParamValue(flightId);
@@ -90,15 +97,18 @@ export const BookingFlightInfo = ({ flightId }: { flightId?: string }) => {
   ];
 
   return (
-    <div className="rounded-lg border bg-card p-4 shadow-xs">
-      <div className="mb-4 xl:mb-6">
+    <div className={cn('card', className)}>
+      <div className="mb-4">
         <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-400">Thông tin chuyến bay</p>
+          <p className="text-sm text-muted-foreground">Thông tin chuyến bay</p>
 
           <Button
+            size={'sm'}
+            variant={'link'}
             onClick={() => {
               setIsDetailDrawerOpen(true);
             }}
+            className="text-sm"
           >
             Xem chi tiết
           </Button>
