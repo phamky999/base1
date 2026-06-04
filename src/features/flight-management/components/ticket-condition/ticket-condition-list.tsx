@@ -1,3 +1,4 @@
+import { AppConfirmModal } from '@/components/app-confirm-modal';
 import { AppTable } from '@/components/app-table';
 import { AppTooltip } from '@/components/app-tooltip';
 import { Button } from '@/components/ui/button';
@@ -7,7 +8,7 @@ import {
   useGetFareRulesQuery,
 } from '@/features/flight-management/query';
 import type { TGetFareRulesResponse } from '@/features/flight-management/types';
-import { Modal, type TableProps } from 'antd';
+import { type TableProps } from 'antd';
 import { PenSquareIcon, Trash2Icon } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -17,39 +18,25 @@ export const TicketConditionList = () => {
     string | null
   >(null);
   const [isAddEditModalOpen, setIsAddEditModalOpen] = useState(false);
+  const [isConfirmDeleteDrawerOpen, setIsConfirmDeleteDrawerOpen] =
+    useState(false);
+
   const { data, isFetching } = useGetFareRulesQuery();
 
-  const [deleteFareRuleFn, { isLoading: isDeleting }] =
-    useDeleteFareRuleMutation();
+  const [deleteFareRuleFn] = useDeleteFareRuleMutation();
 
   const fareRules = data?.data ?? [];
 
   const handleDeleteFareRule = useCallback(
-    (id: string) => {
-      Modal.confirm({
-        icon: null,
-        title: 'Xoá bộ điều kiện vé',
-        content: 'Bạn có chắc chắn muốn xoá bộ điều kiện vé này?',
-        okText: 'Xoá',
-        cancelText: 'Huỷ',
-        onOk: async () => {
-          try {
-            await deleteFareRuleFn(id).unwrap();
-            toast.success('Xoá bộ điều kiện vé thành công');
-          } catch (error) {
-            console.error(error);
-          }
-        },
-        okButtonProps: {
-          loading: isDeleting,
-          danger: true,
-        },
-        cancelButtonProps: {
-          disabled: isDeleting,
-        },
-      });
+    async (id: string) => {
+      try {
+        await deleteFareRuleFn(id).unwrap();
+        toast.success('Xoá bộ điều kiện vé thành công');
+      } catch (error) {
+        console.error(error);
+      }
     },
-    [deleteFareRuleFn, isDeleting]
+    [deleteFareRuleFn]
   );
 
   const columns = useMemo(
@@ -92,7 +79,10 @@ export const TicketConditionList = () => {
               <Button
                 size="icon-sm"
                 variant="ghost"
-                onClick={() => handleDeleteFareRule(record.id)}
+                onClick={() => {
+                  setSelectedTicketConditionId(record.id);
+                  setIsConfirmDeleteDrawerOpen(true);
+                }}
               >
                 <Trash2Icon />
               </Button>
@@ -101,7 +91,7 @@ export const TicketConditionList = () => {
         ),
       },
     ],
-    [handleDeleteFareRule]
+    []
   );
 
   return (
@@ -120,6 +110,17 @@ export const TicketConditionList = () => {
         selectedId={selectedTicketConditionId}
         open={isAddEditModalOpen}
         onOpenChange={setIsAddEditModalOpen}
+      />
+
+      <AppConfirmModal
+        open={isConfirmDeleteDrawerOpen}
+        onOpenChange={setIsConfirmDeleteDrawerOpen}
+        title="Xoá bộ điều kiện vé"
+        description={`Bạn có chắc chắn muốn xoá bộ điều kiện vé này?`}
+        onConfirm={() => handleDeleteFareRule(selectedTicketConditionId || '')}
+        confirmButtonProps={{
+          variant: 'destructive',
+        }}
       />
     </>
   );

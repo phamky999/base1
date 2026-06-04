@@ -1,3 +1,4 @@
+import { AppConfirmModal } from '@/components/app-confirm-modal';
 import { AppTooltip } from '@/components/app-tooltip';
 import { Button } from '@/components/ui/button';
 import {
@@ -22,7 +23,6 @@ import type {
 } from '@/features/flight-management/types';
 import type { StrictUnion } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { Modal } from 'antd';
 import {
   CircleSlashIcon,
   ClipboardListIcon,
@@ -119,6 +119,9 @@ export const FlightDetailActionGroups = ({
   const [isLogDrawerOpen, setIsLogDrawerOpen] = useState(false);
   const [isDetailDrawerOpen, setIsDetailDrawerOpen] = useState(false);
 
+  const [isConfirmDeleteDrawerOpen, setIsConfirmDeleteDrawerOpen] =
+    useState(false);
+
   const [selectedAction, setSelectedAction] =
     useState<TFlightDetailAction | null>(null);
 
@@ -127,31 +130,15 @@ export const FlightDetailActionGroups = ({
   const can = (action: TFlightDetailAction) =>
     (flight?.allowedActions || []).includes(action);
 
-  const handleDelete = () => {
-    Modal.confirm({
-      icon: null,
-      title: 'Xoá chuyến bay',
-      content: 'Bạn có chắc chắn muốn xoá chuyến bay này?',
-      okText: 'Xoá',
-      cancelText: 'Huỷ',
-      onOk: async () => {
-        if (!flight?.id) return;
-        try {
-          await deleteFlightFn(flight.id).unwrap();
-          toast.success('Xoá chuyến bay thành công');
-          onActionSuccess?.();
-        } catch (error) {
-          console.error(error);
-        }
-      },
-      okButtonProps: {
-        loading: isDeleting,
-        danger: true,
-      },
-      cancelButtonProps: {
-        disabled: isDeleting,
-      },
-    });
+  const handleDelete = async () => {
+    if (!flight?.id) return;
+    try {
+      await deleteFlightFn(flight.id).unwrap();
+      toast.success('Xoá chuyến bay thành công');
+      onActionSuccess?.();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleViewBookings = () => {
@@ -216,7 +203,8 @@ export const FlightDetailActionGroups = ({
     if (key === FLIGHT_DETAIL_ACTION.VIEW_LOGS) return setIsLogDrawerOpen(true);
     if (key === FLIGHT_DETAIL_ACTION.UPDATE)
       return handleNavigateToAddEditPage();
-    if (key === FLIGHT_DETAIL_ACTION.DELETE) return handleDelete();
+    if (key === FLIGHT_DETAIL_ACTION.DELETE)
+      return setIsConfirmDeleteDrawerOpen(true);
     setSelectedAction(key);
   };
 
@@ -288,6 +276,17 @@ export const FlightDetailActionGroups = ({
         flightId={flight?.id}
         open={isDetailDrawerOpen}
         onOpenChange={setIsDetailDrawerOpen}
+      />
+
+      <AppConfirmModal
+        open={isConfirmDeleteDrawerOpen}
+        onOpenChange={setIsConfirmDeleteDrawerOpen}
+        title="Xoá chuyến bay"
+        description={`Bạn có chắc chắn muốn xoá chuyến bay có mã đặt chỗ ${flight?.bookingCode}?`}
+        onConfirm={handleDelete}
+        confirmButtonProps={{
+          variant: 'destructive',
+        }}
       />
     </div>
   );

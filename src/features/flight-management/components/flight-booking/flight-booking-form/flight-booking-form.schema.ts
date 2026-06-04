@@ -78,13 +78,7 @@ export const FORM_VALIDATIONS = {
     [CONTACT_FIELDS.LAST_NAME]: [
       { required: true, message: 'Vui lòng nhập họ liên hệ', whitespace: true },
     ],
-    [CONTACT_FIELDS.ADDRESS]: [
-      {
-        required: true,
-        message: 'Vui lòng nhập địa chỉ liên hệ',
-        whitespace: true,
-      },
-    ],
+
     [CONTACT_FIELDS.PHONE]: [
       { required: true, message: 'Vui lòng nhập số điện thoại' },
       {

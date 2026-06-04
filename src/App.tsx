@@ -5,11 +5,10 @@ import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { useTheme } from '@/context/theme';
 import { StyleProvider } from '@ant-design/cssinjs';
-import { ConfigProvider, theme } from 'antd';
+import { ConfigProvider, theme, Spin } from 'antd';
 import vi_VN from 'antd/es/locale/vi_VN';
 import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
-import { Spin } from 'antd';
 import { AppScreenLoader } from '@/components/app-screen-loader';
 import { useMemo } from 'react';
 

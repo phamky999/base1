@@ -1,13 +1,6 @@
 import { useAppSelector } from '@/app/redux/hooks';
+import { AppDialog } from '@/components/app-dialog';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import {
   FORM_FIELDS,
   FORM_LABELS,
@@ -57,54 +50,26 @@ export const PasswordUpdateModal = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent showCloseButton={false} className="sm:max-w-sm">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <UserLockIcon className="size-5 text-primary" />
-            <span>Cập nhật mật khẩu</span>
-          </DialogTitle>
-          <DialogDescription>
-            Cập nhật mật khẩu của tài khoản{' '}
-            <span className="font-semibold text-primary">
-              {currentUser?.username}
-            </span>
-          </DialogDescription>
-        </DialogHeader>
-        <div className="dialog-scroll-content">
-          <Form form={form} layout="vertical" onFinish={handleUpdateProfile}>
-            <div>
-              <Form.Item
-                name={FORM_FIELDS.CURRENT_PASSWORD}
-                label={FORM_LABELS[FORM_FIELDS.CURRENT_PASSWORD]}
-                rules={FORM_VALIDATIONS[FORM_FIELDS.CURRENT_PASSWORD]}
-              >
-                <Input.Password
-                  placeholder={FORM_LABELS[FORM_FIELDS.CURRENT_PASSWORD]}
-                />
-              </Form.Item>
-              <Form.Item
-                name={FORM_FIELDS.NEW_PASSWORD}
-                label={FORM_LABELS[FORM_FIELDS.NEW_PASSWORD]}
-                rules={FORM_VALIDATIONS[FORM_FIELDS.NEW_PASSWORD]}
-              >
-                <Input.Password
-                  placeholder={FORM_LABELS[FORM_FIELDS.NEW_PASSWORD]}
-                />
-              </Form.Item>
-              <Form.Item
-                name={FORM_FIELDS.CONFIRM_PASSWORD}
-                label={FORM_LABELS[FORM_FIELDS.CONFIRM_PASSWORD]}
-                rules={FORM_VALIDATIONS[FORM_FIELDS.CONFIRM_PASSWORD]}
-              >
-                <Input.Password
-                  placeholder={FORM_LABELS[FORM_FIELDS.CONFIRM_PASSWORD]}
-                />
-              </Form.Item>
-            </div>
-          </Form>
-        </div>
-        <DialogFooter className="flex-row justify-between">
+    <AppDialog
+      open={open}
+      onOpenChange={handleOpenChange}
+      dialogContentClassName="sm:max-w-sm"
+      title={
+        <>
+          <UserLockIcon className="size-5 text-primary" />
+          <span>Cập nhật mật khẩu</span>
+        </>
+      }
+      description={
+        <>
+          Cập nhật mật khẩu của tài khoản{' '}
+          <span className="font-semibold text-primary">
+            {currentUser?.username}
+          </span>
+        </>
+      }
+      footer={
+        <>
           <Button
             type="reset"
             variant="outline"
@@ -119,8 +84,40 @@ export const PasswordUpdateModal = ({
           >
             Cập nhật
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </>
+      }
+    >
+      <Form form={form} layout="vertical" onFinish={handleUpdateProfile}>
+        <div>
+          <Form.Item
+            name={FORM_FIELDS.CURRENT_PASSWORD}
+            label={FORM_LABELS[FORM_FIELDS.CURRENT_PASSWORD]}
+            rules={FORM_VALIDATIONS[FORM_FIELDS.CURRENT_PASSWORD]}
+          >
+            <Input.Password
+              placeholder={FORM_LABELS[FORM_FIELDS.CURRENT_PASSWORD]}
+            />
+          </Form.Item>
+          <Form.Item
+            name={FORM_FIELDS.NEW_PASSWORD}
+            label={FORM_LABELS[FORM_FIELDS.NEW_PASSWORD]}
+            rules={FORM_VALIDATIONS[FORM_FIELDS.NEW_PASSWORD]}
+          >
+            <Input.Password
+              placeholder={FORM_LABELS[FORM_FIELDS.NEW_PASSWORD]}
+            />
+          </Form.Item>
+          <Form.Item
+            name={FORM_FIELDS.CONFIRM_PASSWORD}
+            label={FORM_LABELS[FORM_FIELDS.CONFIRM_PASSWORD]}
+            rules={FORM_VALIDATIONS[FORM_FIELDS.CONFIRM_PASSWORD]}
+          >
+            <Input.Password
+              placeholder={FORM_LABELS[FORM_FIELDS.CONFIRM_PASSWORD]}
+            />
+          </Form.Item>
+        </div>
+      </Form>
+    </AppDialog>
   );
 };

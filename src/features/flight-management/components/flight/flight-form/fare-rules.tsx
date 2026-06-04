@@ -14,20 +14,18 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import {
-  FARE_RULE_FORM_LIST_ITEM_PREFIX,
+  FARE_RULE_FIELD_VALIDATIONS,
+  FARE_RULE_FIELDS,
   FORM_FIELDS,
-  FORM_LABELS,
-  FORM_VALIDATIONS,
+  FARE_RULE_FIELD_LABELS,
 } from '@/features/flight-management/components/flight/flight-form/flight-form.schema';
 import { FARE_RULE_TYPE_OPTIONS } from '@/features/flight-management/constants';
 import {
   useGetFareRulesQuery,
   useLazyGetFareRuleDetailQuery,
 } from '@/features/flight-management/query';
-import { appendParentToKeys } from '@/lib/helpers/object';
-import type { ObjectType } from '@/lib/types';
 import { Col, Form, Input, Row, Select, Spin } from 'antd';
-import { CircleMinusIcon, PlusCircleIcon } from 'lucide-react';
+import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { toast } from 'sonner';
 
 type FareRulesSectionProps = {
@@ -46,14 +44,10 @@ export const FareRulesSection = ({ className }: FareRulesSectionProps) => {
   const handleSelectedTemplate = async (id: string) => {
     try {
       const { data } = await triggerGetFareRuleDetail(id);
-      const mapFareRulesToFormValues = (data?.data?.rules || []).map(
-        (fareRule: ObjectType) =>
-          appendParentToKeys(fareRule, FARE_RULE_FORM_LIST_ITEM_PREFIX)
-      );
 
       const currentFareRules = form.getFieldValue(FORM_FIELDS.FARE_RULES) || [];
 
-      const allFareRules = [...currentFareRules, ...mapFareRulesToFormValues];
+      const allFareRules = [...currentFareRules, ...(data?.data?.rules || [])];
       form.setFieldValue(FORM_FIELDS.FARE_RULES, allFareRules);
       toast.success('Áp dụng mẫu thành công');
     } catch (e) {
@@ -107,27 +101,30 @@ export const FareRulesSection = ({ className }: FareRulesSectionProps) => {
                 {fields.map(({ key, name, ...restField }, index) => (
                   <AppFieldSet
                     key={key}
-                    legend={
-                      <div className="flex items-center gap-2">
-                        <p>Điều kiện {index + 1}</p>
-                        <CircleMinusIcon
-                          className="size-4 cursor-pointer hover:text-red-500"
-                          onClick={() => remove(name)}
-                        />
-                      </div>
+                    title={`Điều kiện ${index + 1}`}
+                    headerAction={
+                      <Button
+                        variant="destructive"
+                        size="icon-sm"
+                        onClick={() => remove(name)}
+                      >
+                        <Trash2Icon />
+                      </Button>
                     }
                   >
-                    <Row gutter={20} className="pt-2">
+                    <Row gutter={20}>
                       <Col span={24} xl={8}>
                         <Form.Item
                           {...restField}
-                          name={[name, FORM_FIELDS.FARE_RULE_TYPE]}
-                          label={FORM_LABELS[FORM_FIELDS.FARE_RULE_TYPE]}
-                          rules={FORM_VALIDATIONS[FORM_FIELDS.FARE_RULE_TYPE]}
+                          name={[name, FARE_RULE_FIELDS.TYPE]}
+                          label={FARE_RULE_FIELD_LABELS[FARE_RULE_FIELDS.TYPE]}
+                          rules={
+                            FARE_RULE_FIELD_VALIDATIONS[FARE_RULE_FIELDS.TYPE]
+                          }
                         >
                           <Select
                             placeholder={
-                              FORM_LABELS[FORM_FIELDS.FARE_RULE_TYPE]
+                              FARE_RULE_FIELD_LABELS[FARE_RULE_FIELDS.TYPE]
                             }
                             options={FARE_RULE_TYPE_OPTIONS}
                           />
@@ -136,13 +133,15 @@ export const FareRulesSection = ({ className }: FareRulesSectionProps) => {
                       <Col span={24} xl={16}>
                         <Form.Item
                           {...restField}
-                          name={[name, FORM_FIELDS.FARE_RULE_TEXT]}
-                          label={FORM_LABELS[FORM_FIELDS.FARE_RULE_TEXT]}
-                          rules={FORM_VALIDATIONS[FORM_FIELDS.FARE_RULE_TEXT]}
+                          name={[name, FARE_RULE_FIELDS.TEXT]}
+                          label={FARE_RULE_FIELD_LABELS[FARE_RULE_FIELDS.TEXT]}
+                          rules={
+                            FARE_RULE_FIELD_VALIDATIONS[FARE_RULE_FIELDS.TEXT]
+                          }
                         >
                           <Input
                             placeholder={
-                              FORM_LABELS[FORM_FIELDS.FARE_RULE_TEXT]
+                              FARE_RULE_FIELD_LABELS[FARE_RULE_FIELDS.TEXT]
                             }
                           />
                         </Form.Item>

@@ -35,6 +35,7 @@ export type TAirlineItem = {
 export type TAirlineClassItem = {
   bookingClass: string;
   cabinClass: string;
+  airlineCode: string;
 };
 
 export type TAircraftItem = {
@@ -254,6 +255,21 @@ export type TGetFlightBookingListResponse = {
   totalItems: number;
 };
 
+export type TGetFlightBookingDetailPassenger = {
+  index?: number;
+  id: string;
+  bookingId: string;
+  flightId: string;
+  type: string;
+  gender: TGender;
+  firstName: string;
+  lastName: string;
+  birthday: string | null;
+  documentNumber: string;
+  documentExpiryDate: string | null;
+  documentNationality: string | null;
+  documentIssuingCountry: string | null;
+};
 export type TGetFlightBookingDetailResponse = {
   id: string;
   flightId: string;
@@ -277,23 +293,10 @@ export type TGetFlightBookingDetailResponse = {
   contactName: string;
   contactPhone: string;
   contactEmail: string;
-  lastTicketDate: string;
-  createdAt: string;
-  updatedAt: string;
-  passengers: Array<{
-    id: string;
-    bookingId: string;
-    flightId: string;
-    type: string;
-    gender: TGender;
-    firstName: string;
-    lastName: string;
-    birthday: string | null;
-    documentNumber: string;
-    documentExpiryDate: string | null;
-    documentNationality: string | null;
-    documentIssuingCountry: string | null;
-  }>;
+  lastTicketDate?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  passengers: Array<TGetFlightBookingDetailPassenger>;
 };
 
 export type TFlightDetailLogItem = {
@@ -399,16 +402,16 @@ export type TCreateFlightBookingPayload = {
   flightId: string;
   merchantCode: string;
   passengers: Array<{
-    index: number;
+    index?: number;
     type: string;
     gender: TGender;
     firstName: string;
     lastName: string;
-    birthday?: string;
-    documentExpiryDate?: string;
-    documentIssuingCountry?: string;
-    documentNationality?: string;
-    documentNumber?: string;
+    birthday: string | null;
+    documentExpiryDate: string | null;
+    documentIssuingCountry: string | null;
+    documentNationality: string | null;
+    documentNumber: string | null;
   }>;
   contactInfo: {
     gender: TGender;

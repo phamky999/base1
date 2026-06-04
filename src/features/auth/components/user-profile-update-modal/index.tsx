@@ -1,14 +1,7 @@
 import { useAppSelector } from '@/app/redux/hooks';
+import { AppDialog } from '@/components/app-dialog';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { DialogClose } from '@/components/ui/dialog';
 import {
   FORM_FIELDS,
   FORM_LABELS,
@@ -59,46 +52,26 @@ export const UserProfileUpdateModal = ({
   }, [open, form, currentUser]);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent showCloseButton={false} className="sm:max-w-sm">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <User2Icon className="size-5 text-primary" />
-            <span>Cập nhật thông tin cá nhân</span>
-          </DialogTitle>
-          <DialogDescription>
-            Cập nhật thông tin cá nhân của tài khoản{' '}
-            <span className="font-semibold text-primary">
-              {currentUser?.username}
-            </span>
-          </DialogDescription>
-        </DialogHeader>
-        <div className="dialog-scroll-content">
-          <Form form={form} layout="vertical" onFinish={handleUpdateProfile}>
-            <Form.Item
-              name={FORM_FIELDS.DISPLAYNAME}
-              label={FORM_LABELS[FORM_FIELDS.DISPLAYNAME]}
-              rules={FORM_VALIDATIONS[FORM_FIELDS.DISPLAYNAME]}
-            >
-              <Input placeholder={FORM_LABELS[FORM_FIELDS.DISPLAYNAME]} />
-            </Form.Item>
-            <Form.Item
-              name={FORM_FIELDS.EMAIL}
-              label={FORM_LABELS[FORM_FIELDS.EMAIL]}
-              rules={FORM_VALIDATIONS[FORM_FIELDS.EMAIL]}
-            >
-              <Input placeholder={FORM_LABELS[FORM_FIELDS.EMAIL]} />
-            </Form.Item>
-            <Form.Item
-              name={FORM_FIELDS.PHONE}
-              label={FORM_LABELS[FORM_FIELDS.PHONE]}
-              rules={FORM_VALIDATIONS[FORM_FIELDS.PHONE]}
-            >
-              <Input placeholder={FORM_LABELS[FORM_FIELDS.PHONE]} />
-            </Form.Item>
-          </Form>
-        </div>
-        <DialogFooter className="flex-row justify-between">
+    <AppDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      dialogContentClassName="sm:max-w-sm"
+      title={
+        <>
+          <User2Icon className="size-5 text-primary" />
+          <span>Cập nhật thông tin cá nhân</span>
+        </>
+      }
+      description={
+        <>
+          Cập nhật thông tin cá nhân của tài khoản{' '}
+          <span className="font-semibold text-primary">
+            {currentUser?.username}
+          </span>
+        </>
+      }
+      footer={
+        <>
           <DialogClose asChild>
             <Button type="reset" variant="outline">
               Đóng
@@ -111,8 +84,32 @@ export const UserProfileUpdateModal = ({
           >
             Cập nhật
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </>
+      }
+    >
+      <Form form={form} layout="vertical" onFinish={handleUpdateProfile}>
+        <Form.Item
+          name={FORM_FIELDS.DISPLAYNAME}
+          label={FORM_LABELS[FORM_FIELDS.DISPLAYNAME]}
+          rules={FORM_VALIDATIONS[FORM_FIELDS.DISPLAYNAME]}
+        >
+          <Input placeholder={FORM_LABELS[FORM_FIELDS.DISPLAYNAME]} />
+        </Form.Item>
+        <Form.Item
+          name={FORM_FIELDS.EMAIL}
+          label={FORM_LABELS[FORM_FIELDS.EMAIL]}
+          rules={FORM_VALIDATIONS[FORM_FIELDS.EMAIL]}
+        >
+          <Input placeholder={FORM_LABELS[FORM_FIELDS.EMAIL]} />
+        </Form.Item>
+        <Form.Item
+          name={FORM_FIELDS.PHONE}
+          label={FORM_LABELS[FORM_FIELDS.PHONE]}
+          rules={FORM_VALIDATIONS[FORM_FIELDS.PHONE]}
+        >
+          <Input placeholder={FORM_LABELS[FORM_FIELDS.PHONE]} />
+        </Form.Item>
+      </Form>
+    </AppDialog>
   );
 };

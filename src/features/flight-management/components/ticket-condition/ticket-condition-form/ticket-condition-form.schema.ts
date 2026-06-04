@@ -1,26 +1,26 @@
-import { OBJECT_KEY_SEPARATOR } from '@/lib/constants';
 import { Regex, RegexValidationMessage } from '@/lib/validations';
 import type { Rule } from 'antd/es/form';
 
 export const FORM_FIELDS = {
   NAME: 'name',
   AIRLINE_CODE: 'airlineCode',
-  FARE_RULES: 'rules',
-  FARE_RULE_TYPE: ['rule', 'type'].join(OBJECT_KEY_SEPARATOR),
-  FARE_RULE_TEXT: ['rule', 'text'].join(OBJECT_KEY_SEPARATOR),
+  RULES: 'rules',
 } as const;
 
-type TFormFields = (typeof FORM_FIELDS)[keyof typeof FORM_FIELDS];
+export const RULE_FIELDS = {
+  TYPE: 'type',
+  TEXT: 'text',
+} as const;
 
-export const FORM_LABELS: Partial<Record<TFormFields, string>> = {
+export const FORM_LABELS = {
   [FORM_FIELDS.NAME]: 'Tên bộ điều kiện vé',
   [FORM_FIELDS.AIRLINE_CODE]: 'Mã hãng hàng không',
-  [FORM_FIELDS.FARE_RULES]: 'Cấu hình bộ điều kiện',
-  [FORM_FIELDS.FARE_RULE_TYPE]: 'Loại ',
-  [FORM_FIELDS.FARE_RULE_TEXT]: 'Nội dung',
+  [FORM_FIELDS.RULES]: 'Cấu hình bộ điều kiện',
+  [RULE_FIELDS.TYPE]: 'Loại',
+  [RULE_FIELDS.TEXT]: 'Nội dung',
 } as const;
 
-export const FORM_VALIDATIONS: Partial<Record<TFormFields, Rule[]>> = {
+export const FORM_VALIDATIONS: Partial<Record<string, Rule[]>> = {
   [FORM_FIELDS.AIRLINE_CODE]: [
     { required: true, message: 'Hãy nhập mã hãng hàng không' },
     {
@@ -36,7 +36,7 @@ export const FORM_VALIDATIONS: Partial<Record<TFormFields, Rule[]>> = {
     },
   ],
 
-  [FORM_FIELDS.FARE_RULES]: [
+  [FORM_FIELDS.RULES]: [
     {
       validator: (_, value) => {
         if (!value || value.length === 0) {
@@ -46,10 +46,8 @@ export const FORM_VALIDATIONS: Partial<Record<TFormFields, Rule[]>> = {
       },
     },
   ],
-  [FORM_FIELDS.FARE_RULE_TYPE]: [
-    { required: true, message: 'Hãy chọn loại điều kiện' },
-  ],
-  [FORM_FIELDS.FARE_RULE_TEXT]: [
+  [RULE_FIELDS.TYPE]: [{ required: true, message: 'Hãy chọn loại điều kiện' }],
+  [RULE_FIELDS.TEXT]: [
     { required: true, message: 'Hãy nhập nội dung điều kiện' },
   ],
 } as const;

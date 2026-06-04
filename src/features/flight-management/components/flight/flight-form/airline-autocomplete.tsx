@@ -1,4 +1,5 @@
 import { useGetAirlinesQuery } from '@/features/flight-management/query';
+import { useDebounceSearch } from '@/hooks/use-debounce-search';
 import { upperCaseValue } from '@/lib/helpers/string';
 import { AutoComplete, Form } from 'antd';
 import type { Rule } from 'antd/es/form';
@@ -22,6 +23,8 @@ export const AirlineAutocomplete = ({
   priorityCodes = PRIORITY_CODES,
 }: AirlineAutocompleteProps) => {
   const { data: listAirlineData } = useGetAirlinesQuery();
+
+  const { debounceSearchFn, searchKeyword } = useDebounceSearch(0);
 
   const sortedAirlines = useMemo(() => {
     const airlines = listAirlineData?.data ?? [];
@@ -54,12 +57,22 @@ export const AirlineAutocomplete = ({
   }, [listAirlineData?.data, priorityCodes]);
 
   const options = useMemo(() => {
-    return sortedAirlines.map(item => ({
-      label: `${item.code} - ${item.name}`,
-      value: item.code,
-      searchText: `${item.code} ${item.name}`.toLowerCase(),
-    }));
-  }, [sortedAirlines]);
+    const keyword = searchKeyword.trim().toLowerCase();
+
+    return sortedAirlines
+      .filter(item => {
+        if (!keyword) return true;
+
+        return (
+          item.code.toLowerCase().includes(keyword) ||
+          item.name.toLowerCase().includes(keyword)
+        );
+      })
+      .map(item => ({
+        label: `${item.code} - ${item.name}`,
+        value: item.code,
+      }));
+  }, [searchKeyword, sortedAirlines]);
 
   return (
     <Form.Item
@@ -71,8 +84,8 @@ export const AirlineAutocomplete = ({
       <AutoComplete
         options={options}
         showSearch={{
-          filterOption: (input, option) =>
-            option?.searchText?.includes(input.toLowerCase()) || true,
+          filterOption: false,
+          onSearch: debounceSearchFn,
         }}
         allowClear
         className="w-full"

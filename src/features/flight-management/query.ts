@@ -372,10 +372,7 @@ export const flightTicketConditionManagementQueryApi = baseApi
           method: 'DELETE',
         }),
 
-        invalidatesTags: invalidatesTags([
-          QUERY_TAGS.FARE_RULES,
-          QUERY_TAGS.FARE_RULE_DETAIL,
-        ]),
+        invalidatesTags: invalidatesTags([QUERY_TAGS.FARE_RULES]),
       }),
     }),
   });

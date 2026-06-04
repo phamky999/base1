@@ -1,9 +1,8 @@
 import { normalizeQueryParamValue } from '@/components/app-filter/helper';
 import { Button } from '@/components/ui/button';
 import {
-  FARE_RULE_FORM_LIST_ITEM_PREFIX,
   FORM_FIELDS,
-  SEGMENT_FORM_LIST_ITEM_PREFIX,
+  SEGMENT_FIELDS,
 } from '@/features/flight-management/components/flight/flight-form/flight-form.schema';
 import { FLIGHT_ITINERARY_TYPE } from '@/features/flight-management/constants';
 import {
@@ -14,13 +13,11 @@ import {
 import { flightManagementPaths } from '@/features/flight-management/routes';
 import type {
   TCreateFlightPayload,
-  TFareRule,
   TFlightSegment,
   TUpdateFlightPayload,
 } from '@/features/flight-management/types';
 import { FLIGHT_DATE_TIME_FORMAT } from '@/lib/date/constants';
 import dayjs from '@/lib/date/dayjs-config';
-import { appendParentToKeys, removeParentFromKeys } from '@/lib/helpers/object';
 import type { ObjectType } from '@/lib/types';
 import { Regex } from '@/lib/validations';
 import { skipToken } from '@reduxjs/toolkit/query';
@@ -45,19 +42,16 @@ const SEGMENT_FIELD_KEYS = [
 ] as const;
 
 const formatSegmentToFormValue = (segment: TFlightSegment) => {
-  return appendParentToKeys(
-    {
-      ...segment,
-      startDate: dayjs(segment.startDate),
-      endDate: dayjs(segment.endDate),
-    },
-    SEGMENT_FORM_LIST_ITEM_PREFIX
-  );
+  return {
+    ...segment,
+    startDate: dayjs(segment.startDate),
+    endDate: dayjs(segment.endDate),
+  };
 };
 
 const mapSegmentToPayload = (segment: ObjectType) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { airlineCodeAutoFilled, ...restItem } = removeParentFromKeys(segment);
+  const { airlineCodeAutoFilled, ...restItem } = segment;
 
   return {
     ...restItem,
@@ -99,10 +93,7 @@ export const FlightForm = ({ id, actionType }: FlightFormProps) => {
       [FORM_FIELDS.TIME_LIMIT]: flightDetail.timeLimit,
       [FORM_FIELDS.CLOSING_DAYS_BEFORE_DEPARTURE]:
         flightDetail.closingDaysBeforeDeparture,
-      [FORM_FIELDS.FARE_RULES]: (flightDetail.fareRules || []).map(
-        (fareRule: TFareRule) =>
-          appendParentToKeys(fareRule, FARE_RULE_FORM_LIST_ITEM_PREFIX)
-      ),
+      [FORM_FIELDS.FARE_RULES]: flightDetail.fareRules || [],
       [FORM_FIELDS.PRICE_ADULT]: flightDetail.priceAdult,
       [FORM_FIELDS.PRICE_CHILD]: flightDetail.priceChild,
       [FORM_FIELDS.PRICE_INFANT]: flightDetail.priceInfant,
@@ -130,10 +121,7 @@ export const FlightForm = ({ id, actionType }: FlightFormProps) => {
         ...restValues,
         departureSegments: departureSegments?.map(mapSegmentToPayload) || [],
         returnSegments: returnSegments?.map(mapSegmentToPayload) || [],
-        fareRules:
-          fareRules?.map((fareRule: ObjectType) =>
-            removeParentFromKeys(fareRule)
-          ) || [],
+        fareRules: fareRules || [],
       };
 
       if (isEditForm) {
@@ -184,8 +172,7 @@ export const FlightForm = ({ id, actionType }: FlightFormProps) => {
           }
 
           const nextSegments = segments.map((segment: ObjectType) => {
-            const currentAirlineCode =
-              segment?.[FORM_FIELDS.SEGMENT_AIRLINE_CODE];
+            const currentAirlineCode = segment?.[SEGMENT_FIELDS.AIRLINE_CODE];
 
             if (currentAirlineCode) {
               return segment;
@@ -193,7 +180,7 @@ export const FlightForm = ({ id, actionType }: FlightFormProps) => {
 
             return {
               ...segment,
-              [FORM_FIELDS.SEGMENT_AIRLINE_CODE]: airlineCode,
+              [SEGMENT_FIELDS.AIRLINE_CODE]: airlineCode,
             };
           });
 
@@ -231,19 +218,17 @@ export const FlightForm = ({ id, actionType }: FlightFormProps) => {
     const lastValidDepartureSegment = [...departureSegments]
       .reverse()
       .find(segment => {
-        const startDate = segment?.[FORM_FIELDS.SEGMENT_START_DATE];
-        const endDate = segment?.[FORM_FIELDS.SEGMENT_END_DATE];
+        const startDate = segment?.[SEGMENT_FIELDS.START_DATE];
+        const endDate = segment?.[SEGMENT_FIELDS.END_DATE];
         return dayjs.isDayjs(startDate) && dayjs.isDayjs(endDate);
       });
 
     if (!lastValidDepartureSegment) {
       return;
     }
-    const depStartDate =
-      lastValidDepartureSegment?.[FORM_FIELDS.SEGMENT_START_DATE];
+    const depStartDate = lastValidDepartureSegment?.[SEGMENT_FIELDS.START_DATE];
 
-    const depEndDate =
-      lastValidDepartureSegment?.[FORM_FIELDS.SEGMENT_END_DATE];
+    const depEndDate = lastValidDepartureSegment?.[SEGMENT_FIELDS.END_DATE];
 
     if (!dayjs.isDayjs(depStartDate) || !dayjs.isDayjs(depEndDate)) {
       return;
@@ -258,18 +243,14 @@ export const FlightForm = ({ id, actionType }: FlightFormProps) => {
       0,
     ]);
 
-    if (!firstReturnSegment?.[FORM_FIELDS.SEGMENT_START_DATE]) {
+    if (!firstReturnSegment?.[SEGMENT_FIELDS.START_DATE]) {
       form.setFields([
         {
-          name: [
-            FORM_FIELDS.RETURN_SEGMENTS,
-            0,
-            FORM_FIELDS.SEGMENT_START_DATE,
-          ],
+          name: [FORM_FIELDS.RETURN_SEGMENTS, 0, SEGMENT_FIELDS.START_DATE],
           value: nextReturnStartDate,
         },
         {
-          name: [FORM_FIELDS.RETURN_SEGMENTS, 0, FORM_FIELDS.SEGMENT_END_DATE],
+          name: [FORM_FIELDS.RETURN_SEGMENTS, 0, SEGMENT_FIELDS.END_DATE],
           value: nextReturnEndDate,
         },
       ]);

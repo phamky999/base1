@@ -1,14 +1,7 @@
+import { AppDrawer } from '@/components/app-drawer';
 import { AppFieldSet } from '@/components/app-fieldset';
 import { normalizeQueryParamValue } from '@/components/app-filter/helper';
 import { Button } from '@/components/ui/button';
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer';
 import { FARE_RULE_TYPE_OPTIONS } from '@/features/flight-management/constants';
 import {
   useCreateFareRuleMutation,
@@ -19,18 +12,18 @@ import type {
   TCreateFareRulePayload,
   TUpdateFareRulePayload,
 } from '@/features/flight-management/types';
-import { appendParentToKeys, removeParentFromKeys } from '@/lib/helpers/object';
 import { upperCaseValue } from '@/lib/helpers/string';
 import type { ObjectType } from '@/lib/types';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { Form, Input, Select, Skeleton } from 'antd';
-import { CircleMinusIcon, PlusCircleIcon, XIcon } from 'lucide-react';
+import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import {
   FORM_FIELDS,
   FORM_LABELS,
   FORM_VALIDATIONS,
+  RULE_FIELDS,
 } from './ticket-condition-form.schema';
 
 type TicketConditionFormProps = {
@@ -70,9 +63,7 @@ export const TicketConditionForm = ({
     form.setFieldsValue({
       [FORM_FIELDS.NAME]: ticketConditionDetail?.name,
       [FORM_FIELDS.AIRLINE_CODE]: ticketConditionDetail?.airlineCode,
-      [FORM_FIELDS.FARE_RULES]: (ticketConditionDetail?.rules || []).map(
-        (fareRule: ObjectType) => appendParentToKeys(fareRule, 'rule')
-      ),
+      [FORM_FIELDS.RULES]: ticketConditionDetail?.rules || [],
     });
   }, [open, selectedId, data, form]);
 
@@ -94,9 +85,7 @@ export const TicketConditionForm = ({
       const payload = {
         ...restValues,
 
-        rules: rules?.map((fareRule: ObjectType) =>
-          removeParentFromKeys(fareRule)
-        ),
+        rules: rules ?? [],
       };
 
       if (selectedId) {
@@ -121,139 +110,12 @@ export const TicketConditionForm = ({
   };
 
   return (
-    <Drawer direction="right" open={open} onOpenChange={handleOpenChange}>
-      <DrawerContent className="max-w-150! max-md:w-full!">
-        <DrawerHeader className="flex flex-row items-center justify-between gap-2">
-          <DrawerTitle className="mr-auto">{actionLabel}</DrawerTitle>
-          <DrawerClose asChild>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              onClick={() => onOpenChange(false)}
-            >
-              <XIcon className="size-4" />
-            </Button>
-          </DrawerClose>
-        </DrawerHeader>
-        <div data-vaul-no-drag className="overflow-y-auto p-4">
-          <Skeleton loading={isFetching} active>
-            <Form
-              disabled={isSubmitting}
-              form={form}
-              layout="vertical"
-              onFinish={onFinish}
-              scrollToFirstError
-              {...(selectedId
-                ? {}
-                : {
-                    initialValues: {
-                      [FORM_FIELDS.FARE_RULES]: [undefined],
-                    },
-                  })}
-            >
-              <div className="space-y-4">
-                <div className="grid gap-x-4 sm:grid-cols-2">
-                  <Form.Item
-                    name={FORM_FIELDS.NAME}
-                    label={FORM_LABELS[FORM_FIELDS.NAME]}
-                    rules={FORM_VALIDATIONS[FORM_FIELDS.NAME]}
-                  >
-                    <Input placeholder={FORM_LABELS[FORM_FIELDS.NAME]} />
-                  </Form.Item>
-
-                  <Form.Item
-                    normalize={upperCaseValue}
-                    name={FORM_FIELDS.AIRLINE_CODE}
-                    label={FORM_LABELS[FORM_FIELDS.AIRLINE_CODE]}
-                    rules={FORM_VALIDATIONS[FORM_FIELDS.AIRLINE_CODE]}
-                  >
-                    <Input
-                      placeholder={FORM_LABELS[FORM_FIELDS.AIRLINE_CODE]}
-                    />
-                  </Form.Item>
-                </div>
-
-                <div className="mb-4 flex items-center gap-2">
-                  Danh sách điều kiện
-                </div>
-
-                <Form.List name={FORM_FIELDS.FARE_RULES}>
-                  {(fields, { add, remove }) => (
-                    <>
-                      <div className="space-y-4">
-                        {fields.map(({ key, name, ...restField }, index) => (
-                          <AppFieldSet
-                            key={key}
-                            legend={
-                              <div className="flex items-center gap-2">
-                                <p>Điều kiện {index + 1}</p>
-                                {fields.length > 1 ? (
-                                  <CircleMinusIcon
-                                    className="size-4 cursor-pointer hover:text-red-500"
-                                    onClick={() => remove(name)}
-                                  />
-                                ) : null}
-                              </div>
-                            }
-                          >
-                            <div className="popup-container grid gap-x-4 sm:grid-cols-2">
-                              <Form.Item
-                                {...restField}
-                                name={[name, FORM_FIELDS.FARE_RULE_TYPE]}
-                                label={FORM_LABELS[FORM_FIELDS.FARE_RULE_TYPE]}
-                                rules={
-                                  FORM_VALIDATIONS[FORM_FIELDS.FARE_RULE_TYPE]
-                                }
-                              >
-                                <Select
-                                  options={FARE_RULE_TYPE_OPTIONS}
-                                  placeholder={
-                                    FORM_LABELS[FORM_FIELDS.FARE_RULE_TYPE]
-                                  }
-                                  classNames={{
-                                    popup: {
-                                      root: 'pointer-events-auto',
-                                    },
-                                  }}
-                                />
-                              </Form.Item>
-
-                              <Form.Item
-                                {...restField}
-                                name={[name, FORM_FIELDS.FARE_RULE_TEXT]}
-                                label={FORM_LABELS[FORM_FIELDS.FARE_RULE_TEXT]}
-                                rules={
-                                  FORM_VALIDATIONS[FORM_FIELDS.FARE_RULE_TEXT]
-                                }
-                              >
-                                <Input
-                                  placeholder={
-                                    FORM_LABELS[FORM_FIELDS.FARE_RULE_TEXT]
-                                  }
-                                />
-                              </Form.Item>
-                            </div>
-                          </AppFieldSet>
-                        ))}
-                      </div>
-
-                      <Button
-                        type="button"
-                        variant={'outline'}
-                        className="w-full border-dashed"
-                        onClick={() => add()}
-                      >
-                        <PlusCircleIcon className="mr-2 size-4" /> Thêm điều
-                        kiện
-                      </Button>
-                    </>
-                  )}
-                </Form.List>
-              </div>
-            </Form>
-          </Skeleton>
-        </div>
-        <DrawerFooter className="flex-row! justify-between!">
+    <AppDrawer
+      open={open}
+      onOpenChange={handleOpenChange}
+      title={actionLabel}
+      footer={
+        <>
           <Button
             type="button"
             variant={'outline'}
@@ -271,8 +133,115 @@ export const TicketConditionForm = ({
           >
             {selectedId ? 'Cập nhật' : 'Tạo'}
           </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+        </>
+      }
+    >
+      <Skeleton loading={isFetching} active>
+        <Form
+          disabled={isSubmitting}
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          scrollToFirstError
+          {...(selectedId
+            ? {}
+            : {
+                initialValues: {
+                  [FORM_FIELDS.RULES]: [undefined],
+                },
+              })}
+        >
+          <div className="space-y-4">
+            <div className="grid gap-x-4 sm:grid-cols-2">
+              <Form.Item
+                name={FORM_FIELDS.NAME}
+                label={FORM_LABELS[FORM_FIELDS.NAME]}
+                rules={FORM_VALIDATIONS[FORM_FIELDS.NAME]}
+              >
+                <Input placeholder={FORM_LABELS[FORM_FIELDS.NAME]} />
+              </Form.Item>
+
+              <Form.Item
+                normalize={upperCaseValue}
+                name={FORM_FIELDS.AIRLINE_CODE}
+                label={FORM_LABELS[FORM_FIELDS.AIRLINE_CODE]}
+                rules={FORM_VALIDATIONS[FORM_FIELDS.AIRLINE_CODE]}
+              >
+                <Input placeholder={FORM_LABELS[FORM_FIELDS.AIRLINE_CODE]} />
+              </Form.Item>
+            </div>
+
+            <div className="mb-4 flex items-center gap-2">
+              Danh sách điều kiện
+            </div>
+
+            <Form.List name={FORM_FIELDS.RULES}>
+              {(fields, { add, remove }) => (
+                <>
+                  <div className="space-y-4">
+                    {fields.map(({ key, name, ...restField }, index) => (
+                      <AppFieldSet
+                        key={key}
+                        title={`Điều kiện ${index + 1}`}
+                        headerAction={
+                          fields.length > 1 ? (
+                            <Button
+                              variant="destructive"
+                              size="icon-sm"
+                              onClick={() => remove(name)}
+                            >
+                              <Trash2Icon />
+                            </Button>
+                          ) : null
+                        }
+                      >
+                        <div className="popup-container grid gap-x-4 sm:grid-cols-2">
+                          <Form.Item
+                            {...restField}
+                            name={[name, RULE_FIELDS.TYPE]}
+                            label={FORM_LABELS[RULE_FIELDS.TYPE]}
+                            rules={FORM_VALIDATIONS[RULE_FIELDS.TYPE]}
+                          >
+                            <Select
+                              options={FARE_RULE_TYPE_OPTIONS}
+                              placeholder={FORM_LABELS[RULE_FIELDS.TYPE]}
+                              classNames={{
+                                popup: {
+                                  root: 'pointer-events-auto',
+                                },
+                              }}
+                            />
+                          </Form.Item>
+
+                          <Form.Item
+                            {...restField}
+                            name={[name, RULE_FIELDS.TEXT]}
+                            label={FORM_LABELS[RULE_FIELDS.TEXT]}
+                            rules={FORM_VALIDATIONS[RULE_FIELDS.TEXT]}
+                          >
+                            <Input
+                              placeholder={FORM_LABELS[RULE_FIELDS.TEXT]}
+                            />
+                          </Form.Item>
+                        </div>
+                      </AppFieldSet>
+                    ))}
+                  </div>
+
+                  <Button
+                    type="button"
+                    variant={'outline'}
+                    className="w-full border-dashed"
+                    onClick={() => add()}
+                  >
+                    <PlusCircleIcon className="mr-2 size-4" /> Thêm điều kiện
+                  </Button>
+                </>
+              )}
+            </Form.List>
+          </div>
+        </Form>
+      </Skeleton>
+    </AppDrawer>
   );
 };

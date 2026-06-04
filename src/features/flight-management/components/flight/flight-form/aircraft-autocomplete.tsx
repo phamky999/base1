@@ -1,4 +1,5 @@
 import { useGetAircraftsQuery } from '@/features/flight-management/query';
+import { useDebounceSearch } from '@/hooks/use-debounce-search';
 import { AutoComplete, Form } from 'antd';
 import type { Rule } from 'antd/es/form';
 import { useMemo } from 'react';
@@ -18,21 +19,30 @@ export const AircraftAutocomplete = ({
 }: TAircraftAutocompleteProps) => {
   const { data: aircraftsData } = useGetAircraftsQuery();
 
+  const { debounceSearchFn, searchKeyword } = useDebounceSearch(0);
+
   const options = useMemo(() => {
-    return (aircraftsData?.data ?? []).map(item => ({
-      label: item.name,
-      value: item.name,
-      searchText: item.name.toLowerCase(),
-    }));
-  }, [aircraftsData?.data]);
+    const keyword = searchKeyword.trim().toLowerCase();
+
+    return (aircraftsData?.data ?? [])
+      .filter(item => {
+        if (!keyword) return true;
+
+        return item.name.toLowerCase().includes(keyword);
+      })
+      .map(item => ({
+        label: item.name,
+        value: item.name,
+      }));
+  }, [aircraftsData?.data, searchKeyword]);
 
   return (
     <Form.Item name={name} label={label} rules={rules}>
       <AutoComplete
         options={options}
         showSearch={{
-          filterOption: (input, option) =>
-            option?.searchText?.includes(input.toLowerCase()) || true,
+          filterOption: false,
+          onSearch: debounceSearchFn,
         }}
         allowClear
         className="w-full"

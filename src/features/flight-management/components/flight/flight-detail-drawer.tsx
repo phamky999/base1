@@ -1,14 +1,7 @@
 import { AppDateTimeLabel } from '@/components/app-date-time-label';
+import { AppDrawer } from '@/components/app-drawer';
 import { normalizeQueryParamValue } from '@/components/app-filter/helper';
 import { AppTable } from '@/components/app-table';
-import { Button } from '@/components/ui/button';
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer';
 import { useSidebar } from '@/components/ui/sidebar';
 import { FlightDetailActionGroups } from '@/features/flight-management/components/flight/flight-detail-action-groups';
 import {
@@ -26,7 +19,7 @@ import type {
 import { formatDisplayCurrency } from '@/lib/helpers/string';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { Descriptions, Empty, Skeleton, Space, Tag } from 'antd';
-import { PlaneLandingIcon, PlaneTakeoffIcon, XIcon } from 'lucide-react';
+import { PlaneLandingIcon, PlaneTakeoffIcon } from 'lucide-react';
 
 type FlightDetailDrawerProps = {
   flightId?: string;
@@ -177,128 +170,114 @@ export const FlightDetailDrawer = ({
   };
 
   return (
-    <Drawer direction="right" open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="max-w-200! max-md:w-full!">
-        <DrawerHeader className="flex flex-row items-center justify-start! gap-2">
-          <DrawerClose asChild>
-            <Button
-              variant="ghost"
-              onClick={() => onOpenChange(false)}
-              size="icon-sm"
-            >
-              <XIcon className="size-4" />
-            </Button>
-          </DrawerClose>
-          <DrawerTitle className="mr-auto">Thông tin chuyến bay</DrawerTitle>
-
-          <FlightDetailActionGroups
-            flight={detail as TGetFlightDetailResponse}
-            ignoredActions={[FLIGHT_DETAIL_ACTION.VIEW_DETAIL]}
-          />
-        </DrawerHeader>
-        <div data-vaul-no-drag className="overflow-y-auto p-4">
-          <Skeleton loading={isFetching} active>
-            {detail ? (
-              <Space orientation="vertical" size="large" className="w-full">
-                <div>
-                  <p className="mb-2 text-base">Thông tin chung</p>
-                  <Descriptions
-                    bordered
-                    className="rounded-lg shadow-xs"
-                    column={isMobile ? 1 : 2}
+    <AppDrawer
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Chi tiết chuyến bay"
+      headerAddon={
+        <FlightDetailActionGroups
+          flight={detail as TGetFlightDetailResponse}
+          ignoredActions={[FLIGHT_DETAIL_ACTION.VIEW_DETAIL]}
+        />
+      }
+    >
+      <Skeleton loading={isFetching} active>
+        {detail ? (
+          <Space orientation="vertical" size="large" className="w-full">
+            <div>
+              <p className="mb-2 text-base">Thông tin chung</p>
+              <Descriptions
+                bordered
+                className="rounded-lg shadow-xs"
+                column={isMobile ? 1 : 2}
+              >
+                <Descriptions.Item label="Mã đặt chỗ" span={isMobile ? 1 : 2}>
+                  <span className="font-bold">{detail.bookingCode}</span>
+                </Descriptions.Item>
+                <Descriptions.Item label="Hãng hàng không">
+                  {detail.airlineName} ({detail.airlineCode})
+                </Descriptions.Item>
+                <Descriptions.Item label="Trạng thái">
+                  <Tag
+                    color={FLIGHT_STATUS_COLOR[detail.status]}
+                    variant="outlined"
                   >
-                    <Descriptions.Item
-                      label="Mã đặt chỗ"
-                      span={isMobile ? 1 : 2}
-                    >
-                      <span className="font-bold">{detail.bookingCode}</span>
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Hãng hàng không">
-                      {detail.airlineName} ({detail.airlineCode})
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Trạng thái">
-                      <Tag
-                        color={FLIGHT_STATUS_COLOR[detail.status]}
-                        variant="outlined"
-                      >
-                        {FLIGHT_STATUS_LABEL[detail.status]}
-                      </Tag>
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Tổng số ghế">
-                      {detail.seatTotal}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Số ghế trống">
-                      {detail.seatAvailable}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Thời gian giữ chỗ">
-                      {detail.timeLimit} phút
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Đóng bán trước">
-                      {detail.closingDaysBeforeDeparture} ngày
-                    </Descriptions.Item>
-                  </Descriptions>
-                </div>
-                <div>
-                  <p className="mb-2 text-base">Cấu hình giá</p>
-                  <Descriptions
-                    bordered
-                    className="rounded-lg shadow-xs"
-                    column={isMobile ? 1 : 3}
-                  >
-                    <Descriptions.Item label="Người lớn">
-                      {formatDisplayCurrency(detail.priceAdult)}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Trẻ em">
-                      {formatDisplayCurrency(detail.priceChild)}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Em bé">
-                      {formatDisplayCurrency(detail.priceInfant)}
-                    </Descriptions.Item>
-                  </Descriptions>
-                </div>
+                    {FLIGHT_STATUS_LABEL[detail.status]}
+                  </Tag>
+                </Descriptions.Item>
+                <Descriptions.Item label="Tổng số ghế">
+                  {detail.seatTotal}
+                </Descriptions.Item>
+                <Descriptions.Item label="Số ghế trống">
+                  {detail.seatAvailable}
+                </Descriptions.Item>
+                <Descriptions.Item label="Thời gian giữ chỗ">
+                  {detail.timeLimit} phút
+                </Descriptions.Item>
+                <Descriptions.Item label="Đóng bán trước">
+                  {detail.closingDaysBeforeDeparture} ngày
+                </Descriptions.Item>
+              </Descriptions>
+            </div>
+            <div>
+              <p className="mb-2 text-base">Cấu hình giá</p>
+              <Descriptions
+                bordered
+                className="rounded-lg shadow-xs"
+                column={isMobile ? 1 : 3}
+              >
+                <Descriptions.Item label="Người lớn">
+                  {formatDisplayCurrency(detail.priceAdult)}
+                </Descriptions.Item>
+                <Descriptions.Item label="Trẻ em">
+                  {formatDisplayCurrency(detail.priceChild)}
+                </Descriptions.Item>
+                <Descriptions.Item label="Em bé">
+                  {formatDisplayCurrency(detail.priceInfant)}
+                </Descriptions.Item>
+              </Descriptions>
+            </div>
 
-                <div>
-                  <p className="mb-2 text-base">
-                    {detail?.itineraryType === FLIGHT_ITINERARY_TYPE.ONE_WAY
-                      ? 'Hành trình chi tiết'
-                      : 'Chiều đi'}
-                  </p>
-                  {renderSegments(detail?.departureSegments)}
-                </div>
+            <div>
+              <p className="mb-2 text-base">
+                {detail?.itineraryType === FLIGHT_ITINERARY_TYPE.ONE_WAY
+                  ? 'Hành trình chi tiết'
+                  : 'Chiều đi'}
+              </p>
+              {renderSegments(detail?.departureSegments)}
+            </div>
 
-                {!!detail?.returnSegments?.length && (
-                  <div>
-                    <p className="mb-2 text-base">Chiều về</p>
-                    {renderSegments(detail?.returnSegments)}
-                  </div>
-                )}
-
-                {!!detail?.fareRules?.length && (
-                  <div>
-                    <p className="mb-2 text-base">Bộ điều kiện</p>
-                    <Descriptions
-                      bordered
-                      column={1}
-                      className="rounded-lg shadow-xs"
-                    >
-                      {detail?.fareRules.map((rule, index) => (
-                        <Descriptions.Item
-                          key={index}
-                          label={FARE_RULE_TYPE_LABEL[rule.type]}
-                        >
-                          {rule.text}
-                        </Descriptions.Item>
-                      ))}
-                    </Descriptions>
-                  </div>
-                )}
-              </Space>
-            ) : (
-              <Empty description="Không có dữ liệu" />
+            {!!detail?.returnSegments?.length && (
+              <div>
+                <p className="mb-2 text-base">Chiều về</p>
+                {renderSegments(detail?.returnSegments)}
+              </div>
             )}
-          </Skeleton>
-        </div>
-      </DrawerContent>
-    </Drawer>
+
+            {!!detail?.fareRules?.length && (
+              <div>
+                <p className="mb-2 text-base">Bộ điều kiện</p>
+                <Descriptions
+                  bordered
+                  column={1}
+                  className="rounded-lg shadow-xs"
+                >
+                  {detail?.fareRules.map((rule, index) => (
+                    <Descriptions.Item
+                      key={index}
+                      label={FARE_RULE_TYPE_LABEL[rule.type]}
+                    >
+                      {rule.text}
+                    </Descriptions.Item>
+                  ))}
+                </Descriptions>
+              </div>
+            )}
+          </Space>
+        ) : (
+          <Empty description="Không có dữ liệu" />
+        )}
+      </Skeleton>
+    </AppDrawer>
   );
 };

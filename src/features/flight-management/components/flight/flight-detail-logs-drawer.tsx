@@ -1,13 +1,6 @@
 import { AppDateTimeLabel } from '@/components/app-date-time-label';
+import { AppDrawer } from '@/components/app-drawer';
 import { normalizeQueryParamValue } from '@/components/app-filter/helper';
-import { Button } from '@/components/ui/button';
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer';
 import {
   FLIGHT_DETAIL_ACTION_COLOR,
   FLIGHT_DETAIL_ACTION_LABEL,
@@ -15,7 +8,6 @@ import {
 import { useGetFlightDetailLogsQuery } from '@/features/flight-management/query';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { Empty, Skeleton, Tag, Timeline } from 'antd';
-import { XIcon } from 'lucide-react';
 
 type FlightDetailLogsDrawerProps = {
   flightId?: string;
@@ -36,52 +28,36 @@ export const FlightDetailLogsDrawer = ({
   const logs = data?.data;
 
   return (
-    <Drawer direction="right" open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="max-w-150! max-md:w-full!">
-        <DrawerHeader className="flex flex-row items-center justify-start! gap-2">
-          <DrawerClose asChild>
-            <Button
-              variant="ghost"
-              onClick={() => onOpenChange(false)}
-              size="icon-sm"
-            >
-              <XIcon className="size-4" />
-            </Button>
-          </DrawerClose>
-          <DrawerTitle>Lịch sử cập nhật</DrawerTitle>
-        </DrawerHeader>
-        <div data-vaul-no-drag className="overflow-y-auto p-4">
-          <Skeleton loading={isFetching} active>
-            {logs?.length ? (
-              <Timeline
-                items={logs.map(log => ({
-                  content: (
-                    <>
-                      <div className="mb-1 flex flex-col items-start gap-1">
-                        <AppDateTimeLabel value={log.createdAt} />
-                        <Tag
-                          variant="outlined"
-                          className="px-2.5 py-0.5"
-                          color={FLIGHT_DETAIL_ACTION_COLOR[log.action]}
-                        >
-                          {FLIGHT_DETAIL_ACTION_LABEL[log.action]}
-                        </Tag>
-                      </div>
-                      <div>
-                        {!!log?.note && <p className="mb-1">{log.note}</p>}
+    <AppDrawer open={open} onOpenChange={onOpenChange} title="Lịch sử cập nhật">
+      <Skeleton loading={isFetching} active>
+        {logs?.length ? (
+          <Timeline
+            items={logs.map(log => ({
+              content: (
+                <>
+                  <div className="mb-1 flex flex-col items-start gap-1">
+                    <AppDateTimeLabel value={log.createdAt} />
+                    <Tag
+                      variant="outlined"
+                      className="px-2.5 py-0.5"
+                      color={FLIGHT_DETAIL_ACTION_COLOR[log.action]}
+                    >
+                      {FLIGHT_DETAIL_ACTION_LABEL[log.action]}
+                    </Tag>
+                  </div>
+                  <div>
+                    {!!log?.note && <p className="mb-1">{log.note}</p>}
 
-                        <p>Thay đổi bởi: {log.userName}</p>
-                      </div>
-                    </>
-                  ),
-                }))}
-              />
-            ) : (
-              <Empty description="Không có dữ liệu" />
-            )}
-          </Skeleton>
-        </div>
-      </DrawerContent>
-    </Drawer>
+                    <p>Thay đổi bởi: {log.userName}</p>
+                  </div>
+                </>
+              ),
+            }))}
+          />
+        ) : (
+          <Empty description="Không có dữ liệu" />
+        )}
+      </Skeleton>
+    </AppDrawer>
   );
 };

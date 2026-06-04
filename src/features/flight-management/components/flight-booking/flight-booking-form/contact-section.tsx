@@ -15,6 +15,15 @@ export const ContactSection = () => {
       <Row gutter={[16, 12]}>
         <Col span={24} md={8}>
           <Form.Item
+            name={[FORM_FIELDS.CONTACT_INFO, CONTACT_FIELDS.GENDER]}
+            label="Giới tính"
+            rules={FORM_VALIDATIONS.contact[CONTACT_FIELDS.GENDER]}
+          >
+            <Select placeholder="Giới tính" options={GENDER_OPTIONS} />
+          </Form.Item>
+        </Col>
+        <Col span={24} md={8}>
+          <Form.Item
             name={[FORM_FIELDS.CONTACT_INFO, CONTACT_FIELDS.LAST_NAME]}
             label="Họ"
             rules={FORM_VALIDATIONS.contact[CONTACT_FIELDS.LAST_NAME]}
@@ -29,15 +38,6 @@ export const ContactSection = () => {
             rules={FORM_VALIDATIONS.contact[CONTACT_FIELDS.FIRST_NAME]}
           >
             <Input placeholder="Tên" />
-          </Form.Item>
-        </Col>
-        <Col span={24} md={8}>
-          <Form.Item
-            name={[FORM_FIELDS.CONTACT_INFO, CONTACT_FIELDS.GENDER]}
-            label="Giới tính"
-            rules={FORM_VALIDATIONS.contact[CONTACT_FIELDS.GENDER]}
-          >
-            <Select placeholder="Giới tính" options={GENDER_OPTIONS} />
           </Form.Item>
         </Col>
 
@@ -64,7 +64,6 @@ export const ContactSection = () => {
           <Form.Item
             name={[FORM_FIELDS.CONTACT_INFO, CONTACT_FIELDS.ADDRESS]}
             label="Địa chỉ"
-            rules={FORM_VALIDATIONS.contact[CONTACT_FIELDS.ADDRESS]}
           >
             <Input placeholder="Địa chỉ" />
           </Form.Item>

@@ -1,10 +1,5 @@
-import { OBJECT_KEY_SEPARATOR } from '@/lib/constants';
 import { Regex, RegexValidationMessage } from '@/lib/validations';
 import type { Rule } from 'antd/es/form';
-
-export const FARE_RULE_FORM_LIST_ITEM_PREFIX = 'fareRule';
-
-export const SEGMENT_FORM_LIST_ITEM_PREFIX = 'segment';
 
 export const FORM_FIELDS = {
   AIRLINE_CODE: 'airlineCode',
@@ -13,75 +8,64 @@ export const FORM_FIELDS = {
   TIME_LIMIT: 'timeLimit',
   CLOSING_DAYS_BEFORE_DEPARTURE: 'closingDaysBeforeDeparture',
   FARE_RULES: 'fareRules',
-  FARE_RULE_TYPE: [FARE_RULE_FORM_LIST_ITEM_PREFIX, 'type'].join(
-    OBJECT_KEY_SEPARATOR
-  ),
-  FARE_RULE_TEXT: [FARE_RULE_FORM_LIST_ITEM_PREFIX, 'text'].join(
-    OBJECT_KEY_SEPARATOR
-  ),
+
   PRICE_ADULT: 'priceAdult',
   PRICE_CHILD: 'priceChild',
   PRICE_INFANT: 'priceInfant',
   ITINERARY_TYPE: 'itineraryType',
   DEPARTURE_SEGMENTS: 'departureSegments',
   RETURN_SEGMENTS: 'returnSegments',
-  SEGMENT_AIRLINE_CODE: [SEGMENT_FORM_LIST_ITEM_PREFIX, 'airlineCode'].join(
-    OBJECT_KEY_SEPARATOR
-  ),
-  SEGMENT_START_POINT: [SEGMENT_FORM_LIST_ITEM_PREFIX, 'startPoint'].join(
-    OBJECT_KEY_SEPARATOR
-  ),
-  SEGMENT_END_POINT: [SEGMENT_FORM_LIST_ITEM_PREFIX, 'endPoint'].join(
-    OBJECT_KEY_SEPARATOR
-  ),
-  SEGMENT_START_DATE: [SEGMENT_FORM_LIST_ITEM_PREFIX, 'startDate'].join(
-    OBJECT_KEY_SEPARATOR
-  ),
-  SEGMENT_END_DATE: [SEGMENT_FORM_LIST_ITEM_PREFIX, 'endDate'].join(
-    OBJECT_KEY_SEPARATOR
-  ),
-  SEGMENT_FLIGHT_NUMBER: [SEGMENT_FORM_LIST_ITEM_PREFIX, 'flightNumber'].join(
-    OBJECT_KEY_SEPARATOR
-  ),
-  SEGMENT_SEAT_CLASS: [SEGMENT_FORM_LIST_ITEM_PREFIX, 'seatClass'].join(
-    OBJECT_KEY_SEPARATOR
-  ),
-  SEGMENT_PLANE: [SEGMENT_FORM_LIST_ITEM_PREFIX, 'plane'].join(
-    OBJECT_KEY_SEPARATOR
-  ),
-  SEGMENT_DURATION: [SEGMENT_FORM_LIST_ITEM_PREFIX, 'duration'].join(
-    OBJECT_KEY_SEPARATOR
-  ),
 } as const;
 
-type TFormFields = (typeof FORM_FIELDS)[keyof typeof FORM_FIELDS];
+export const FARE_RULE_FIELDS = {
+  TYPE: 'type',
+  TEXT: 'text',
+} as const;
 
-export const FORM_LABELS: Partial<Record<TFormFields, string>> = {
+export const SEGMENT_FIELDS = {
+  AIRLINE_CODE: 'airlineCode',
+  START_POINT: 'startPoint',
+  END_POINT: 'endPoint',
+  START_DATE: 'startDate',
+  END_DATE: 'endDate',
+  FLIGHT_NUMBER: 'flightNumber',
+  SEAT_CLASS: 'seatClass',
+  PLANE: 'plane',
+  DURATION: 'duration',
+} as const;
+
+export const FORM_LABELS: Partial<Record<string, string>> = {
   [FORM_FIELDS.AIRLINE_CODE]: 'Mã hãng hàng không',
   [FORM_FIELDS.BOOKING_CODE]: 'Mã đặt chỗ',
   [FORM_FIELDS.SEAT_TOTAL]: 'Tổng số ghế',
   [FORM_FIELDS.TIME_LIMIT]: 'Thời gian giữ chỗ',
   [FORM_FIELDS.CLOSING_DAYS_BEFORE_DEPARTURE]: 'Đóng bán trước',
   [FORM_FIELDS.FARE_RULES]: 'Cấu hình bộ điều kiện',
-  [FORM_FIELDS.FARE_RULE_TYPE]: 'Loại ',
-  [FORM_FIELDS.FARE_RULE_TEXT]: 'Nội dung',
   [FORM_FIELDS.PRICE_ADULT]: 'Giá người lớn',
   [FORM_FIELDS.PRICE_CHILD]: 'Giá trẻ em',
   [FORM_FIELDS.PRICE_INFANT]: 'Giá em bé',
   [FORM_FIELDS.DEPARTURE_SEGMENTS]: 'Chiều đi',
   [FORM_FIELDS.RETURN_SEGMENTS]: 'Chiều về',
-  [FORM_FIELDS.SEGMENT_AIRLINE_CODE]: 'Mã hãng hàng không',
-  [FORM_FIELDS.SEGMENT_START_POINT]: 'Mã sân bay khởi hành',
-  [FORM_FIELDS.SEGMENT_END_POINT]: 'Mã sân bay hạ cánh',
-  [FORM_FIELDS.SEGMENT_START_DATE]: 'Thời gian khởi hành',
-  [FORM_FIELDS.SEGMENT_END_DATE]: 'Thời gian hạ cánh',
-  [FORM_FIELDS.SEGMENT_FLIGHT_NUMBER]: 'Số hiệu chuyến bay',
-  [FORM_FIELDS.SEGMENT_SEAT_CLASS]: 'Hạng ghế',
-  [FORM_FIELDS.SEGMENT_PLANE]: 'Loại máy bay',
-  [FORM_FIELDS.SEGMENT_DURATION]: 'Thời gian bay',
 } as const;
 
-export const FORM_VALIDATIONS: Partial<Record<TFormFields, Rule[]>> = {
+export const SEGMENT_FIELD_LABELS = {
+  [SEGMENT_FIELDS.AIRLINE_CODE]: 'Mã hãng hàng không',
+  [SEGMENT_FIELDS.START_POINT]: 'Mã sân bay khởi hành',
+  [SEGMENT_FIELDS.END_POINT]: 'Mã sân bay hạ cánh',
+  [SEGMENT_FIELDS.START_DATE]: 'Thời gian khởi hành',
+  [SEGMENT_FIELDS.END_DATE]: 'Thời gian hạ cánh',
+  [SEGMENT_FIELDS.FLIGHT_NUMBER]: 'Số hiệu chuyến bay',
+  [SEGMENT_FIELDS.SEAT_CLASS]: 'Hạng ghế',
+  [SEGMENT_FIELDS.PLANE]: 'Loại máy bay',
+  [SEGMENT_FIELDS.DURATION]: 'Thời gian bay',
+};
+
+export const FARE_RULE_FIELD_LABELS = {
+  [FARE_RULE_FIELDS.TYPE]: 'Loại',
+  [FARE_RULE_FIELDS.TEXT]: 'Nội dung',
+};
+
+export const FORM_VALIDATIONS: Record<string, Rule[]> = {
   [FORM_FIELDS.AIRLINE_CODE]: [
     { required: true, message: 'Hãy nhập mã hãng hàng không' },
     {
@@ -126,49 +110,65 @@ export const FORM_VALIDATIONS: Partial<Record<TFormFields, Rule[]>> = {
       },
     },
   ],
-  [FORM_FIELDS.SEGMENT_AIRLINE_CODE]: [
+} as const;
+
+export const SEGMENT_FIELD_VALIDATIONS: Partial<Record<string, Rule[]>> = {
+  [SEGMENT_FIELDS.AIRLINE_CODE]: [
     { required: true, message: 'Hãy nhập mã hãng hàng không' },
     {
       pattern: Regex.AIRLINE_CODE,
       message: RegexValidationMessage.AIRLINE_CODE,
     },
   ],
-  [FORM_FIELDS.SEGMENT_START_POINT]: [
+  [SEGMENT_FIELDS.START_POINT]: [
     { required: true, message: 'Hãy nhập mã sân bay khởi hành' },
     {
       pattern: Regex.AIRPORT_CODE,
       message: RegexValidationMessage.AIRPORT_CODE,
     },
   ],
-  [FORM_FIELDS.SEGMENT_END_POINT]: [
+  [SEGMENT_FIELDS.END_POINT]: [
     { required: true, message: 'Hãy nhập mã sân bay hạ cánh' },
     {
       pattern: Regex.AIRPORT_CODE,
       message: RegexValidationMessage.AIRPORT_CODE,
     },
   ],
-  [FORM_FIELDS.SEGMENT_START_DATE]: [
+  [SEGMENT_FIELDS.START_DATE]: [
     { required: true, message: 'Hãy nhập ngày khởi hành' },
   ],
-  [FORM_FIELDS.SEGMENT_END_DATE]: [
+  [SEGMENT_FIELDS.END_DATE]: [
     { required: true, message: 'Hãy nhập ngày hạ cánh' },
   ],
 
-  [FORM_FIELDS.SEGMENT_FLIGHT_NUMBER]: [
+  [SEGMENT_FIELDS.FLIGHT_NUMBER]: [
     { required: true, message: 'Hãy nhập số hiệu chuyến bay' },
     {
       pattern: Regex.FLIGHT_NUMBER,
       message: RegexValidationMessage.FLIGHT_NUMBER,
     },
   ],
-  [FORM_FIELDS.SEGMENT_SEAT_CLASS]: [
+  [SEGMENT_FIELDS.SEAT_CLASS]: [
     { required: true, message: 'Hãy nhập hạng ghế' },
   ],
-  [FORM_FIELDS.SEGMENT_PLANE]: [
+  [SEGMENT_FIELDS.PLANE]: [
     { required: true, message: 'Hãy nhập loại máy bay' },
   ],
-  [FORM_FIELDS.SEGMENT_DURATION]: [
+  [SEGMENT_FIELDS.DURATION]: [
     { required: true, message: 'Hãy nhập thời gian bay' },
     { type: 'number', message: 'Thời gian bay phải là số' },
+  ],
+} as const;
+
+export const FARE_RULE_FIELD_VALIDATIONS: Partial<Record<string, Rule[]>> = {
+  [FARE_RULE_FIELDS.TEXT]: [
+    {
+      required: true,
+      message: 'Hãy nhập nội dung điều kiện',
+      whitespace: true,
+    },
+  ],
+  [FARE_RULE_FIELDS.TYPE]: [
+    { required: true, message: 'Hãy chọn loại điều kiện' },
   ],
 } as const;

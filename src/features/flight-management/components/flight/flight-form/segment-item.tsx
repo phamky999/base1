@@ -1,14 +1,15 @@
 import { AppFieldSet } from '@/components/app-fieldset';
 import { AppInputNumber } from '@/components/app-input-number';
-import {
-  FORM_FIELDS,
-  FORM_LABELS,
-  FORM_VALIDATIONS,
-} from '@/features/flight-management/components/flight/flight-form/flight-form.schema';
+import { Button } from '@/components/ui/button';
 import { AircraftAutocomplete } from '@/features/flight-management/components/flight/flight-form/aircraft-autocomplete';
 import { AirlineAutocomplete } from '@/features/flight-management/components/flight/flight-form/airline-autocomplete';
 import { AirlineClassesAutocomplete } from '@/features/flight-management/components/flight/flight-form/airline-classes-autocomplete';
 import { AirportAutocomplete } from '@/features/flight-management/components/flight/flight-form/airport-autocomplete';
+import {
+  SEGMENT_FIELD_LABELS,
+  SEGMENT_FIELD_VALIDATIONS,
+  SEGMENT_FIELDS,
+} from '@/features/flight-management/components/flight/flight-form/flight-form.schema';
 import {
   DEFAULT_DATE_TIME_FORMAT,
   DEFAULT_TIME_FORMAT,
@@ -20,7 +21,7 @@ import type { FormInstance } from 'antd';
 import { Col, DatePicker, Form, Input, Row } from 'antd';
 import type { Rule } from 'antd/es/form';
 import type { Dayjs } from 'dayjs';
-import { CircleMinusIcon } from 'lucide-react';
+import { Trash2Icon } from 'lucide-react';
 import { useEffect, useMemo } from 'react';
 
 type SegmentItemProps = {
@@ -76,13 +77,13 @@ export const SegmentItem = ({
 }: SegmentItemProps) => {
   const segmentValue = Form.useWatch([fieldKey, fieldName], form);
 
-  const airlineCode = segmentValue?.[FORM_FIELDS.SEGMENT_AIRLINE_CODE];
+  const airlineCode = segmentValue?.[SEGMENT_FIELDS.AIRLINE_CODE];
 
-  const startDate = segmentValue?.[FORM_FIELDS.SEGMENT_START_DATE];
+  const startDate = segmentValue?.[SEGMENT_FIELDS.START_DATE];
 
-  const endDate = segmentValue?.[FORM_FIELDS.SEGMENT_END_DATE];
+  const endDate = segmentValue?.[SEGMENT_FIELDS.END_DATE];
 
-  const duration = segmentValue?.[FORM_FIELDS.SEGMENT_DURATION];
+  const duration = segmentValue?.[SEGMENT_FIELDS.DURATION];
 
   const segmentPath = useMemo(
     () => [fieldKey, fieldName],
@@ -95,7 +96,7 @@ export const SegmentItem = ({
 
     if (hasStart && !hasEnd) {
       form.setFieldValue(
-        [...segmentPath, FORM_FIELDS.SEGMENT_END_DATE],
+        [...segmentPath, SEGMENT_FIELDS.END_DATE],
         startDate.add(3, 'hour')
       );
 
@@ -104,7 +105,7 @@ export const SegmentItem = ({
 
     if (!hasStart && hasEnd) {
       form.setFieldValue(
-        [...segmentPath, FORM_FIELDS.SEGMENT_START_DATE],
+        [...segmentPath, SEGMENT_FIELDS.START_DATE],
         endDate.subtract(3, 'hour')
       );
 
@@ -116,7 +117,7 @@ export const SegmentItem = ({
 
       if (nextDuration > 0 && duration !== nextDuration) {
         form.setFieldValue(
-          [...segmentPath, FORM_FIELDS.SEGMENT_DURATION],
+          [...segmentPath, SEGMENT_FIELDS.DURATION],
           nextDuration
         );
       }
@@ -126,10 +127,10 @@ export const SegmentItem = ({
   const startDateRules = useMemo(
     () =>
       [
-        ...(FORM_VALIDATIONS[FORM_FIELDS.SEGMENT_START_DATE] ?? []),
+        ...(SEGMENT_FIELD_VALIDATIONS[SEGMENT_FIELDS.START_DATE] ?? []),
 
         startAndEndDateValidator({
-          comparisonFieldName: [...segmentPath, FORM_FIELDS.SEGMENT_END_DATE],
+          comparisonFieldName: [...segmentPath, SEGMENT_FIELDS.END_DATE],
 
           currentFieldType: 'START_DATE',
 
@@ -143,10 +144,10 @@ export const SegmentItem = ({
   const endDateRules = useMemo(
     () =>
       [
-        ...(FORM_VALIDATIONS[FORM_FIELDS.SEGMENT_END_DATE] ?? []),
+        ...(SEGMENT_FIELD_VALIDATIONS[SEGMENT_FIELDS.END_DATE] ?? []),
 
         startAndEndDateValidator({
-          comparisonFieldName: [...segmentPath, FORM_FIELDS.SEGMENT_START_DATE],
+          comparisonFieldName: [...segmentPath, SEGMENT_FIELDS.START_DATE],
 
           currentFieldType: 'END_DATE',
 
@@ -157,37 +158,35 @@ export const SegmentItem = ({
     [segmentPath]
   );
 
-  const legend = useMemo(() => {
-    return (
-      <div className="flex items-center gap-2">
-        <p>Chặng bay {index + 1}</p>
-
-        {total > 1 ? (
-          <CircleMinusIcon
-            className="size-4 cursor-pointer hover:text-red-500"
-            onClick={() => remove(fieldName)}
-          />
-        ) : null}
-      </div>
-    );
-  }, [fieldName, index, remove, total]);
-
   return (
-    <AppFieldSet legend={legend}>
-      <Row gutter={20} className="pt-2">
+    <AppFieldSet
+      title={`Chặng bay ${index + 1}`}
+      headerAction={
+        total > 1 ? (
+          <Button
+            variant="destructive"
+            size="icon-sm"
+            onClick={() => remove(fieldName)}
+          >
+            <Trash2Icon />
+          </Button>
+        ) : null
+      }
+    >
+      <Row gutter={20}>
         <Col span={24} md={12} xl={6}>
           <AirlineAutocomplete
-            name={[fieldName, FORM_FIELDS.SEGMENT_AIRLINE_CODE]}
-            label={FORM_LABELS[FORM_FIELDS.SEGMENT_AIRLINE_CODE]}
-            rules={FORM_VALIDATIONS[FORM_FIELDS.SEGMENT_AIRLINE_CODE]}
+            name={[fieldName, SEGMENT_FIELDS.AIRLINE_CODE]}
+            label={SEGMENT_FIELD_LABELS[SEGMENT_FIELDS.AIRLINE_CODE]}
+            rules={SEGMENT_FIELD_VALIDATIONS[SEGMENT_FIELDS.AIRLINE_CODE]}
           />
         </Col>
 
         <Col span={24} md={12} xl={6}>
           <Form.Item
-            name={[fieldName, FORM_FIELDS.SEGMENT_FLIGHT_NUMBER]}
-            label={FORM_LABELS[FORM_FIELDS.SEGMENT_FLIGHT_NUMBER]}
-            rules={FORM_VALIDATIONS[FORM_FIELDS.SEGMENT_FLIGHT_NUMBER]}
+            name={[fieldName, SEGMENT_FIELDS.FLIGHT_NUMBER]}
+            label={SEGMENT_FIELD_LABELS[SEGMENT_FIELDS.FLIGHT_NUMBER]}
+            rules={SEGMENT_FIELD_VALIDATIONS[SEGMENT_FIELDS.FLIGHT_NUMBER]}
             normalize={upperCaseValue}
           >
             <Input placeholder="VD: VN101" />
@@ -196,37 +195,33 @@ export const SegmentItem = ({
 
         <Col span={24} md={12} xl={6}>
           <AirlineClassesAutocomplete
-            name={[fieldName, FORM_FIELDS.SEGMENT_SEAT_CLASS]}
-            label={FORM_LABELS[FORM_FIELDS.SEGMENT_SEAT_CLASS]}
-            rules={FORM_VALIDATIONS[FORM_FIELDS.SEGMENT_SEAT_CLASS]}
+            name={[fieldName, SEGMENT_FIELDS.SEAT_CLASS]}
+            label={SEGMENT_FIELD_LABELS[SEGMENT_FIELDS.SEAT_CLASS]}
+            rules={SEGMENT_FIELD_VALIDATIONS[SEGMENT_FIELDS.SEAT_CLASS]}
             airlineCode={airlineCode}
           />
         </Col>
 
         <Col span={24} md={12} xl={6}>
           <AircraftAutocomplete
-            name={[fieldName, FORM_FIELDS.SEGMENT_PLANE]}
-            label={FORM_LABELS[FORM_FIELDS.SEGMENT_PLANE]}
-            rules={FORM_VALIDATIONS[FORM_FIELDS.SEGMENT_PLANE]}
+            name={[fieldName, SEGMENT_FIELDS.PLANE]}
+            label={SEGMENT_FIELD_LABELS[SEGMENT_FIELDS.PLANE]}
+            rules={SEGMENT_FIELD_VALIDATIONS[SEGMENT_FIELDS.PLANE]}
           />
-          {/* <Form.Item
-          >
-            <Input placeholder={FORM_LABELS[FORM_FIELDS.SEGMENT_PLANE]} />
-          </Form.Item> */}
         </Col>
 
         <Col span={24} md={12} xl={5}>
           <AirportAutocomplete
-            name={[fieldName, FORM_FIELDS.SEGMENT_START_POINT]}
-            label={FORM_LABELS[FORM_FIELDS.SEGMENT_START_POINT]}
-            rules={FORM_VALIDATIONS[FORM_FIELDS.SEGMENT_START_POINT]}
+            name={[fieldName, SEGMENT_FIELDS.START_POINT]}
+            label={SEGMENT_FIELD_LABELS[SEGMENT_FIELDS.START_POINT]}
+            rules={SEGMENT_FIELD_VALIDATIONS[SEGMENT_FIELDS.START_POINT]}
           />
         </Col>
 
         <Col span={24} md={12} xl={5}>
           <SegmentDateField
-            name={[fieldName, FORM_FIELDS.SEGMENT_START_DATE]}
-            label={FORM_LABELS[FORM_FIELDS.SEGMENT_START_DATE] as string}
+            name={[fieldName, SEGMENT_FIELDS.START_DATE]}
+            label={SEGMENT_FIELD_LABELS[SEGMENT_FIELDS.START_DATE] as string}
             rules={startDateRules}
             isCreate={isCreate}
           />
@@ -234,16 +229,16 @@ export const SegmentItem = ({
 
         <Col span={24} md={12} xl={5}>
           <AirportAutocomplete
-            name={[fieldName, FORM_FIELDS.SEGMENT_END_POINT]}
-            label={FORM_LABELS[FORM_FIELDS.SEGMENT_END_POINT]}
-            rules={FORM_VALIDATIONS[FORM_FIELDS.SEGMENT_END_POINT]}
+            name={[fieldName, SEGMENT_FIELDS.END_POINT]}
+            label={SEGMENT_FIELD_LABELS[SEGMENT_FIELDS.END_POINT]}
+            rules={SEGMENT_FIELD_VALIDATIONS[SEGMENT_FIELDS.END_POINT]}
           />
         </Col>
 
         <Col span={24} md={12} xl={5}>
           <SegmentDateField
-            name={[fieldName, FORM_FIELDS.SEGMENT_END_DATE]}
-            label={FORM_LABELS[FORM_FIELDS.SEGMENT_END_DATE] as string}
+            name={[fieldName, SEGMENT_FIELDS.END_DATE]}
+            label={SEGMENT_FIELD_LABELS[SEGMENT_FIELDS.END_DATE] as string}
             rules={endDateRules}
             isCreate={isCreate}
           />
@@ -251,12 +246,12 @@ export const SegmentItem = ({
 
         <Col span={24} xl={4}>
           <Form.Item
-            name={[fieldName, FORM_FIELDS.SEGMENT_DURATION]}
-            label={FORM_LABELS[FORM_FIELDS.SEGMENT_DURATION]}
-            rules={FORM_VALIDATIONS[FORM_FIELDS.SEGMENT_DURATION]}
+            name={[fieldName, SEGMENT_FIELDS.DURATION]}
+            label={SEGMENT_FIELD_LABELS[SEGMENT_FIELDS.DURATION]}
+            rules={SEGMENT_FIELD_VALIDATIONS[SEGMENT_FIELDS.DURATION]}
           >
             <AppInputNumber
-              placeholder={FORM_LABELS[FORM_FIELDS.SEGMENT_DURATION]}
+              placeholder={SEGMENT_FIELD_LABELS[SEGMENT_FIELDS.DURATION]}
               className="w-full"
               precision={0}
               min={1}

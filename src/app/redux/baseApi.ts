@@ -5,6 +5,7 @@ import { clearAuthToken, getAuthToken, setAuthToken } from '@/lib/utils';
 import type {
   BaseQueryApi,
   BaseQueryFn,
+  FetchArgs,
   FetchBaseQueryError,
 } from '@reduxjs/toolkit/query';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
@@ -12,18 +13,19 @@ import { Mutex } from 'async-mutex';
 import { toast } from 'sonner';
 
 const baseApiURL = import.meta.env.VITE_APP_API_URL;
+
 const refreshTokenAPIEndpoint = '/Identity/Refresh';
-const RTKRefreshTokenEndpoint = 'refreshAuthToken';
-const RTKSignInUserEndpoint = 'SignInUser';
+const signinAPIEndpoint = '/Identity/Authenticate';
 
 // create a new mutex
 const mutex = new Mutex();
 
 const baseQuery = fetchBaseQuery({
   baseUrl: baseApiURL,
-  prepareHeaders: (headers, { endpoint }) => {
+  prepareHeaders: (headers, options) => {
+    const { arg } = options || {};
     const accessToken = getAuthToken(TOKEN.ACCESS_TOKEN);
-    if (accessToken && endpoint !== RTKRefreshTokenEndpoint) {
+    if (accessToken && (arg as FetchArgs)?.url !== refreshTokenAPIEndpoint) {
       headers.set('Authorization', `Bearer ${accessToken}`);
     }
     return headers;
@@ -36,8 +38,6 @@ const handleLogout = (api: BaseQueryApi) => {
   api.dispatch({
     type: 'auth/logout',
   });
-
-  window.location.href = '/auth/login';
 };
 
 const baseQueryWithInterceptor: BaseQueryFn<
@@ -52,9 +52,14 @@ const baseQueryWithInterceptor: BaseQueryFn<
 
   await mutex.waitForUnlock();
 
+  const apiEndpoint = (args as FetchArgs)?.url;
   let result = await baseQuery(args, api, extraOptions);
   if (result.error) {
-    if (result.error.status === 401 && api.endpoint !== RTKSignInUserEndpoint) {
+    if (
+      result.error.status === 401 &&
+      apiEndpoint !== signinAPIEndpoint &&
+      apiEndpoint !== refreshTokenAPIEndpoint
+    ) {
       if (!mutex.isLocked()) {
         const release = await mutex.acquire();
         try {
@@ -111,13 +116,14 @@ const baseQueryWithInterceptor: BaseQueryFn<
       } else {
         // wait until the mutex is available without locking it
         await mutex.waitForUnlock();
+
         result = await baseQuery(args, api, extraOptions);
       }
     } else {
       if (shouldHandleError) {
         const message =
           (result?.error?.data as ObjectType)?.message ||
-          'Có lỗi xảy ra, vui lòn thử lại sau.';
+          'Có lỗi xảy ra, vui lòng thử lại sau.';
         void toast.error(message, {
           id: message,
         });

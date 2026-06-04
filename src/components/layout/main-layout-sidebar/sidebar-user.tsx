@@ -1,4 +1,5 @@
 import { useAppDispatch, useAppSelector } from '@/app/redux/hooks';
+import { AppConfirmModal } from '@/components/app-confirm-modal';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -22,7 +23,6 @@ import { currentUserSelector } from '@/features/auth/selector';
 import { logout } from '@/features/auth/slice';
 import { TOKEN } from '@/lib/constants';
 import { clearAuthToken, cn, getAuthToken } from '@/lib/utils';
-import { Modal } from 'antd';
 import {
   ChevronsUpDownIcon,
   LockIcon,
@@ -31,8 +31,6 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-const { confirm } = Modal;
 
 export const SidebarUser = ({ showInHeader }: { showInHeader?: boolean }) => {
   const dispatch = useAppDispatch();
@@ -43,6 +41,8 @@ export const SidebarUser = ({ showInHeader }: { showInHeader?: boolean }) => {
   const [openUserProfileDialog, setOpenUserProfileDialog] = useState(false);
   const [openPasswordDialog, setOpenPasswordDialog] = useState(false);
 
+  const [openLogoutDialog, setLogoutDialog] = useState(false);
+
   const currentUser = useAppSelector(currentUserSelector);
 
   const avatarFallback =
@@ -51,26 +51,14 @@ export const SidebarUser = ({ showInHeader }: { showInHeader?: boolean }) => {
   const [revokeAuthTokenFn] = useRevokeAuthTokenMutation();
 
   const handleLogout = () => {
-    confirm({
-      title: 'Đăng xuất',
-      content: 'Bạn có chắc chắn muốn đăng xuất?',
-      okText: 'Đăng xuất',
-      cancelText: 'Hủy',
-      icon: null,
-      onOk: () => {
-        const refreshToken = getAuthToken(TOKEN.REFRESH_TOKEN);
-        if (refreshToken) {
-          revokeAuthTokenFn(refreshToken);
-        }
+    const refreshToken = getAuthToken(TOKEN.REFRESH_TOKEN);
+    if (refreshToken) {
+      revokeAuthTokenFn(refreshToken);
+    }
 
-        clearAuthToken();
-        dispatch(logout());
-        navigate('/auth/login', { replace: true });
-      },
-      okButtonProps: {
-        className: 'bg-destructive! hover:bg-destructive/80!',
-      },
-    });
+    clearAuthToken();
+    dispatch(logout());
+    navigate('/auth/login', { replace: true });
   };
 
   return (
@@ -153,7 +141,10 @@ export const SidebarUser = ({ showInHeader }: { showInHeader?: boolean }) => {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-500" onClick={handleLogout}>
+            <DropdownMenuItem
+              className="text-red-500"
+              onClick={() => setLogoutDialog(true)}
+            >
               <LogOutIcon />
               Đăng xuất
             </DropdownMenuItem>
@@ -167,6 +158,16 @@ export const SidebarUser = ({ showInHeader }: { showInHeader?: boolean }) => {
       <PasswordUpdateModal
         open={openPasswordDialog}
         onOpenChange={setOpenPasswordDialog}
+      />
+      <AppConfirmModal
+        open={openLogoutDialog}
+        onOpenChange={setLogoutDialog}
+        title="Đăng xuất"
+        description="Bạn có chắc chắn muốn đăng xuất?"
+        onConfirm={handleLogout}
+        confirmButtonProps={{
+          variant: 'destructive',
+        }}
       />
     </SidebarMenu>
   );

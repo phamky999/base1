@@ -3,7 +3,6 @@ import { MainLayoutHeader } from '@/components/layout/main-layout-header';
 import { MainLayoutSidebar } from '@/components/layout/main-layout-sidebar';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { useAuth } from '@/features/auth/hooks/use-auth';
-import { useTokenRefresh } from '@/features/auth/hooks/use-auth';
 import { authPaths } from '@/features/auth/routes';
 import { TOKEN } from '@/lib/constants';
 import { cn, getAuthToken } from '@/lib/utils';
@@ -17,12 +16,11 @@ import {
 
 export const MainLayout = ({ children }: { children?: React.ReactNode }) => {
   const location = useLocation();
-  const { isRefreshing, isRefreshFailed } = useTokenRefresh();
+
   const hasAccessToken = !!getAuthToken(TOKEN.ACCESS_TOKEN);
+  const hasRefreshToken = !!getAuthToken(TOKEN.REFRESH_TOKEN);
 
-  if (isRefreshing) return <AppScreenLoader />;
-
-  if (isRefreshFailed || !hasAccessToken) {
+  if (!hasAccessToken && !hasRefreshToken) {
     return (
       <Navigate
         to={authPaths.login.fullPath}

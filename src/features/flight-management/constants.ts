@@ -102,7 +102,7 @@ export const FLIGHT_BOOKING_STATUS = {
 export const FLIGHT_BOOKING_STATUS_LABEL = {
   [FLIGHT_BOOKING_STATUS.HOLD]: 'Đang giữ chỗ',
   [FLIGHT_BOOKING_STATUS.CANCELLED]: 'Đã hủy',
-  [FLIGHT_BOOKING_STATUS.ISSUED]: 'Đã xuất vé',
+  [FLIGHT_BOOKING_STATUS.ISSUED]: 'Đã thanh toán',
 } as const;
 
 export const FLIGHT_BOOKING_STATUS_COLOR = {

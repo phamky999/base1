@@ -3,8 +3,6 @@ export const TOKEN = {
   REFRESH_TOKEN: 'refreshToken',
 } as const;
 
-export const OBJECT_KEY_SEPARATOR = '---';
-
 export const DEFAULT_PAGE_INDEX = 1;
 export const DEFAULT_PAGE_SIZE = 10;
 export const PAGINATION_QUERY_KEY = {

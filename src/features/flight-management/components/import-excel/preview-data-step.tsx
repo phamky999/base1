@@ -1,13 +1,7 @@
+import { AppDrawer } from '@/components/app-drawer';
 import { AppTable } from '@/components/app-table';
 import { AppTooltip } from '@/components/app-tooltip';
 import { Button } from '@/components/ui/button';
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FARE_RULE_TYPE_LABEL } from '@/features/flight-management/constants';
 import { getFareRuleType } from '@/features/flight-management/helper/validate-flight-data-import-';
@@ -19,7 +13,6 @@ import {
   CheckIcon,
   PlaneLandingIcon,
   PlaneTakeoffIcon,
-  XIcon,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -444,57 +437,32 @@ export const PreviewDataStep = ({
       )}
 
       {/* Drawer chi tiết bộ điều kiện */}
-      <Drawer
-        direction="right"
+      <AppDrawer
+        title={`Bộ điều kiện vé ${conditionDrawer.bookingCode} `}
         open={conditionDrawer.open}
         onOpenChange={open => setConditionDrawer(prev => ({ ...prev, open }))}
       >
-        <DrawerContent className="max-w-140! max-md:w-full!">
-          <DrawerHeader className="flex flex-row items-center justify-start! gap-2 border-b">
-            <DrawerClose asChild>
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                onClick={() =>
-                  setConditionDrawer(prev => ({ ...prev, open: false }))
-                }
-              >
-                <XIcon className="size-4" />
-              </Button>
-            </DrawerClose>
-            <div className="mr-auto">
-              <DrawerTitle>Bộ điều kiện vé</DrawerTitle>
-              {conditionDrawer.bookingCode && (
-                <p className="mt-0.5 text-xs font-normal">
-                  Mã đặt chỗ: {conditionDrawer.bookingCode}
-                </p>
-              )}
-            </div>
-          </DrawerHeader>
-          <div data-vaul-no-drag className="overflow-y-auto p-4">
-            <Descriptions bordered column={1} className="rounded-lg shadow-xs">
-              {conditionDrawer.rules.map((rule, index) => {
-                const ruleType = getFareRuleType(rule.label);
+        <Descriptions bordered column={1} className="rounded-lg shadow-xs">
+          {conditionDrawer.rules.map((rule, index) => {
+            const ruleType = getFareRuleType(rule.label);
 
-                if (!ruleType) return null;
-                return (
-                  <Descriptions.Item
-                    key={index}
-                    label={FARE_RULE_TYPE_LABEL[ruleType]}
-                    styles={{
-                      label: {
-                        width: 180,
-                      },
-                    }}
-                  >
-                    {rule.text}
-                  </Descriptions.Item>
-                );
-              })}
-            </Descriptions>
-          </div>
-        </DrawerContent>
-      </Drawer>
+            if (!ruleType) return null;
+            return (
+              <Descriptions.Item
+                key={index}
+                label={FARE_RULE_TYPE_LABEL[ruleType]}
+                styles={{
+                  label: {
+                    width: 180,
+                  },
+                }}
+              >
+                {rule.text}
+              </Descriptions.Item>
+            );
+          })}
+        </Descriptions>
+      </AppDrawer>
     </div>
   );
 };
