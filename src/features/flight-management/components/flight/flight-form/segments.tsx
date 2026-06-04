@@ -1,6 +1,10 @@
 import { Button } from '@/components/ui/button';
 import { SegmentItem } from './segment-item';
-import { FORM_FIELDS, FORM_VALIDATIONS } from './flight-form.schema';
+import {
+  FORM_FIELDS,
+  FORM_VALIDATIONS,
+  SEGMENT_FIELDS,
+} from './flight-form.schema';
 import dayjs from '@/lib/date/dayjs-config';
 import { Form, Radio } from 'antd';
 import type { FormInstance } from 'antd';
@@ -41,9 +45,9 @@ const buildNewSegmentPayload = ({
 
     if (!segment) continue;
 
-    const endDate = segment[FORM_FIELDS.SEGMENT_END_DATE];
+    const endDate = segment[SEGMENT_FIELDS.END_DATE];
 
-    const startDate = segment[FORM_FIELDS.SEGMENT_START_DATE];
+    const startDate = segment[SEGMENT_FIELDS.START_DATE];
 
     if (dayjs.isDayjs(endDate)) {
       baseDate = endDate;
@@ -57,17 +61,15 @@ const buildNewSegmentPayload = ({
   }
 
   const payload: Record<string, unknown> = {
-    [FORM_FIELDS.SEGMENT_AIRLINE_CODE]: form.getFieldValue(
-      FORM_FIELDS.AIRLINE_CODE
-    ),
+    [SEGMENT_FIELDS.AIRLINE_CODE]: form.getFieldValue(FORM_FIELDS.AIRLINE_CODE),
   };
 
   if (baseDate) {
     const nextStartDate = baseDate.add(3, 'hour');
 
-    payload[FORM_FIELDS.SEGMENT_START_DATE] = nextStartDate;
+    payload[SEGMENT_FIELDS.START_DATE] = nextStartDate;
 
-    payload[FORM_FIELDS.SEGMENT_END_DATE] = nextStartDate.add(3, 'hour');
+    payload[SEGMENT_FIELDS.END_DATE] = nextStartDate.add(3, 'hour');
   }
 
   return payload;
@@ -157,7 +159,7 @@ export const SegmentsSection = ({
           onChange={() => {
             form.setFieldValue(FORM_FIELDS.RETURN_SEGMENTS, [
               {
-                [FORM_FIELDS.SEGMENT_AIRLINE_CODE]: form.getFieldValue(
+                [SEGMENT_FIELDS.AIRLINE_CODE]: form.getFieldValue(
                   FORM_FIELDS.AIRLINE_CODE
                 ),
               },
