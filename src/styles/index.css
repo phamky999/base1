@@ -87,7 +87,7 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
-  --main-background: #f2f4f7;
+  --main-background: #f2f4f780;
   /* --main-background: oklch(0.98 0.01 195); */
 }
 

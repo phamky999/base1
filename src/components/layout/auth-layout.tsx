@@ -1,4 +1,4 @@
-import { AppGridShapeBackground } from '@/components/app-grid-shape-background';
+import { AppGridShapeBackground } from '@/components/app-ui/app-grid-shape-background';
 import { TOKEN } from '@/lib/constants';
 import { getAuthToken } from '@/lib/utils';
 import { Navigate, Outlet } from 'react-router-dom';

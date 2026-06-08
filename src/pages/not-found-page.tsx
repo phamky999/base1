@@ -1,5 +1,5 @@
-import { AppGridShapeBackground } from '@/components/app-grid-shape-background';
-import { PageHelmet } from '@/components/app-helmet';
+import { AppGridShapeBackground } from '@/components/app-ui/app-grid-shape-background';
+import { PageHelmet } from '@/components/app-ui/app-helmet';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 

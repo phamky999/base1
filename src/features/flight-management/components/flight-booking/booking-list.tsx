@@ -1,6 +1,6 @@
-import { AppDateTimeLabel } from '@/components/app-date-time-label';
-import { AppTable } from '@/components/app-table';
-import { AppTooltip } from '@/components/app-tooltip';
+import { AppDateTimeLabel } from '@/components/app-ui/app-date-time-label';
+import { AppTable } from '@/components/app-ui/app-table';
+import { AppTooltip } from '@/components/app-ui/app-tooltip';
 import { BookingDetailActionGroups } from '@/features/flight-management/components/flight-booking/booking-detail-action-groups';
 import {
   FLIGHT_BOOKING_STATUS_COLOR,

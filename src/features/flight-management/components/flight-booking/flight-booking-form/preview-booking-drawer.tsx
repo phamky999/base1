@@ -1,4 +1,4 @@
-import { AppDrawer } from '@/components/app-drawer';
+import { AppDrawer } from '@/components/app-ui/app-drawer';
 import { Button } from '@/components/ui/button';
 import { DrawerClose } from '@/components/ui/drawer';
 import { BookingDetailDrawerContent } from '@/features/flight-management/components/flight-booking/booking-detail-drawer-content';

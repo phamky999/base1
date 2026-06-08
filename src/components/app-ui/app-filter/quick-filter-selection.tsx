@@ -15,6 +15,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
+import { DEFAULT_PAGE_INDEX, PAGINATION_QUERY_KEY } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { CheckIcon, PlusCircleIcon } from 'lucide-react';
 import * as React from 'react';
@@ -70,6 +71,8 @@ export const QuickFilterSelection = ({
     currentFilters.forEach(val => {
       newParams.append(filterKey, val);
     });
+
+    newParams.set(PAGINATION_QUERY_KEY.PAGE_INDEX, String(DEFAULT_PAGE_INDEX));
 
     setSearchParams(newParams, { replace: true });
   };

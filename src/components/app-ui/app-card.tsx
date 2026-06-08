@@ -11,17 +11,13 @@ import {
   type ReactNode,
 } from 'react';
 
-type AppFieldSetProps = PropsWithChildren & {
+type AppCardProps = PropsWithChildren & {
   title: string;
   headerAction?: ReactNode;
   className?: HTMLAttributes<HTMLFieldSetElement>['className'];
 };
 
-export const AppFieldSet = ({
-  children,
-  title,
-  headerAction,
-}: AppFieldSetProps) => {
+export const AppCard = ({ children, title, headerAction }: AppCardProps) => {
   return (
     <Card size="sm">
       <CardHeader>

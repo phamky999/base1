@@ -13,6 +13,7 @@ type ModuleCardProps = {
   icon: LucideIcon;
   iconBg: string;
   iconColor: string;
+  createBtnLabel: string;
   viewListPath: string;
   createPath: string;
   viewBookingPath: string;
@@ -25,6 +26,7 @@ export const ModuleCard = ({
   icon: Icon,
   iconBg,
   iconColor,
+  createBtnLabel,
   viewListPath,
   createPath,
   viewBookingPath,
@@ -84,7 +86,7 @@ export const ModuleCard = ({
           onClick={() => navigate(createPath)}
         >
           <CirclePlusIcon className="mr-2 size-4" />
-          Tạo chuyến bay
+          {createBtnLabel}
         </Button>
       </div>
     </div>

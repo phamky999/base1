@@ -13,6 +13,7 @@ type TBaseNavItem = {
   badge?: string;
   icon?: React.ElementType;
   disabled?: boolean;
+  hiddenInSidebar?: boolean;
 };
 
 type TNavLink = TBaseNavItem & {
@@ -57,8 +58,23 @@ export const sidebarData: TSidebarData = {
               url: flightManagementPaths.flightList.fullPath,
             },
             {
-              title: 'Đơn hàng',
+              title: 'Tạo chuyến bay',
+              url: flightManagementPaths.createFlight.fullPath,
+              hiddenInSidebar: true,
+            },
+            {
+              title: 'Tạo chuyến bay từ Excel',
+              url: flightManagementPaths.importExcel.fullPath,
+              hiddenInSidebar: true,
+            },
+            {
+              title: 'Danh sách đơn hàng',
               url: flightManagementPaths.bookingList.fullPath,
+            },
+            {
+              title: 'Tạo đơn hàng vé máy bay',
+              url: flightManagementPaths.createBooking.fullPath,
+              hiddenInSidebar: true,
             },
             {
               title: 'Bộ điều kiện vé',

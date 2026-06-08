@@ -1,5 +1,5 @@
-import { PageHelmet } from '@/components/app-helmet';
-import { AppPageHeader } from '@/components/app-page-header';
+import { PageHelmet } from '@/components/app-ui/app-helmet';
+import { AppPageHeader } from '@/components/app-ui/app-page-header';
 import { FlightForm } from '@/features/flight-management/components/flight/flight-form/flight-form';
 import { useQueryHandle } from '@/hooks/use-query-handle';
 

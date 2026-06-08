@@ -1,6 +1,6 @@
-import { PageHelmet } from '@/components/app-helmet';
-import { AppPageHeader } from '@/components/app-page-header';
-import { AppTooltip } from '@/components/app-tooltip';
+import { PageHelmet } from '@/components/app-ui/app-helmet';
+import { AppPageHeader } from '@/components/app-ui/app-page-header';
+import { AppTooltip } from '@/components/app-ui/app-tooltip';
 import { Button } from '@/components/ui/button';
 import { FlightList } from '@/features/flight-management/components/flight/flight-list';
 import { flightManagementPaths } from '@/features/flight-management/routes';

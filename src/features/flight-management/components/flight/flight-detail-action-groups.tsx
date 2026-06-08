@@ -1,5 +1,5 @@
-import { AppConfirmModal } from '@/components/app-confirm-modal';
-import { AppTooltip } from '@/components/app-tooltip';
+import { AppConfirmModal } from '@/components/app-ui/app-confirm-modal';
+import { AppTooltip } from '@/components/app-ui/app-tooltip';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,

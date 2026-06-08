@@ -1,4 +1,4 @@
-import { AppFieldSet } from '@/components/app-fieldset';
+import { AppCard } from '@/components/app-ui/app-card';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -14,10 +14,10 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import {
+  FARE_RULE_FIELD_LABELS,
   FARE_RULE_FIELD_VALIDATIONS,
   FARE_RULE_FIELDS,
   FORM_FIELDS,
-  FARE_RULE_FIELD_LABELS,
 } from '@/features/flight-management/components/flight/flight-form/flight-form.schema';
 import { FARE_RULE_TYPE_OPTIONS } from '@/features/flight-management/constants';
 import {
@@ -99,7 +99,7 @@ export const FareRulesSection = ({ className }: FareRulesSectionProps) => {
             <>
               <div className="mb-4 space-y-4">
                 {fields.map(({ key, name, ...restField }, index) => (
-                  <AppFieldSet
+                  <AppCard
                     key={key}
                     title={`Điều kiện ${index + 1}`}
                     headerAction={
@@ -147,7 +147,7 @@ export const FareRulesSection = ({ className }: FareRulesSectionProps) => {
                         </Form.Item>
                       </Col>
                     </Row>
-                  </AppFieldSet>
+                  </AppCard>
                 ))}
               </div>
 

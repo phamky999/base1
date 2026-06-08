@@ -1,4 +1,4 @@
-import { AppErrorBoundary } from '@/components/app-error-boundary';
+import { AppErrorBoundary } from '@/components/app-ui/app-error-boundary';
 import { MainLayout } from '@/components/layout/main-layout';
 import { authRoutes } from '@/features/auth/routes';
 import { flightManagementRoutes } from '@/features/flight-management/routes';

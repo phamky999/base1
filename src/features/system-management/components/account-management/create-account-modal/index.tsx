@@ -1,5 +1,5 @@
 import { useAppSelector } from '@/app/redux/hooks';
-import { AppDialog } from '@/components/app-dialog';
+import { AppDialog } from '@/components/app-ui/app-dialog';
 import { Button } from '@/components/ui/button';
 import {
   USER_PERMISSIONS_OPTIONS,

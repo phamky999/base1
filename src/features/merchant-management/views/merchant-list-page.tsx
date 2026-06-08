@@ -1,5 +1,5 @@
-import { PageHelmet } from '@/components/app-helmet';
-import { AppPageHeader } from '@/components/app-page-header';
+import { PageHelmet } from '@/components/app-ui/app-helmet';
+import { AppPageHeader } from '@/components/app-ui/app-page-header';
 import { Button } from '@/components/ui/button';
 import { MerchantCreateModal } from '@/features/merchant-management/components/merchant-create-modal';
 import { MerchantList } from '@/features/merchant-management/components/merchant-list';

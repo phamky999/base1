@@ -9,7 +9,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { type ObjectType, type TPaginationQueryKey } from '@/lib/types';
 import { pick, pickBy } from 'lodash-es';
-import { normalizeQueryParamValue } from '@/components/app-filter/helper';
+import { normalizeQueryParamValue } from '@/components/app-ui/app-filter/helper';
 
 type QueryHandleProps = {
   noPagination?: boolean;

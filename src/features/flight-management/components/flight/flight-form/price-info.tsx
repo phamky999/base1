@@ -1,4 +1,4 @@
-import { AppInputNumber } from '@/components/app-input-number';
+import { AppInputNumber } from '@/components/app-ui/app-input-number';
 import {
   FORM_FIELDS,
   FORM_LABELS,

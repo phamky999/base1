@@ -1,5 +1,5 @@
-import { AppTable } from '@/components/app-table';
-import { AppTooltip } from '@/components/app-tooltip';
+import { AppTable } from '@/components/app-ui/app-table';
+import { AppTooltip } from '@/components/app-ui/app-tooltip';
 import { Button } from '@/components/ui/button';
 import { MerchantCredentialsModal } from '@/features/merchant-management/components/merchant-credentials-modal';
 import { MerchantUpdateModal } from '@/features/merchant-management/components/merchant-update-modal';

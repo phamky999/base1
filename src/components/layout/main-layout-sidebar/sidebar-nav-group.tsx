@@ -48,17 +48,26 @@ export const SidebarNavGroup = ({ title, items }: TNavGroup) => {
           if (!item.items)
             return <SidebarMenuLink key={key} item={item} href={pathname} />;
 
+          const itemClone = {
+            ...item,
+            items: item?.items?.filter(item => !item?.hiddenInSidebar),
+          };
+
           if (state === 'collapsed' && !isMobile)
             return (
               <SidebarMenuCollapsedDropdown
                 key={key}
-                item={item}
+                item={itemClone}
                 href={pathname}
               />
             );
 
           return (
-            <SidebarMenuCollapsible key={key} item={item} href={pathname} />
+            <SidebarMenuCollapsible
+              key={key}
+              item={itemClone}
+              href={pathname}
+            />
           );
         })}
       </SidebarMenu>

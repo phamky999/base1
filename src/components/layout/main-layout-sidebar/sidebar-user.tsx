@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '@/app/redux/hooks';
-import { AppConfirmModal } from '@/components/app-confirm-modal';
+import { AppConfirmModal } from '@/components/app-ui/app-confirm-modal';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,

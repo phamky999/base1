@@ -1,5 +1,5 @@
-import { PageHelmet } from '@/components/app-helmet';
-import { AppPageHeader } from '@/components/app-page-header';
+import { PageHelmet } from '@/components/app-ui/app-helmet';
+import { AppPageHeader } from '@/components/app-ui/app-page-header';
 import { Button } from '@/components/ui/button';
 import { PreviewDataStep } from '@/features/flight-management/components/import-excel/preview-data-step';
 import { ShowResultStep } from '@/features/flight-management/components/import-excel/show-result-step';

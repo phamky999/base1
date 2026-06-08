@@ -1,4 +1,4 @@
-import { AppFilter } from '@/components/app-filter';
+import { AppFilter } from '@/components/app-ui/app-filter';
 import { Form, Input } from 'antd';
 import { useMemo } from 'react';
 

@@ -1,6 +1,6 @@
-import { AppDrawer } from '@/components/app-drawer';
-import { AppTable } from '@/components/app-table';
-import { AppTooltip } from '@/components/app-tooltip';
+import { AppDrawer } from '@/components/app-ui/app-drawer';
+import { AppTable } from '@/components/app-ui/app-table';
+import { AppTooltip } from '@/components/app-ui/app-tooltip';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FARE_RULE_TYPE_LABEL } from '@/features/flight-management/constants';
@@ -389,7 +389,7 @@ export const PreviewDataStep = ({
 
           <div className="flex items-center gap-4">
             {invalidCount > 0 && (
-              <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-600">
+              <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-red-600">
                 <AlertTriangleIcon className="size-4 shrink-0" />
                 <span>
                   Có {invalidCount} dòng lỗi sẽ được bỏ qua. Hệ thống chỉ import{' '}
@@ -401,9 +401,9 @@ export const PreviewDataStep = ({
               onClick={onImport}
               disabled={isImporting || validCount === 0}
               loading={isImporting}
-              className="min-w-32 bg-indigo-600 text-xs font-bold text-white hover:bg-indigo-700"
+              className="min-w-32 bg-indigo-600 font-bold text-white hover:bg-indigo-700"
             >
-              Import {validCount} chuyến bay
+              Xác nhận
             </Button>
           </div>
         </div>

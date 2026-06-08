@@ -1,4 +1,4 @@
-import { AppErrorBoundary } from '@/components/app-error-boundary';
+import { AppErrorBoundary } from '@/components/app-ui/app-error-boundary';
 import { AuthLayout } from '@/components/layout/auth-layout';
 import { lazyNamedExport } from '@/lib/utils';
 import type { RouteObject } from 'react-router-dom';

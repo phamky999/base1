@@ -1,8 +1,6 @@
-import { AppDrawer } from '@/components/app-drawer';
-import { AppFieldSet } from '@/components/app-fieldset';
-import { normalizeQueryParamValue } from '@/components/app-filter/helper';
+import { AppDrawer } from '@/components/app-ui/app-drawer';
+import { normalizeQueryParamValue } from '@/components/app-ui/app-filter/helper';
 import { Button } from '@/components/ui/button';
-import { FARE_RULE_TYPE_OPTIONS } from '@/features/flight-management/constants';
 import {
   useCreateFareRuleMutation,
   useGetFareRuleDetailQuery,
@@ -15,16 +13,15 @@ import type {
 import { upperCaseValue } from '@/lib/helpers/string';
 import type { ObjectType } from '@/lib/types';
 import { skipToken } from '@reduxjs/toolkit/query';
-import { Form, Input, Select, Skeleton } from 'antd';
-import { PlusCircleIcon, Trash2Icon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Form, Input, Skeleton } from 'antd';
+import { useEffect } from 'react';
 import { toast } from 'sonner';
 import {
   FORM_FIELDS,
   FORM_LABELS,
   FORM_VALIDATIONS,
-  RULE_FIELDS,
 } from './ticket-condition-form.schema';
+import { RulesList } from './rules-list';
 
 type TicketConditionFormProps = {
   selectedId: string | null;
@@ -43,17 +40,19 @@ export const TicketConditionForm = ({
 
   const [form] = Form.useForm();
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const normalizeId = normalizeQueryParamValue(selectedId);
 
   const queryArg = !normalizeId ? skipToken : String(normalizeId);
 
   const { data, isFetching } = useGetFareRuleDetailQuery(queryArg);
 
-  const [createFareRuleMutationFn] = useCreateFareRuleMutation();
+  const [createFareRuleMutationFn, { isLoading: isCreating }] =
+    useCreateFareRuleMutation();
 
-  const [updateFareRuleMutationFn] = useUpdateFareRuleMutation();
+  const [updateFareRuleMutationFn, { isLoading: isUpdating }] =
+    useUpdateFareRuleMutation();
+
+  const isSubmitting = isCreating || isUpdating;
 
   useEffect(() => {
     if (!open || !selectedId || !data) return;
@@ -78,8 +77,6 @@ export const TicketConditionForm = ({
     if (isSubmitting) return;
 
     try {
-      setIsSubmitting(true);
-
       const { rules, ...restValues } = values || {};
 
       const payload = {
@@ -104,8 +101,6 @@ export const TicketConditionForm = ({
       handleOpenChange(false);
     } catch (error) {
       console.error('Submit Error', error);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -121,6 +116,7 @@ export const TicketConditionForm = ({
             variant={'outline'}
             onClick={() => handleOpenChange(false)}
             className="min-w-25"
+            disabled={isSubmitting}
           >
             Hủy
           </Button>
@@ -177,66 +173,7 @@ export const TicketConditionForm = ({
 
             <Form.List name={FORM_FIELDS.RULES}>
               {(fields, { add, remove }) => (
-                <>
-                  <div className="space-y-4">
-                    {fields.map(({ key, name, ...restField }, index) => (
-                      <AppFieldSet
-                        key={key}
-                        title={`Điều kiện ${index + 1}`}
-                        headerAction={
-                          fields.length > 1 ? (
-                            <Button
-                              variant="destructive"
-                              size="icon-sm"
-                              onClick={() => remove(name)}
-                            >
-                              <Trash2Icon />
-                            </Button>
-                          ) : null
-                        }
-                      >
-                        <div className="popup-container grid gap-x-4 sm:grid-cols-2">
-                          <Form.Item
-                            {...restField}
-                            name={[name, RULE_FIELDS.TYPE]}
-                            label={FORM_LABELS[RULE_FIELDS.TYPE]}
-                            rules={FORM_VALIDATIONS[RULE_FIELDS.TYPE]}
-                          >
-                            <Select
-                              options={FARE_RULE_TYPE_OPTIONS}
-                              placeholder={FORM_LABELS[RULE_FIELDS.TYPE]}
-                              classNames={{
-                                popup: {
-                                  root: 'pointer-events-auto',
-                                },
-                              }}
-                            />
-                          </Form.Item>
-
-                          <Form.Item
-                            {...restField}
-                            name={[name, RULE_FIELDS.TEXT]}
-                            label={FORM_LABELS[RULE_FIELDS.TEXT]}
-                            rules={FORM_VALIDATIONS[RULE_FIELDS.TEXT]}
-                          >
-                            <Input
-                              placeholder={FORM_LABELS[RULE_FIELDS.TEXT]}
-                            />
-                          </Form.Item>
-                        </div>
-                      </AppFieldSet>
-                    ))}
-                  </div>
-
-                  <Button
-                    type="button"
-                    variant={'outline'}
-                    className="w-full border-dashed"
-                    onClick={() => add()}
-                  >
-                    <PlusCircleIcon className="mr-2 size-4" /> Thêm điều kiện
-                  </Button>
-                </>
+                <RulesList fields={fields} add={add} remove={remove} />
               )}
             </Form.List>
           </div>

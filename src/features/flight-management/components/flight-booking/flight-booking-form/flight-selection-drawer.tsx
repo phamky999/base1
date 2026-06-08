@@ -1,4 +1,4 @@
-import { AppDrawer } from '@/components/app-drawer';
+import { AppDrawer } from '@/components/app-ui/app-drawer';
 import { FlightList } from '@/features/flight-management/components/flight/flight-list';
 import type { TFlightListItem } from '@/features/flight-management/types';
 

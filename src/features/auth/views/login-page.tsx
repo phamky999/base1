@@ -1,4 +1,4 @@
-import { PageHelmet } from '@/components/app-helmet';
+import { PageHelmet } from '@/components/app-ui/app-helmet';
 import { LoginForm } from '@/features/auth/components/login-form';
 import { ConfigProvider, theme } from 'antd';
 import LogoIconImg from '@/assets/images/logo.png';

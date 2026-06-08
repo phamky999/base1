@@ -1,4 +1,4 @@
-import { AppFilter } from '@/components/app-filter';
+import { AppFilter } from '@/components/app-ui/app-filter';
 import {
   FLIGHT_BOOKING_STATUS,
   FLIGHT_BOOKING_STATUS_LABEL,

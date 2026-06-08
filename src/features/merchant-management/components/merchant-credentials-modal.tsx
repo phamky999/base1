@@ -1,5 +1,5 @@
-import { AppConfirmModal } from '@/components/app-confirm-modal';
-import { AppDialog } from '@/components/app-dialog';
+import { AppConfirmModal } from '@/components/app-ui/app-confirm-modal';
+import { AppDialog } from '@/components/app-ui/app-dialog';
 import { Button } from '@/components/ui/button';
 import {
   useGenerateMerchantCredentialMutation,

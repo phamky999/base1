@@ -1,4 +1,4 @@
-import { AppScreenLoader } from '@/components/app-screen-loader';
+import { AppScreenLoader } from '@/components/app-ui/app-screen-loader';
 import { MainLayoutHeader } from '@/components/layout/main-layout-header';
 import { MainLayoutSidebar } from '@/components/layout/main-layout-sidebar';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';

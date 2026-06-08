@@ -1,4 +1,4 @@
-import { AppDialog } from '@/components/app-dialog';
+import { AppDialog } from '@/components/app-ui/app-dialog';
 import { Button } from '@/components/ui/button';
 import {
   FORM_FIELDS,

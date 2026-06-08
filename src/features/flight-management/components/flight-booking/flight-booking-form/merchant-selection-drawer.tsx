@@ -1,4 +1,4 @@
-import { AppDrawer } from '@/components/app-drawer';
+import { AppDrawer } from '@/components/app-ui/app-drawer';
 import { MerchantList } from '@/features/merchant-management/components/merchant-list';
 import type { TMerchantListItem } from '@/features/merchant-management/types';
 

@@ -1,5 +1,5 @@
-import { AppFieldSet } from '@/components/app-fieldset';
-import { AppInputNumber } from '@/components/app-input-number';
+import { AppCard } from '@/components/app-ui/app-card';
+import { AppInputNumber } from '@/components/app-ui/app-input-number';
 import { Button } from '@/components/ui/button';
 import { AircraftAutocomplete } from '@/features/flight-management/components/flight/flight-form/aircraft-autocomplete';
 import { AirlineAutocomplete } from '@/features/flight-management/components/flight/flight-form/airline-autocomplete';
@@ -159,7 +159,7 @@ export const SegmentItem = ({
   );
 
   return (
-    <AppFieldSet
+    <AppCard
       title={`Chặng bay ${index + 1}`}
       headerAction={
         total > 1 ? (
@@ -260,6 +260,6 @@ export const SegmentItem = ({
           </Form.Item>
         </Col>
       </Row>
-    </AppFieldSet>
+    </AppCard>
   );
 };

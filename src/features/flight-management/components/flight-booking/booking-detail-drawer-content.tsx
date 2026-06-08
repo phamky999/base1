@@ -1,5 +1,5 @@
-import { AppDateTimeLabel } from '@/components/app-date-time-label';
-import { AppTable } from '@/components/app-table';
+import { AppDateTimeLabel } from '@/components/app-ui/app-date-time-label';
+import { AppTable } from '@/components/app-ui/app-table';
 import { useSidebar } from '@/components/ui/sidebar';
 import {
   FLIGHT_BOOKING_STATUS_COLOR,

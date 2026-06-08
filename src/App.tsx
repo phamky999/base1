@@ -1,6 +1,6 @@
 import { store } from '@/app/redux/store';
 import { appRoutes } from '@/app/router/app-routes';
-import { AppHelmetWrapper } from '@/components/app-helmet';
+import { AppHelmetWrapper } from '@/components/app-ui/app-helmet';
 import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { useTheme } from '@/context/theme';
@@ -9,7 +9,7 @@ import { ConfigProvider, theme, Spin } from 'antd';
 import vi_VN from 'antd/es/locale/vi_VN';
 import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
-import { AppScreenLoader } from '@/components/app-screen-loader';
+import { AppScreenLoader } from '@/components/app-ui/app-screen-loader';
 import { useMemo } from 'react';
 
 Spin.setDefaultIndicator(<AppScreenLoader isFullScreen={false} />);

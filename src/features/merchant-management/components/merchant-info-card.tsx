@@ -1,4 +1,4 @@
-import { normalizeQueryParamValue } from '@/components/app-filter/helper';
+import { normalizeQueryParamValue } from '@/components/app-ui/app-filter/helper';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useGetMerchantDetailQuery } from '@/features/merchant-management/query';
 import { cn } from '@/lib/utils';

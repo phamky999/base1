@@ -1,5 +1,5 @@
-import { PageHelmet } from '@/components/app-helmet';
-import { AppPageHeader } from '@/components/app-page-header';
+import { PageHelmet } from '@/components/app-ui/app-helmet';
+import { AppPageHeader } from '@/components/app-ui/app-page-header';
 import { Button } from '@/components/ui/button';
 import { AccountList } from '@/features/system-management/components/account-management/account-list';
 import { AccountListFilter } from '@/features/system-management/components/account-management/account-list-filter';

@@ -1,5 +1,5 @@
-import { PageHelmet } from '@/components/app-helmet';
-import { AppPageHeader } from '@/components/app-page-header';
+import { PageHelmet } from '@/components/app-ui/app-helmet';
+import { AppPageHeader } from '@/components/app-ui/app-page-header';
 import { Button } from '@/components/ui/button';
 import { TicketConditionForm } from '@/features/flight-management/components/ticket-condition/ticket-condition-form/index';
 import { TicketConditionList } from '@/features/flight-management/components/ticket-condition/ticket-condition-list';

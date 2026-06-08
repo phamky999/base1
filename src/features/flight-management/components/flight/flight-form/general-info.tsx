@@ -1,4 +1,4 @@
-import { AppInputNumber } from '@/components/app-input-number';
+import { AppInputNumber } from '@/components/app-ui/app-input-number';
 import { AirlineAutocomplete } from '@/features/flight-management/components/flight/flight-form/airline-autocomplete';
 import {
   FORM_FIELDS,

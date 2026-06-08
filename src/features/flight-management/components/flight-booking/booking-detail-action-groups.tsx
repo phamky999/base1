@@ -1,4 +1,4 @@
-import { AppTooltip } from '@/components/app-tooltip';
+import { AppTooltip } from '@/components/app-ui/app-tooltip';
 import { Button } from '@/components/ui/button';
 import { BookingDetailDrawer } from '@/features/flight-management/components/flight-booking/booking-detail-drawer';
 import { BookingDetailLogsDrawer } from '@/features/flight-management/components/flight-booking/booking-detail-logs-drawer';

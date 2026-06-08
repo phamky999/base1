@@ -1,4 +1,4 @@
-import { normalizeQueryParamValue } from '@/components/app-filter/helper';
+import { normalizeQueryParamValue } from '@/components/app-ui/app-filter/helper';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { FlightDetailDrawer } from '@/features/flight-management/components/flight/flight-detail-drawer';

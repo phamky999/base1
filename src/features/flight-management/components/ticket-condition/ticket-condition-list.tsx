@@ -1,6 +1,6 @@
-import { AppConfirmModal } from '@/components/app-confirm-modal';
-import { AppTable } from '@/components/app-table';
-import { AppTooltip } from '@/components/app-tooltip';
+import { AppConfirmModal } from '@/components/app-ui/app-confirm-modal';
+import { AppTable } from '@/components/app-ui/app-table';
+import { AppTooltip } from '@/components/app-ui/app-tooltip';
 import { Button } from '@/components/ui/button';
 import { TicketConditionForm } from '@/features/flight-management/components/ticket-condition/ticket-condition-form';
 import {

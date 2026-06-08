@@ -1,4 +1,4 @@
-import { AppDialog } from '@/components/app-dialog';
+import { AppDialog } from '@/components/app-ui/app-dialog';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { DialogClose } from '@/components/ui/dialog';

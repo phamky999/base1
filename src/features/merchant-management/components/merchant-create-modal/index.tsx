@@ -1,4 +1,4 @@
-import { AppDialog } from '@/components/app-dialog';
+import { AppDialog } from '@/components/app-ui/app-dialog';
 import { Button } from '@/components/ui/button';
 import { useCreateMerchantMutation } from '@/features/merchant-management/query';
 import type { TCreateMerchantParams } from '@/features/merchant-management/types';

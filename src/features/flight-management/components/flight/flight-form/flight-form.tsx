@@ -1,4 +1,4 @@
-import { normalizeQueryParamValue } from '@/components/app-filter/helper';
+import { normalizeQueryParamValue } from '@/components/app-ui/app-filter/helper';
 import { Button } from '@/components/ui/button';
 import {
   FORM_FIELDS,
@@ -23,7 +23,7 @@ import { Regex } from '@/lib/validations';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { Form, Skeleton } from 'antd';
 import type { Dayjs } from 'dayjs';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { FareRulesSection } from './fare-rules';
@@ -67,17 +67,19 @@ export const FlightForm = ({ id, actionType }: FlightFormProps) => {
 
   const [form] = Form.useForm();
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const normalizeId = normalizeQueryParamValue(id);
 
   const queryArg = !normalizeId ? skipToken : String(normalizeId);
 
   const { data, isFetching } = useGetFlightDetailQuery(queryArg);
 
-  const [createFlightMutationFn] = useCreateFlightMutation();
+  const [createFlightMutationFn, { isLoading: isCreating }] =
+    useCreateFlightMutation();
 
-  const [updateFlightMutationFn] = useUpdateFlightMutation();
+  const [updateFlightMutationFn, { isLoading: isUpdating }] =
+    useUpdateFlightMutation();
+
+  const isSubmitting = isCreating || isUpdating;
 
   useEffect(() => {
     if (!id || !data?.data) return;
@@ -112,8 +114,6 @@ export const FlightForm = ({ id, actionType }: FlightFormProps) => {
     if (isSubmitting) return;
 
     try {
-      setIsSubmitting(true);
-
       const { departureSegments, returnSegments, fareRules, ...restValues } =
         values || {};
 
@@ -144,8 +144,6 @@ export const FlightForm = ({ id, actionType }: FlightFormProps) => {
       navigate(flightManagementPaths.flightList.fullPath);
     } catch (error) {
       console.error('Submit Error', error);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -294,6 +292,7 @@ export const FlightForm = ({ id, actionType }: FlightFormProps) => {
             variant="outline"
             className="min-w-25"
             onClick={() => navigate(-1)}
+            disabled={isSubmitting}
           >
             Hủy
           </Button>

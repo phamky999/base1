@@ -1,6 +1,6 @@
-import { AppDateTimeLabel } from '@/components/app-date-time-label';
-import { AppDrawer } from '@/components/app-drawer';
-import { normalizeQueryParamValue } from '@/components/app-filter/helper';
+import { AppDateTimeLabel } from '@/components/app-ui/app-date-time-label';
+import { AppDrawer } from '@/components/app-ui/app-drawer';
+import { normalizeQueryParamValue } from '@/components/app-ui/app-filter/helper';
 import {
   FLIGHT_DETAIL_ACTION_COLOR,
   FLIGHT_DETAIL_ACTION_LABEL,

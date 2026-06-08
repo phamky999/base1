@@ -41,7 +41,7 @@ export const AppDrawer = ({
           <DrawerTitle className="mr-auto">{title}</DrawerTitle>
           {headerAddon && <div>{headerAddon}</div>}
         </DrawerHeader>
-        <div data-vaul-no-drag className="overflow-y-auto p-4">
+        <div data-vaul-no-drag className="overflow-y-auto p-4 select-text!">
           {children}
         </div>
         {!!footer && (

@@ -25,7 +25,7 @@ export const ContactSection = () => {
         <Col span={24} md={8}>
           <Form.Item
             name={[FORM_FIELDS.CONTACT_INFO, CONTACT_FIELDS.LAST_NAME]}
-            label="Họ"
+            label="Họ và tên đệm"
             rules={FORM_VALIDATIONS.contact[CONTACT_FIELDS.LAST_NAME]}
           >
             <Input placeholder="Họ và tên đệm" />

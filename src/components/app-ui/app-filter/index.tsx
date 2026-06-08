@@ -1,6 +1,6 @@
-import { AdvanceFilter } from '@/components/app-filter/advance-filter';
-import { QuickFilterSelection } from '@/components/app-filter/quick-filter-selection';
-import { QuickFilterSearchInput } from '@/components/app-filter/search-input';
+import { AdvanceFilter } from '@/components/app-ui/app-filter/advance-filter';
+import { QuickFilterSelection } from '@/components/app-ui/app-filter/quick-filter-selection';
+import { QuickFilterSearchInput } from '@/components/app-ui/app-filter/search-input';
 import { Button } from '@/components/ui/button';
 import { XIcon } from 'lucide-react';
 import { type ReactNode } from 'react';

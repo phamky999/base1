@@ -9,7 +9,6 @@ import {
   CommandList,
   CommandSeparator,
 } from '@/components/ui/command';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { useTheme } from '@/context/theme';
 import { cn } from '@/lib/utils';
 import {
@@ -20,10 +19,12 @@ import {
   SearchIcon,
   Sun,
 } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 export const HeaderCommandSearch = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const { setTheme } = useTheme();
   const [open, setOpen] = useState(false);
@@ -39,10 +40,26 @@ export const HeaderCommandSearch = () => {
   const handleNavigate = React.useCallback(
     (url: string) => {
       setOpen(false);
-      navigate(url);
+
+      setTimeout(() => {
+        if (location.pathname !== url) {
+          navigate(url);
+        }
+      }, 0);
     },
-    [navigate]
+    [location.pathname, navigate]
   );
+
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setOpen(open => !open);
+      }
+    };
+    document.addEventListener('keydown', down);
+    return () => document.removeEventListener('keydown', down);
+  }, []);
 
   return (
     <>
@@ -60,60 +77,66 @@ export const HeaderCommandSearch = () => {
           size={16}
         />
         <span className="ms-4">Tìm kiếm</span>
+        <kbd className="pointer-events-none absolute inset-e-[0.3rem] top-[0.3rem] hidden h-5 items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 select-none group-hover:bg-accent sm:flex">
+          <span className="text-xs">⌘</span>K
+        </kbd>
       </Button>
 
-      <CommandDialog modal open={open} onOpenChange={setOpen}>
+      <CommandDialog
+        className="md:max-w-140!"
+        modal
+        open={open}
+        onOpenChange={setOpen}
+      >
         <CommandInput placeholder="Nhập trang, nội dung cần tìm kiếm..." />
-        <CommandList>
-          <ScrollArea type="hover" className="h-72 pe-1">
-            <CommandEmpty>Không tìm thấy kết quả phù hợp.</CommandEmpty>
-            {sidebarData.navGroups.map(group => (
-              <CommandGroup key={group.title} heading={group.title}>
-                {group.items.map((navItem, i) => {
-                  if (navItem.url)
-                    return (
-                      <CommandItem
-                        key={`${navItem.url}-${i}`}
-                        value={navItem.title}
-                        onSelect={() => handleNavigate(navItem.url)}
-                      >
-                        <div className="flex size-4 items-center justify-center">
-                          <ArrowRight className="size-2 text-muted-foreground/80" />
-                        </div>
-                        {navItem.title}
-                      </CommandItem>
-                    );
-
-                  return navItem.items?.map((subItem, i) => (
+        <CommandList className="h-72 max-h-72">
+          <CommandEmpty>Không tìm thấy kết quả phù hợp.</CommandEmpty>
+          {sidebarData.navGroups.map(group => (
+            <CommandGroup key={group.title} heading={group.title}>
+              {group.items.map((navItem, i) => {
+                if (navItem.url)
+                  return (
                     <CommandItem
-                      key={`${navItem.title}-${subItem.url}-${i}`}
-                      value={`${navItem.title}-${subItem.url}`}
-                      onSelect={() => handleNavigate(subItem.url)}
+                      key={`${navItem.url}-${i}`}
+                      value={navItem.title}
+                      onSelect={() => handleNavigate(navItem.url)}
                     >
                       <div className="flex size-4 items-center justify-center">
                         <ArrowRight className="size-2 text-muted-foreground/80" />
                       </div>
-                      {navItem.title} <ChevronRight /> {subItem.title}
+                      {navItem.title}
                     </CommandItem>
-                  ));
-                })}
-              </CommandGroup>
-            ))}
-            <CommandSeparator />
-            <CommandGroup heading="Theme">
-              <CommandItem onSelect={() => handleThemeSwitch('light')}>
-                <Sun /> <span>Light</span>
-              </CommandItem>
-              <CommandItem onSelect={() => handleThemeSwitch('dark')}>
-                <Moon className="scale-90" />
-                <span>Dark</span>
-              </CommandItem>
-              <CommandItem onSelect={() => handleThemeSwitch('system')}>
-                <Laptop />
-                <span>System</span>
-              </CommandItem>
+                  );
+
+                return navItem.items?.map((subItem, i) => (
+                  <CommandItem
+                    key={`${navItem.title}-${subItem.url}-${i}`}
+                    value={`${navItem.title}-${subItem.url}`}
+                    onSelect={() => handleNavigate(subItem.url)}
+                  >
+                    <div className="flex size-4 items-center justify-center">
+                      <ArrowRight className="size-2 text-muted-foreground/80" />
+                    </div>
+                    {navItem.title} <ChevronRight /> {subItem.title}
+                  </CommandItem>
+                ));
+              })}
             </CommandGroup>
-          </ScrollArea>
+          ))}
+          <CommandSeparator />
+          <CommandGroup heading="Theme">
+            <CommandItem onSelect={() => handleThemeSwitch('light')}>
+              <Sun /> <span>Light</span>
+            </CommandItem>
+            <CommandItem onSelect={() => handleThemeSwitch('dark')}>
+              <Moon className="scale-90" />
+              <span>Dark</span>
+            </CommandItem>
+            <CommandItem onSelect={() => handleThemeSwitch('system')}>
+              <Laptop />
+              <span>System</span>
+            </CommandItem>
+          </CommandGroup>
         </CommandList>
       </CommandDialog>
     </>

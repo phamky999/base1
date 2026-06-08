@@ -1,4 +1,4 @@
-import { AppFieldSet } from '@/components/app-fieldset';
+import { AppCard } from '@/components/app-ui/app-card';
 import { Button } from '@/components/ui/button';
 import {
   Collapsible,
@@ -33,7 +33,7 @@ export const PassengerItem = ({
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <AppFieldSet
+      <AppCard
         title={`Hành khách ${index + 1}`}
         headerAction={
           <>
@@ -55,7 +55,7 @@ export const PassengerItem = ({
         }
       >
         <Row gutter={20}>
-          <Col span={24} md={6} lg={5}>
+          <Col span={24} md={12} lg={5}>
             <Form.Item
               name={[fieldName, PASSENGER_FIELDS.TYPE]}
               label="Loại hành khách"
@@ -68,7 +68,7 @@ export const PassengerItem = ({
             </Form.Item>
           </Col>
 
-          <Col span={24} md={6} lg={5}>
+          <Col span={24} md={12} lg={5}>
             <Form.Item
               name={[fieldName, PASSENGER_FIELDS.GENDER]}
               label="Giới tính"
@@ -78,7 +78,7 @@ export const PassengerItem = ({
             </Form.Item>
           </Col>
 
-          <Col span={24} md={6} lg={5}>
+          <Col span={24} md={12} lg={5}>
             <Form.Item
               name={[fieldName, PASSENGER_FIELDS.LAST_NAME]}
               label="Họ và tên đệm"
@@ -88,7 +88,7 @@ export const PassengerItem = ({
               <Input placeholder="VD: NGUYEN VAN" />
             </Form.Item>
           </Col>
-          <Col span={24} md={6} lg={5}>
+          <Col span={24} md={12} lg={5}>
             <Form.Item
               name={[fieldName, PASSENGER_FIELDS.FIRST_NAME]}
               label="Tên"
@@ -99,7 +99,7 @@ export const PassengerItem = ({
             </Form.Item>
           </Col>
 
-          <Col span={24} md={6} lg={4}>
+          <Col span={24} md={24} lg={4}>
             <Form.Item
               name={[fieldName, PASSENGER_FIELDS.BIRTHDAY]}
               label="Ngày sinh"
@@ -114,7 +114,7 @@ export const PassengerItem = ({
         </Row>
         <CollapsibleContent>
           <Row gutter={20}>
-            <Col span={24} md={6} lg={5}>
+            <Col span={24} md={12} lg={5}>
               <Form.Item
                 name={[fieldName, PASSENGER_FIELDS.DOCUMENT_NUMBER]}
                 label="Số CCCD / Hộ chiếu"
@@ -123,7 +123,7 @@ export const PassengerItem = ({
               </Form.Item>
             </Col>
 
-            <Col span={24} md={6} lg={5}>
+            <Col span={24} md={12} lg={5}>
               <Form.Item
                 name={[fieldName, PASSENGER_FIELDS.DOCUMENT_EXPIRY_DATE]}
                 label="Ngày hết hạn"
@@ -136,7 +136,7 @@ export const PassengerItem = ({
               </Form.Item>
             </Col>
 
-            <Col span={24} md={3} lg={5}>
+            <Col span={24} md={12} lg={5}>
               <Form.Item
                 name={[fieldName, PASSENGER_FIELDS.DOCUMENT_ISSUING_COUNTRY]}
                 label="Quốc gia cấp"
@@ -145,7 +145,7 @@ export const PassengerItem = ({
               </Form.Item>
             </Col>
 
-            <Col span={24} md={3} lg={9}>
+            <Col span={24} md={12} lg={9}>
               <Form.Item
                 name={[fieldName, PASSENGER_FIELDS.DOCUMENT_NATIONALITY]}
                 label="Quốc tịch"
@@ -155,7 +155,7 @@ export const PassengerItem = ({
             </Col>
           </Row>
         </CollapsibleContent>
-      </AppFieldSet>
+      </AppCard>
     </Collapsible>
   );
 };

@@ -1,5 +1,5 @@
-import { AppTable } from '@/components/app-table';
-import { AppTooltip } from '@/components/app-tooltip';
+import { AppTable } from '@/components/app-ui/app-table';
+import { AppTooltip } from '@/components/app-ui/app-tooltip';
 import { Button } from '@/components/ui/button';
 import { USER_ROLES_LABEL } from '@/features/auth/constants';
 import type { TUserRole } from '@/features/auth/types';

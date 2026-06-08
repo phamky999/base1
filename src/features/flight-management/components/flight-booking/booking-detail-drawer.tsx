@@ -1,5 +1,5 @@
-import { AppDrawer } from '@/components/app-drawer';
-import { normalizeQueryParamValue } from '@/components/app-filter/helper';
+import { AppDrawer } from '@/components/app-ui/app-drawer';
+import { normalizeQueryParamValue } from '@/components/app-ui/app-filter/helper';
 import { BookingDetailDrawerContent } from '@/features/flight-management/components/flight-booking/booking-detail-drawer-content';
 import { useGetFlightBookingDetailQuery } from '@/features/flight-management/query';
 import { skipToken } from '@reduxjs/toolkit/query';

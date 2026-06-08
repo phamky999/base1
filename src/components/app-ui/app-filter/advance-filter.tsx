@@ -1,4 +1,4 @@
-import { normalizeQueryParamValue } from '@/components/app-filter/helper';
+import { normalizeQueryParamValue } from '@/components/app-ui/app-filter/helper';
 import { Button } from '@/components/ui/button';
 import { DEFAULT_PAGE_INDEX, PAGINATION_QUERY_KEY } from '@/lib/constants';
 import { DEFAULT_DATE_FORMAT } from '@/lib/date/constants';
