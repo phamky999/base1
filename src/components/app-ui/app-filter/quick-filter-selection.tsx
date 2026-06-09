@@ -18,7 +18,7 @@ import { Separator } from '@/components/ui/separator';
 import { DEFAULT_PAGE_INDEX, PAGINATION_QUERY_KEY } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { CheckIcon, PlusCircleIcon } from 'lucide-react';
-import * as React from 'react';
+import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 type QuickFilterSelectionProps = {
@@ -39,7 +39,7 @@ export const QuickFilterSelection = ({
 }: QuickFilterSelectionProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const selectedValues = React.useMemo(() => {
+  const selectedValues = useMemo(() => {
     return new Set(searchParams.getAll(filterKey));
   }, [searchParams, filterKey]);
 

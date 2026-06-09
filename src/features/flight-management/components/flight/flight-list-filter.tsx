@@ -15,9 +15,23 @@ export const FlightListFilter = ({
 }: TFlightListFilterProps) => {
   const advanceFilterConfig = useMemo(
     () => ({
-      keys: ['bookingCode', 'startPoint', 'endPoint', 'flightNumber'],
+      keys: [
+        'airlineCode',
+        'bookingCode',
+        'startPoint',
+        'endPoint',
+        'flightNumber',
+      ],
       elements: (
         <>
+          <Form.Item
+            name="airlineCode"
+            label="Mã hãng hàng không"
+            className="mb-3"
+          >
+            <Input placeholder="Mã hãng hàng không" />
+          </Form.Item>
+
           <Form.Item
             name="flightNumber"
             label="Số hiệu chuyến bay"
@@ -55,8 +69,8 @@ export const FlightListFilter = ({
     <div>
       <AppFilter
         searchField={{
-          key: 'airlineCode',
-          placeholder: 'Mã hãng hàng không...',
+          key: 'transactionCode',
+          placeholder: 'Nhập mã chuyến bay',
         }}
         filters={
           showFilters

@@ -3,13 +3,13 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import * as React from 'react';
 
 import { useSidebar } from '@/components/ui/sidebar';
+import { type ReactNode } from 'react';
 
 type AppTooltipProps = {
-  children: React.ReactNode;
-  content: React.ReactNode;
+  children: ReactNode;
+  content: ReactNode;
   disableOnMobile?: boolean;
   side?: 'top' | 'right' | 'bottom' | 'left';
   align?: 'start' | 'center' | 'end';
@@ -17,30 +17,26 @@ type AppTooltipProps = {
   delayDuration?: number;
 };
 
-export const AppTooltip = React.memo(
-  ({
-    children,
-    content,
-    disableOnMobile = true,
-    side = 'top',
-    align = 'center',
-  }: AppTooltipProps) => {
-    const { isMobile } = useSidebar();
+export const AppTooltip = ({
+  children,
+  content,
+  disableOnMobile = true,
+  side = 'top',
+  align = 'center',
+}: AppTooltipProps) => {
+  const { isMobile } = useSidebar();
 
-    if (disableOnMobile && isMobile) {
-      return children;
-    }
-
-    return (
-      <Tooltip>
-        <TooltipTrigger asChild>{children}</TooltipTrigger>
-
-        <TooltipContent side={side} align={align}>
-          {content}
-        </TooltipContent>
-      </Tooltip>
-    );
+  if (disableOnMobile && isMobile) {
+    return children;
   }
-);
 
-AppTooltip.displayName = 'AppTooltip';
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{children}</TooltipTrigger>
+
+      <TooltipContent side={side} align={align}>
+        {content}
+      </TooltipContent>
+    </Tooltip>
+  );
+};

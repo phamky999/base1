@@ -35,6 +35,7 @@ export const FlightBookingList = () => {
       'endPoint',
       'flightId',
       'flightDate',
+      'transactionCode',
     ],
   });
 
@@ -49,6 +50,13 @@ export const FlightBookingList = () => {
 
   const columns: TableProps<TFlightBookingListItem>['columns'] = useMemo(() => {
     return [
+      {
+        title: 'Mã đơn hàng',
+        dataIndex: 'transactionCode',
+        key: 'transactionCode',
+        width: 150,
+        render: value => <p className="font-semibold">{value}</p>,
+      },
       {
         title: 'Mã đặt chỗ',
         dataIndex: 'bookingCode',
@@ -187,7 +195,9 @@ export const FlightBookingList = () => {
         fixed: 'right',
         width: 100,
         render: (record: TFlightBookingListItem) => (
-          <BookingDetailActionGroups bookingId={record.id} />
+          <div onClick={e => e.stopPropagation()}>
+            <BookingDetailActionGroups bookingId={record.id} />
+          </div>
         ),
       },
     ];

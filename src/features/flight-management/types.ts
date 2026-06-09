@@ -103,6 +103,7 @@ export type TGetFlightListRequestParams = TPaginationRequest & {
   startPoint?: string;
   endPoint?: string;
   flightNumber?: string;
+  transactionCode?: string;
 };
 
 export type TFlightListItem = {
@@ -131,6 +132,7 @@ export type TFlightListItem = {
   allowedStatuses: TFlightStatus[];
   allowedActions: TFlightDetailAction[];
   itineraryType: TFlightItineraryType;
+  transactionCode: string; //Mã định dạng chuyến bay => dùng cho search
 };
 
 export type TGetFlightListResponse = {
@@ -190,6 +192,7 @@ export type TGetFlightDetailResponse = {
   allowedStatuses: TFlightStatus[];
   allowedActions: TFlightDetailAction[];
   itineraryType: TFlightItineraryType;
+  transactionCode: string; //Mã định dạng chuyến bay => dùng cho search
 };
 
 export type TUpdateFlightPayload = TCreateFlightPayload & {
@@ -231,6 +234,7 @@ export type TFlightBookingListItem = {
   lastTicketDate: string;
   createdAt: string;
   updatedAt: string;
+  transactionCode: string; //Mã định dạng flight booking => dùng cho search
 };
 
 export type TGetFlightStaticsResponse = {
@@ -248,6 +252,7 @@ export type TGetFlightBookingListRequestParams = TPaginationRequest & {
   endPoint?: string;
   flightId?: string;
   flightDate?: string;
+  transactionCode?: string;
 };
 
 export type TGetFlightBookingListResponse = {
@@ -297,6 +302,7 @@ export type TGetFlightBookingDetailResponse = {
   createdAt?: string;
   updatedAt?: string;
   passengers: Array<TGetFlightBookingDetailPassenger>;
+  transactionCode: string; //Mã định dạng flight booking => dùng cho search
 };
 
 export type TFlightDetailLogItem = {

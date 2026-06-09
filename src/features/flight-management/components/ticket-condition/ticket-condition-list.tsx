@@ -39,6 +39,11 @@ export const TicketConditionList = () => {
     [deleteFareRuleFn]
   );
 
+  const handleViewDetail = (id: string) => {
+    setSelectedTicketConditionId(id);
+    setIsAddEditModalOpen(true);
+  };
+
   const columns = useMemo(
     (): TableProps<TGetFareRulesResponse[number]>['columns'] => [
       {
@@ -61,15 +66,12 @@ export const TicketConditionList = () => {
         fixed: 'right',
         width: 100,
         render: (_, record) => (
-          <>
+          <div onClick={e => e.stopPropagation()}>
             <AppTooltip content="Chỉnh sửa">
               <Button
                 size="icon-sm"
                 variant="ghost"
-                onClick={() => {
-                  setSelectedTicketConditionId(record.id);
-                  setIsAddEditModalOpen(true);
-                }}
+                onClick={() => handleViewDetail(record.id)}
               >
                 <PenSquareIcon />
               </Button>
@@ -87,7 +89,7 @@ export const TicketConditionList = () => {
                 <Trash2Icon />
               </Button>
             </AppTooltip>
-          </>
+          </div>
         ),
       },
     ],
@@ -103,6 +105,12 @@ export const TicketConditionList = () => {
           dataSource={fareRules}
           totalCount={fareRules.length}
           isShowSkeleton={isFetching}
+          onRow={record => ({
+            onClick: () => {
+              handleViewDetail(record.id);
+            },
+            className: 'cursor-pointer',
+          })}
         />
       </div>
 

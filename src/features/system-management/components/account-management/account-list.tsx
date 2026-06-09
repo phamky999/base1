@@ -81,7 +81,7 @@ export const AccountList = () => {
       fixed: 'right',
       width: 100,
       render: (record: TAccountListItem) => (
-        <>
+        <div onClick={e => e.stopPropagation()}>
           <AppTooltip content="Cập nhật tài khoản">
             <Button
               variant={'ghost'}
@@ -105,7 +105,7 @@ export const AccountList = () => {
               <UserLockIcon className="size-4" />
             </Button>
           </AppTooltip>
-        </>
+        </div>
       ),
     },
   ];
@@ -120,7 +120,15 @@ export const AccountList = () => {
         columns={columns}
         pagination={false}
         isShowSkeleton={isFetching}
+        onRow={record => ({
+          onClick: () => {
+            setSelectedAccount(record);
+            setIsUpdateAccountModalOpen(true);
+          },
+          className: 'cursor-pointer',
+        })}
       />
+
       {!!selectedAccount && (
         <>
           <UpdateAccountPasswordModal

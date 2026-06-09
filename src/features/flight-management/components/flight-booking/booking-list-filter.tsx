@@ -11,6 +11,7 @@ const ADVANCE_FILTER_KEYS = [
   'startPoint',
   'endPoint',
   'flightDate',
+  'bookingCode',
 ];
 
 const statusFilterOptions = Object.values(FLIGHT_BOOKING_STATUS).map(value => ({
@@ -23,8 +24,8 @@ export const FlightBookingListFilter = () => {
     <div>
       <AppFilter
         searchField={{
-          key: 'bookingCode',
-          placeholder: 'Mã đặt chỗ...',
+          key: 'transactionCode',
+          placeholder: 'Nhập mã đơn hàng',
         }}
         filters={[
           {
@@ -37,6 +38,9 @@ export const FlightBookingListFilter = () => {
           keys: ADVANCE_FILTER_KEYS,
           elements: (
             <>
+              <Form.Item name="bookingCode" label="Mã đặt chỗ" className="mb-3">
+                <Input placeholder="Mã đặt chỗ" />
+              </Form.Item>
               <Form.Item
                 name="airlineCode"
                 label="Mã hãng hàng không"

@@ -1,13 +1,14 @@
 import { AppDateTimeLabel } from '@/components/app-ui/app-date-time-label';
 import { AppTable } from '@/components/app-ui/app-table';
+import { Button } from '@/components/ui/button';
 import { FlightDetailActionGroups } from '@/features/flight-management/components/flight/flight-detail-action-groups';
+import { FlightListFilter } from '@/features/flight-management/components/flight/flight-list-filter';
 import { FlightStatistics } from '@/features/flight-management/components/flight/flight-statistics';
 import {
   FLIGHT_ITINERARY_TYPE,
   FLIGHT_STATUS,
   FLIGHT_STATUS_COLOR,
   FLIGHT_STATUS_LABEL,
-  GET_FLIGHT_FILTER_KEYS,
 } from '@/features/flight-management/constants';
 import {
   useGetFlightListQuery,
@@ -30,8 +31,6 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { FlightDetailDrawer } from './flight-detail-drawer';
-import { FlightListFilter } from '@/features/flight-management/components/flight/flight-list-filter';
-import { Button } from '@/components/ui/button';
 
 type FlightListProps = {
   showInSelectFlightDrawer?: boolean;
@@ -51,7 +50,15 @@ export const FlightList = ({
     useQueryHandle<TGetFlightListRequestParams>();
 
   const params = getApiQueryParamsFromUrlQuery({
-    keys: GET_FLIGHT_FILTER_KEYS,
+    keys: [
+      'status',
+      'airlineCode',
+      'bookingCode',
+      'startPoint',
+      'endPoint',
+      'flightNumber',
+      'transactionCode',
+    ],
     noPagination: true,
   }) as TGetFlightListRequestParams;
 
@@ -86,6 +93,13 @@ export const FlightList = ({
 
   const columns = useMemo(
     (): TableProps<TFlightListItem>['columns'] => [
+      {
+        title: 'Mã chuyến bay',
+        width: 150,
+        dataIndex: 'transactionCode',
+        key: 'transactionCode',
+        render: (value: string) => <p className="font-semibold">{value}</p>,
+      },
       {
         title: 'Chuyến bay',
         width: 180,
@@ -212,17 +226,20 @@ export const FlightList = ({
         fixed: 'right',
         align: showInSelectFlightDrawer ? 'center' : 'left',
         width: 100,
-        render: (record: TFlightListItem) =>
-          showInSelectFlightDrawer ? (
-            <Button
-              variant={'outline'}
-              onClick={() => customOnSelectRecord?.(record)}
-            >
-              Chọn
-            </Button>
-          ) : (
-            <FlightDetailActionGroups flight={record} />
-          ),
+        render: (record: TFlightListItem) => (
+          <div onClick={e => e.stopPropagation()}>
+            {showInSelectFlightDrawer ? (
+              <Button
+                variant={'outline'}
+                onClick={() => customOnSelectRecord?.(record)}
+              >
+                Chọn
+              </Button>
+            ) : (
+              <FlightDetailActionGroups flight={record} />
+            )}
+          </div>
+        ),
       },
     ],
     [customOnSelectRecord, showInSelectFlightDrawer]

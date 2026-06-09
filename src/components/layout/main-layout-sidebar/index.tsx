@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import LogoIconImg from '@/assets/images/logo.png';
 import { sidebarData } from '@/components/layout/main-layout-sidebar/constants';
 import { SidebarNavGroup } from '@/components/layout/main-layout-sidebar/sidebar-nav-group';
@@ -14,13 +12,14 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Tag } from 'antd';
+import type { ComponentProps } from 'react';
+import { Link } from 'react-router-dom';
 
 export const MainLayoutSidebar = ({
   ...props
-}: React.ComponentProps<typeof Sidebar>) => {
+}: ComponentProps<typeof Sidebar>) => {
   const { state } = useSidebar();
   return (
     <Sidebar variant="floating" collapsible="icon" {...props}>
@@ -34,7 +33,7 @@ export const MainLayoutSidebar = ({
               >
                 <div
                   className={cn(
-                    'flex aspect-square size-10 items-center justify-center rounded-lg text-sidebar-primary-foreground transition-all duration-300 ease-in-out dark:bg-gray-100',
+                    'flex aspect-square size-10 items-center justify-center rounded-lg text-sidebar-primary-foreground transition-all duration-300 ease-in-out',
                     state === 'collapsed'
                       ? 'size-8'
                       : 'size-10 bg-sidebar-accent'

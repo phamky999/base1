@@ -1,5 +1,5 @@
-import * as XLSX from 'xlsx';
 import dayjs from '@/lib/date/dayjs-config';
+import { SSF, type WorkSheet } from 'xlsx';
 
 /**
  * XLSX cell
@@ -13,7 +13,7 @@ const normalizeCellValue = (value: unknown, format?: string) => {
 
   // excel date number
   if (typeof value === 'number' && format) {
-    const date = XLSX.SSF.parse_date_code(value);
+    const date = SSF.parse_date_code(value);
 
     if (date) {
       return dayjs(
@@ -25,12 +25,12 @@ const normalizeCellValue = (value: unknown, format?: string) => {
   return String(value).trim();
 };
 
-const getCell = (sheet: XLSX.WorkSheet, address: string) => {
+const getCell = (sheet: WorkSheet, address: string) => {
   return sheet[address];
 };
 
 export const getCellString = (
-  sheet: XLSX.WorkSheet,
+  sheet: WorkSheet,
   address: string,
   format?: string
 ) => {
@@ -45,7 +45,7 @@ export const getCellString = (
   return normalizeCellValue(cell.v, format);
 };
 
-export const getCellNumber = (sheet: XLSX.WorkSheet, address: string) => {
+export const getCellNumber = (sheet: WorkSheet, address: string) => {
   const cell = getCell(sheet, address);
 
   if (!cell) return 0;
@@ -54,10 +54,7 @@ export const getCellNumber = (sheet: XLSX.WorkSheet, address: string) => {
 };
 
 // FORMAT EXCEL TIME TO HH:MM
-export const getCellTimeOnly = (
-  sheet: XLSX.WorkSheet,
-  address: string
-): string => {
+export const getCellTimeOnly = (sheet: WorkSheet, address: string): string => {
   const cell = getCell(sheet, address);
   if (!cell) return '';
 
@@ -78,10 +75,7 @@ export const getCellTimeOnly = (
 };
 
 // FORMAT EXCEL DATE TO DD/MM/YYYY
-export const getCellDateOnly = (
-  sheet: XLSX.WorkSheet,
-  address: string
-): string => {
+export const getCellDateOnly = (sheet: WorkSheet, address: string): string => {
   const cell = getCell(sheet, address);
   if (!cell) return '';
 
@@ -98,7 +92,7 @@ export const getCellDateOnly = (
   }
 
   if (typeof raw === 'number') {
-    const parsed = XLSX.SSF.parse_date_code(raw);
+    const parsed = SSF.parse_date_code(raw);
 
     if (parsed) {
       const day = String(parsed.d).padStart(2, '0');

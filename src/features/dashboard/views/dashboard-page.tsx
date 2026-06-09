@@ -1,37 +1,34 @@
-import { Badge } from '@/components/ui/badge';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { PageHelmet } from '@/components/app-ui/app-helmet';
+import { Button } from '@/components/ui/button';
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselDots,
 } from '@/components/ui/carousel';
-import { PageHelmet } from '@/components/app-ui/app-helmet';
 import { ModuleCard } from '@/features/dashboard/components/module-card';
 import { WelcomeCard } from '@/features/dashboard/components/welcome-card';
 import { flightManagementPaths } from '@/features/flight-management/routes';
-import { formatDisplayCurrency } from '@/lib/helpers/string';
+import { systemManagementPaths } from '@/features/system-management/routes';
 import {
   formatCompactNumber,
   formatDisplayedNumber,
 } from '@/lib/helpers/number';
 import {
   BanknoteIcon,
+  ClipboardListIcon,
+  ClipboardPlus,
+  ClipboardPlusIcon,
+  CloudUploadIcon,
   MapIcon,
   PackageIcon,
   PlaneIcon,
   ReceiptIcon,
   ShoppingCartIcon,
   TicketCheckIcon,
+  TicketPlusIcon,
+  TicketsPlaneIcon,
+  UsersIcon,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 const modules = [
   {
@@ -63,14 +60,14 @@ const modules = [
 const statCards = [
   {
     label: 'Doanh thu tháng',
-    value: 1280500000,
+    value: 128000800,
     icon: BanknoteIcon,
     trend: '+12.5%',
     trendUp: true,
     format: 'compact' as const,
   },
   {
-    label: 'Sản phẩm đang bán',
+    label: 'Đang mở bán',
     value: 1248,
     icon: PackageIcon,
     trend: '+8',
@@ -84,7 +81,7 @@ const statCards = [
     trendUp: false,
   },
   {
-    label: 'Tỷ lệ hoàn thành thanh toán',
+    label: 'Tỷ lệ hoàn thành',
     value: 94.2,
     icon: TicketCheckIcon,
     trend: '+2.1%',
@@ -95,64 +92,34 @@ const statCards = [
 
 const quickTasks = [
   {
-    label: 'Tạo chuyến bay',
-    path: flightManagementPaths.createFlight.fullPath,
-    icon: PlaneIcon,
-  },
-  {
-    label: 'Danh sách chuyến bay',
-    path: flightManagementPaths.flightList.fullPath,
-    icon: PlaneIcon,
-  },
-  {
-    label: 'Danh sách đơn hàng',
-    path: flightManagementPaths.bookingList.fullPath,
-    icon: ShoppingCartIcon,
+    label: 'Nhập excel chuyến bay',
+    path: flightManagementPaths.importExcel.fullPath,
+    icon: CloudUploadIcon,
   },
   {
     label: 'Tạo chuyến bay',
     path: flightManagementPaths.createFlight.fullPath,
-    icon: PlaneIcon,
+    icon: TicketPlusIcon,
   },
   {
     label: 'Danh sách chuyến bay',
     path: flightManagementPaths.flightList.fullPath,
-    icon: PlaneIcon,
+    icon: TicketsPlaneIcon,
   },
   {
-    label: 'Danh sách đơn hàng',
+    label: 'Tạo đơn hàng vé máy bay',
+    path: flightManagementPaths.createBooking.fullPath,
+    icon: ClipboardPlusIcon,
+  },
+  {
+    label: 'Danh sách đơn hàng vé máy bay',
     path: flightManagementPaths.bookingList.fullPath,
-    icon: ShoppingCartIcon,
+    icon: ClipboardListIcon,
   },
   {
-    label: 'Tạo chuyến bay',
-    path: flightManagementPaths.createFlight.fullPath,
-    icon: PlaneIcon,
-  },
-  {
-    label: 'Danh sách chuyến bay',
-    path: flightManagementPaths.flightList.fullPath,
-    icon: PlaneIcon,
-  },
-  {
-    label: 'Danh sách đơn hàng',
-    path: flightManagementPaths.bookingList.fullPath,
-    icon: ShoppingCartIcon,
-  },
-  {
-    label: 'Tạo chuyến bay',
-    path: flightManagementPaths.createFlight.fullPath,
-    icon: PlaneIcon,
-  },
-  {
-    label: 'Danh sách chuyến bay',
-    path: flightManagementPaths.flightList.fullPath,
-    icon: PlaneIcon,
-  },
-  {
-    label: 'Danh sách đơn hàng',
-    path: flightManagementPaths.bookingList.fullPath,
-    icon: ShoppingCartIcon,
+    label: 'Danh sách tài khoản',
+    path: systemManagementPaths.accountList.fullPath,
+    icon: UsersIcon,
   },
 ];
 
@@ -242,73 +209,63 @@ export const DashboardPage = () => {
     <>
       <PageHelmet title="Trang chủ" />
 
-      <div className="space-y-6">
+      <div className="space-y-4">
         <WelcomeCard />
 
-        <div className="grid grid-cols-4 gap-3">
+        {/* <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {statCards.map(card => {
             const Icon = card.icon;
             return (
-              <div key={card.label} className="card flex flex-col gap-1.5 p-3">
+              <div key={card.label} className="card flex flex-col gap-2 p-3">
                 <div className="flex items-center justify-between">
-                  <div className="rounded-md bg-muted p-1.5">
-                    <Icon className="size-4 text-primary" />
+                  <div className="rounded-sm bg-muted p-2">
+                    <Icon className="size-5 text-primary" />
                   </div>
                   <span
-                    className={`text-xs font-medium ${card.trendUp ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}
+                    className={`font-semibold ${card.trendUp ? 'text-green-500' : 'text-red-500'}`}
                   >
                     {card.trend}
                   </span>
                 </div>
-                <p className="text-lg leading-tight font-semibold">
-                  {card.format === 'compact'
-                    ? formatCompactNumber(card.value)
-                    : card.suffix
-                      ? `${formatDisplayedNumber(card.value)}${card.suffix}`
-                      : formatDisplayedNumber(card.value)}
-                </p>
-                <p className="text-xs text-muted-foreground">{card.label}</p>
+                <div>
+                  <p className="text-2xl font-bold">
+                    {card.format === 'compact'
+                      ? formatCompactNumber(card.value)
+                      : card.suffix
+                        ? `${formatDisplayedNumber(card.value)}${card.suffix}`
+                        : formatDisplayedNumber(card.value)}
+                  </p>
+                  <p className="text-xs text-muted-foreground">{card.label}</p>
+                </div>
               </div>
             );
           })}
         </div>
 
-        <Carousel
-          className="w-full px-px"
-          opts={{ align: 'start', loop: true }}
-        >
-          <CarouselContent>
-            {quickTasks.map((task, index) => {
-              const Icon = task.icon;
-              return (
-                <CarouselItem
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
+          {quickTasks.map((task, index) => {
+            const Icon = task.icon;
+            return (
+              <div className="card h-auto w-full cursor-pointer p-0 hover:bg-muted">
+                <a
                   key={index}
-                  className="basis-1/4 md:basis-1/4 lg:basis-1/6"
+                  href={task.path}
+                  className="flex w-full cursor-pointer flex-col items-center gap-2 px-2 py-4 text-sm font-medium"
                 >
-                  <Button
-                    variant={'outline'}
-                    className="h-auto w-full rounded-lg"
-                  >
-                    <a
-                      key={index}
-                      href={task.path}
-                      className="inline-flex w-full cursor-pointer flex-col items-center gap-2 px-2 py-4 text-sm font-medium"
-                    >
-                      <div className="p-2">
-                        <Icon className="size-5 text-primary" />
-                      </div>
+                  <div className="p-2">
+                    <Icon className="size-5 text-primary" />
+                  </div>
 
-                      <span className="block w-full truncate text-center">
-                        {task.label}
-                      </span>
-                    </a>
-                  </Button>
-                </CarouselItem>
-              );
-            })}
-          </CarouselContent>
-        </Carousel>
+                  <span className="block w-full text-center break-normal">
+                    {task.label}
+                  </span>
+                </a>
+              </div>
+            );
+          })}
+        </div> */}
 
+        {/* 
         <div className="grid grid-cols-1 gap-6">
           <div className="card">
             <h3 className="mb-3 text-sm font-semibold">Đơn hàng gần nhất</h3>
@@ -377,15 +334,12 @@ export const DashboardPage = () => {
               </TableBody>
             </Table>
           </div>
-        </div>
+        </div> */}
 
         <Carousel className="w-full" opts={{ align: 'start', loop: true }}>
           <CarouselContent>
             {modules.map(module => (
-              <CarouselItem
-                key={module.title}
-                className="md:basis-1/2 lg:basis-1/3"
-              >
+              <CarouselItem key={module.title} className="md:basis-1/2">
                 <ModuleCard
                   title={module.title}
                   description={module.description}
@@ -401,7 +355,6 @@ export const DashboardPage = () => {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselDots className="mt-4" />
         </Carousel>
       </div>
     </>

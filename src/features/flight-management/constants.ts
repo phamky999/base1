@@ -1,7 +1,6 @@
 import type {
   TFareRuleType,
   TFlightBookingAction,
-  TGetFlightListRequestParams,
 } from '@/features/flight-management/types';
 
 export const FLIGHT_STATUS = {
@@ -117,15 +116,6 @@ export const FLIGHT_BOOKING_ACTION_LABEL: Record<TFlightBookingAction, string> =
   FLIGHT_BOOKING_STATUS_LABEL;
 
 export const FLIGHT_BOOKING_ACTION_COLOR = FLIGHT_BOOKING_STATUS_COLOR;
-
-export const GET_FLIGHT_FILTER_KEYS: (keyof TGetFlightListRequestParams)[] = [
-  'status',
-  'airlineCode',
-  'bookingCode',
-  'startPoint',
-  'endPoint',
-  'flightNumber',
-];
 
 export const FARE_RULE_TYPE_OPTIONS = Object.values(FARE_RULE_TYPE).map(
   item => ({

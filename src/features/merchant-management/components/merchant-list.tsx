@@ -84,43 +84,46 @@ export const MerchantList = ({
         fixed: 'right',
         align: showInSelectMerchantDrawer ? 'center' : 'left',
         width: 100,
-        render: (record: TMerchantListItem) =>
-          showInSelectMerchantDrawer ? (
-            <Button
-              variant={'outline'}
-              onClick={() => customOnSelectRecord?.(record)}
-            >
-              Chọn
-            </Button>
-          ) : (
-            <>
-              <AppTooltip content="Cập nhật thông tin">
-                <Button
-                  variant={'ghost'}
-                  onClick={() => {
-                    setSelectedMerchant(record);
-                    setIsUpdateMerchantModalOpen(true);
-                  }}
-                >
-                  <PenSquareIcon className="size-4" />
-                </Button>
-              </AppTooltip>
-
-              {!!record?.isActive && (
-                <AppTooltip content="Thông tin API">
+        render: (record: TMerchantListItem) => (
+          <div onClick={e => e.stopPropagation()}>
+            {showInSelectMerchantDrawer ? (
+              <Button
+                variant={'outline'}
+                onClick={() => customOnSelectRecord?.(record)}
+              >
+                Chọn
+              </Button>
+            ) : (
+              <>
+                <AppTooltip content="Cập nhật thông tin">
                   <Button
                     variant={'ghost'}
                     onClick={() => {
                       setSelectedMerchant(record);
-                      setIsApiInfoModalOpen(true);
+                      setIsUpdateMerchantModalOpen(true);
                     }}
                   >
-                    <KeyRoundIcon className="size-3.5" />
+                    <PenSquareIcon className="size-4" />
                   </Button>
                 </AppTooltip>
-              )}
-            </>
-          ),
+
+                {!!record?.isActive && (
+                  <AppTooltip content="Thông tin API">
+                    <Button
+                      variant={'ghost'}
+                      onClick={() => {
+                        setSelectedMerchant(record);
+                        setIsApiInfoModalOpen(true);
+                      }}
+                    >
+                      <KeyRoundIcon className="size-3.5" />
+                    </Button>
+                  </AppTooltip>
+                )}
+              </>
+            )}
+          </div>
+        ),
       },
     ],
     [customOnSelectRecord, showInSelectMerchantDrawer]
@@ -136,6 +139,13 @@ export const MerchantList = ({
         columns={columns}
         isShowSkeleton={isFetching}
         pagination={false}
+        onRow={record => ({
+          onClick: () => {
+            setSelectedMerchant(record);
+            setIsUpdateMerchantModalOpen(true);
+          },
+          className: 'cursor-pointer',
+        })}
       />
       {!!selectedMerchant && !showInSelectMerchantDrawer && (
         <>
