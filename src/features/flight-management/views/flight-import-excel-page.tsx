@@ -26,7 +26,6 @@ import { ArrowLeftIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import * as XLSX from 'xlsx';
 
 export const FlightImportExcelPage = () => {
   const navigate = useNavigate();
@@ -48,6 +47,8 @@ export const FlightImportExcelPage = () => {
 
   const beforeUploadFlightExcel: UploadProps['beforeUpload'] = async file => {
     try {
+      const XLSX = await import('xlsx');
+
       const buffer = await file.arrayBuffer();
 
       const workbook = XLSX.read(buffer, {
@@ -269,7 +270,7 @@ export const FlightImportExcelPage = () => {
         }
       />
 
-      <div className="space-y-6">
+      <div className="space-y-4">
         <div className="rounded-lg border bg-card p-4 py-6 shadow-xs">
           <Steps
             titlePlacement="vertical"

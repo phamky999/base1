@@ -1,4 +1,3 @@
-import { normalizeQueryParamValue } from '@/components/app-ui/app-filter/helper';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useGetMerchantDetailQuery } from '@/features/merchant-management/query';
 import { cn } from '@/lib/utils';
@@ -34,15 +33,11 @@ export const MerchantInfoCard = ({
   merchantId?: string;
   className?: string;
 }) => {
-  const normalizeMerchantId = normalizeQueryParamValue(merchantId);
-
-  const queryArg = !normalizeMerchantId
-    ? skipToken
-    : { id: String(normalizeMerchantId) };
+  const queryArg = !merchantId ? skipToken : { id: String(merchantId) };
 
   const { data, isFetching } = useGetMerchantDetailQuery(queryArg);
 
-  if (!normalizeMerchantId) return null;
+  if (!merchantId) return null;
 
   const detail = data?.data;
 

@@ -25,7 +25,7 @@ export const ShowResultStep = ({
   const navigate = useNavigate();
   return (
     <div className="rounded-lg border! bg-card p-8 shadow-xs">
-      <div className="mx-auto max-w-2xl space-y-6 text-center">
+      <div className="mx-auto max-w-2xl space-y-4 text-center">
         <div className="flex flex-col items-center gap-3">
           {importResults.fail === 0 ? (
             <div className="animate-bounce rounded-full bg-emerald-100 p-4 text-emerald-600">

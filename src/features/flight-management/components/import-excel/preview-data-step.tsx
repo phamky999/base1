@@ -323,7 +323,7 @@ export const PreviewDataStep = ({
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Table Filtering & Main Container */}
       <div className="card lg:p-6">
         <div className="mb-5 flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-center sm:justify-between">
@@ -412,7 +412,7 @@ export const PreviewDataStep = ({
       {/* Importing Progress overlay */}
       {isImporting && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-md space-y-6 rounded-lg border bg-card p-6 text-center shadow-xs">
+          <div className="w-full max-w-md space-y-4 rounded-lg border bg-card p-6 text-center shadow-xs">
             <div className="space-y-2">
               <h3 className="text-lg font-bold">Đang import dữ liệu...</h3>
               <p className="text-xs text-gray-400">

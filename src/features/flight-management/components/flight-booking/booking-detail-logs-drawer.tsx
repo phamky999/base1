@@ -1,6 +1,5 @@
 import { AppDateTimeLabel } from '@/components/app-ui/app-date-time-label';
 import { AppDrawer } from '@/components/app-ui/app-drawer';
-import { normalizeQueryParamValue } from '@/components/app-ui/app-filter/helper';
 import {
   FLIGHT_BOOKING_ACTION_COLOR,
   FLIGHT_BOOKING_ACTION_LABEL,
@@ -20,9 +19,7 @@ export const BookingDetailLogsDrawer = ({
   open,
   onOpenChange,
 }: BookingDetailLogsDrawerProps) => {
-  const normalizeId = normalizeQueryParamValue(bookingId);
-
-  const queryArg = !normalizeId || !open ? skipToken : String(normalizeId);
+  const queryArg = !bookingId || !open ? skipToken : String(bookingId);
 
   const { data, isFetching } = useGetFlightBookingDetailLogsQuery(queryArg);
   const logs = data?.data;
@@ -48,10 +45,11 @@ export const BookingDetailLogsDrawer = ({
                   <div>
                     {!!log?.note && <p className="mb-1">{log.note}</p>}
 
-                    <p className="text-xs text-gray-500">
-                      Thực hiện bởi: {log.userName}{' '}
-                      {log.merchantName ? `(${log.merchantName})` : ''}
-                    </p>
+                    {!!log?.userName && (
+                      <p className="text-xs text-gray-500">
+                        Thực hiện bởi: {log.userName}
+                      </p>
+                    )}
                   </div>
                 </>
               ),

@@ -4,10 +4,19 @@ import { Button } from '@/components/ui/button';
 import { AccountList } from '@/features/system-management/components/account-management/account-list';
 import { AccountListFilter } from '@/features/system-management/components/account-management/account-list-filter';
 import { CreateAccountModal } from '@/features/system-management/components/account-management/create-account-modal';
+import { useConsumeSearchParams } from '@/hooks/use-consume-search-params';
 import { useState } from 'react';
 
 export const AccountListPage = () => {
   const [isAddEditModalOpen, setIsAddEditModalOpen] = useState(false);
+
+  useConsumeSearchParams({
+    key: 'action',
+    value: 'create',
+    onConsume: () => {
+      setIsAddEditModalOpen(true);
+    },
+  });
 
   return (
     <>
@@ -26,7 +35,7 @@ export const AccountListPage = () => {
           </div>
         }
       />
-      <div className="space-y-6">
+      <div className="space-y-4">
         <AccountList />
       </div>
 

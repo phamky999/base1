@@ -1,6 +1,14 @@
 import { baseApi } from '@/app/redux/baseApi';
-import { invalidatesTags, QUERY_TAGS } from '@/app/redux/constants';
 import type { QueryResponse } from '@/app/redux/types';
+import {
+  merchantCredentialChangeInvalidateTags,
+  merchantCreateInvalidateTags,
+  merchantCredentialsProvideTags,
+  merchantDetailProvideTags,
+  merchantListProvideTags,
+  merchantUpdateInvalidateTags,
+} from '@/features/merchant-management/query.helpers';
+import { MERCHANT_MANAGEMENT_TAGS } from '@/features/merchant-management/query.tags';
 import type {
   TCreateMerchantParams,
   TGenerateMerchantCredentialResponse,
@@ -16,11 +24,7 @@ const merchantEndpoint = '/Providers/Merchants';
 
 export const merchantManagementQueryApi = baseApi
   .enhanceEndpoints({
-    addTagTypes: [
-      QUERY_TAGS.MERCHANT_LIST,
-      QUERY_TAGS.MERCHANT_DETAIL,
-      QUERY_TAGS.MERCHANT_CREDENTIALS,
-    ],
+    addTagTypes: Object.values(MERCHANT_MANAGEMENT_TAGS),
   })
   .injectEndpoints({
     endpoints: builder => ({
@@ -34,7 +38,8 @@ export const merchantManagementQueryApi = baseApi
           params,
         }),
 
-        providesTags: [QUERY_TAGS.MERCHANT_LIST],
+        providesTags: (result, error) =>
+          merchantListProvideTags(result, error),
       }),
 
       GetMerchantDetail: builder.query<
@@ -46,7 +51,8 @@ export const merchantManagementQueryApi = baseApi
           method: 'GET',
         }),
 
-        providesTags: [QUERY_TAGS.MERCHANT_DETAIL],
+        providesTags: (_, error, { id }) =>
+          merchantDetailProvideTags(error, id),
       }),
 
       GetMerchantCredentials: builder.query<
@@ -58,7 +64,8 @@ export const merchantManagementQueryApi = baseApi
           method: 'GET',
         }),
 
-        providesTags: [QUERY_TAGS.MERCHANT_CREDENTIALS],
+        providesTags: (_, error, { id }) =>
+          merchantCredentialsProvideTags(error, id),
       }),
 
       GenerateMerchantCredential: builder.mutation<
@@ -70,11 +77,8 @@ export const merchantManagementQueryApi = baseApi
           method: 'POST',
         }),
 
-        invalidatesTags: invalidatesTags([
-          QUERY_TAGS.MERCHANT_DETAIL,
-          QUERY_TAGS.MERCHANT_LIST,
-          QUERY_TAGS.MERCHANT_CREDENTIALS,
-        ]),
+        invalidatesTags: (_, error, { id }) =>
+          merchantCredentialChangeInvalidateTags(error, id),
       }),
 
       RegenerateMerchantCredential: builder.mutation<
@@ -86,11 +90,8 @@ export const merchantManagementQueryApi = baseApi
           method: 'POST',
         }),
 
-        invalidatesTags: invalidatesTags([
-          QUERY_TAGS.MERCHANT_DETAIL,
-          QUERY_TAGS.MERCHANT_LIST,
-          QUERY_TAGS.MERCHANT_CREDENTIALS,
-        ]),
+        invalidatesTags: (_, error, { id }) =>
+          merchantCredentialChangeInvalidateTags(error, id),
       }),
 
       CreateMerchant: builder.mutation<
@@ -103,7 +104,8 @@ export const merchantManagementQueryApi = baseApi
           body: data,
         }),
 
-        invalidatesTags: invalidatesTags([QUERY_TAGS.MERCHANT_LIST]),
+        invalidatesTags: (_, error) =>
+          merchantCreateInvalidateTags(error),
       }),
 
       UpdateMerchant: builder.mutation<
@@ -116,10 +118,8 @@ export const merchantManagementQueryApi = baseApi
           body: { ...rest },
         }),
 
-        invalidatesTags: invalidatesTags([
-          QUERY_TAGS.MERCHANT_DETAIL,
-          QUERY_TAGS.MERCHANT_LIST,
-        ]),
+        invalidatesTags: (_, error, { id }) =>
+          merchantUpdateInvalidateTags(error, id),
       }),
     }),
   });

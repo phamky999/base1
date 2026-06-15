@@ -8,7 +8,7 @@ export const WelcomeCard = () => {
   const currentUser = useAppSelector(currentUserSelector);
 
   return (
-    <div className="card flex flex-col gap-4 md:flex-row md:items-center md:justify-between md:gap-6">
+    <div className="card flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div>
         <h1 className="text-lg font-semibold">
           Xin chào, {currentUser?.username}

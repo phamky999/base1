@@ -11,15 +11,17 @@ export const store = configureStore({
 
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
-      serializableCheck: {
-        ignoredPaths: ['scanner.onScan', 'modals'],
-        ignoredActionPaths: [
-          'payload.onScan',
-          'payload.element',
-          'meta.arg',
-          'meta.baseQueryMeta',
-        ],
-      },
+      serializableCheck: import.meta.env.DEV
+        ? {
+            ignoredPaths: ['scanner.onScan', 'modals'],
+            ignoredActionPaths: [
+              'payload.onScan',
+              'payload.element',
+              'meta.arg',
+              'meta.baseQueryMeta',
+            ],
+          }
+        : false,
     }).concat(baseApi.middleware),
 });
 

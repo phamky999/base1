@@ -21,6 +21,18 @@ export default function getConfig({ mode }: ConfigEnv) {
     },
     build: {
       sourcemap: false,
+      rolldownOptions: {
+        output: {
+          codeSplitting: {
+            groups: [
+              {
+                name: 'vendor-excel',
+                test: /node_modules[\\/](exceljs|xlsx)[\\/]/,
+              },
+            ],
+          },
+        },
+      },
     },
   });
 }

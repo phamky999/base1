@@ -13,7 +13,7 @@ export const LoginPage = () => {
       <PageHelmet title="Đăng nhập" />
       <div className="flex flex-col items-center justify-center gap-2">
         <img src={LogoIconImg} alt="Logo" width={48} height={48} />
-        <h1 className="mb-6 text-center text-xl font-semibold text-gray-800 md:text-2xl">
+        <h1 className="mb-4 text-center text-xl font-semibold text-gray-800 md:text-2xl">
           Đăng nhập
         </h1>
       </div>

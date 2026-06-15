@@ -1,7 +1,4 @@
-import type {
-  TFareRuleType,
-  TFlightBookingAction,
-} from '@/features/flight-management/types';
+import type { TFareRuleType } from '@/features/flight-management/types';
 
 export const FLIGHT_STATUS = {
   DRAFT: 'DRAFT',
@@ -82,7 +79,7 @@ export const FLIGHT_DETAIL_ACTION_COLOR = {
   [FLIGHT_DETAIL_ACTION.DELETE]: 'red',
   [FLIGHT_DETAIL_ACTION.PUBLISH]: 'green',
   [FLIGHT_DETAIL_ACTION.CLOSE]: 'gray',
-  [FLIGHT_DETAIL_ACTION.REOPEN]: 'blue',
+  [FLIGHT_DETAIL_ACTION.REOPEN]: 'green',
   [FLIGHT_DETAIL_ACTION.CANCEL]: 'red',
 
   //front-end
@@ -110,12 +107,32 @@ export const FLIGHT_BOOKING_STATUS_COLOR = {
   [FLIGHT_BOOKING_STATUS.ISSUED]: 'green',
 } as const;
 
-export const FLIGHT_BOOKING_ACTION = FLIGHT_BOOKING_STATUS;
+export const FLIGHT_BOOKING_ACTION = {
+  ISSUE: 'ISSUE',
+  CANCEL: 'CANCEL',
 
-export const FLIGHT_BOOKING_ACTION_LABEL: Record<TFlightBookingAction, string> =
-  FLIGHT_BOOKING_STATUS_LABEL;
+  //front-end
+  VIEW_LOGS: 'VIEW_LOGS',
+  VIEW_DETAIL: 'VIEW_DETAIL',
+} as const;
 
-export const FLIGHT_BOOKING_ACTION_COLOR = FLIGHT_BOOKING_STATUS_COLOR;
+export const FLIGHT_BOOKING_ACTION_LABEL = {
+  [FLIGHT_BOOKING_ACTION.ISSUE]: 'Thanh toán đơn hàng',
+  [FLIGHT_BOOKING_ACTION.CANCEL]: 'Hủy đơn hàng',
+
+  //front-end
+  [FLIGHT_BOOKING_ACTION.VIEW_LOGS]: 'Xem lịch sử thay đổi',
+  [FLIGHT_BOOKING_ACTION.VIEW_DETAIL]: 'Xem chi tiết',
+} as const;
+
+export const FLIGHT_BOOKING_ACTION_COLOR = {
+  [FLIGHT_BOOKING_ACTION.ISSUE]: 'green',
+  [FLIGHT_BOOKING_ACTION.CANCEL]: 'red',
+
+  //front-end
+  [FLIGHT_BOOKING_ACTION.VIEW_LOGS]: 'blue',
+  [FLIGHT_BOOKING_ACTION.VIEW_DETAIL]: 'blue',
+} as const;
 
 export const FARE_RULE_TYPE_OPTIONS = Object.values(FARE_RULE_TYPE).map(
   item => ({

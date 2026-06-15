@@ -36,6 +36,7 @@ export const FlightBookingList = () => {
       'flightId',
       'flightDate',
       'transactionCode',
+      'merchantCode',
     ],
   });
 
@@ -61,6 +62,13 @@ export const FlightBookingList = () => {
         title: 'Mã đặt chỗ',
         dataIndex: 'bookingCode',
         key: 'bookingCode',
+        width: 140,
+        render: value => <span className="font-semibold">{value}</span>,
+      },
+      {
+        title: 'Mã chuyến bay',
+        dataIndex: 'flightTransactionCode',
+        key: 'flightTransactionCode',
         width: 140,
         render: value => <span className="font-semibold">{value}</span>,
       },
@@ -163,25 +171,25 @@ export const FlightBookingList = () => {
       },
 
       {
-        title: 'Thông tin liên hệ',
-        key: 'customer',
+        title: 'Kênh bán',
+        key: 'merchant',
         width: 180,
         render: record => (
           <div className="space-y-0.5">
             <AppTooltip
               content={
                 <div>
-                  <p>{record?.contactName}</p>
-                  <span>{record?.contactEmail}</span>
+                  <p>{record?.merchantCode}</p>
+                  <span>{record?.merchantName}</span>
                 </div>
               }
             >
               <div>
                 <p className="line-clamp-1 max-w-40 font-semibold">
-                  {record?.contactName}
+                  {record?.merchantCode}
                 </p>
                 <p className="line-clamp-1 max-w-40 text-xs text-gray-400">
-                  {record?.contactEmail}
+                  {record?.merchantName}
                 </p>
               </div>
             </AppTooltip>
@@ -196,7 +204,7 @@ export const FlightBookingList = () => {
         width: 100,
         render: (record: TFlightBookingListItem) => (
           <div onClick={e => e.stopPropagation()}>
-            <BookingDetailActionGroups bookingId={record.id} />
+            <BookingDetailActionGroups booking={record} />
           </div>
         ),
       },

@@ -1,18 +1,25 @@
 import { AppDialog } from '@/components/app-ui/app-dialog';
 import { Button } from '@/components/ui/button';
-import { USER_ROLES_OPTIONS } from '@/features/auth/constants';
+import {
+  USER_PERMISSIONS_OPTIONS,
+  USER_ROLES_OPTIONS,
+} from '@/features/auth/constants';
 import {
   FORM_FIELDS,
   FORM_LABELS,
   FORM_VALIDATIONS,
 } from '@/features/system-management/components/account-management/update-account-modal/update-account-modal.schema';
-import { useUpdateAccountMutation } from '@/features/system-management/query';
+import {
+  useGetAccountDetailQuery,
+  useUpdateAccountMutation,
+} from '@/features/system-management/query';
 import type {
   TAccountListItem,
   TUpdateAccountParams,
 } from '@/features/system-management/types';
 import { ACTIVE_STATUS_OPTIONS } from '@/lib/constants';
 import type { ObjectType } from '@/lib/types';
+import { skipToken } from '@reduxjs/toolkit/query';
 import { Form, Input, Select } from 'antd';
 import { PenSquareIcon } from 'lucide-react';
 import { useEffect } from 'react';
@@ -29,7 +36,12 @@ export const UpdateAccountModal = ({
   onOpenChange,
   account,
 }: UpdateAccountModalProps) => {
-  const [updateAccountFn, { isLoading }] = useUpdateAccountMutation();
+  const queryArg = !open || !account?.id ? skipToken : account.id;
+  const { data, isLoading } = useGetAccountDetailQuery(queryArg);
+  const detailData = data?.data;
+
+  const [updateAccountFn, { isLoading: updateLoading }] =
+    useUpdateAccountMutation();
 
   const [form] = Form.useForm();
 
@@ -58,16 +70,17 @@ export const UpdateAccountModal = ({
   };
 
   useEffect(() => {
-    if (open && account) {
+    if (open && detailData) {
       form.setFieldsValue({
-        [FORM_FIELDS.DISPLAY_NAME]: account.displayName,
-        [FORM_FIELDS.EMAIL]: account.email,
-        [FORM_FIELDS.PHONE]: account.phone,
-        [FORM_FIELDS.ROLE]: account.role,
-        [FORM_FIELDS.IS_ACTIVE]: account.isActive,
+        [FORM_FIELDS.DISPLAY_NAME]: detailData?.displayName,
+        [FORM_FIELDS.EMAIL]: detailData?.email,
+        [FORM_FIELDS.PHONE]: detailData?.phone,
+        [FORM_FIELDS.ROLE]: detailData?.role,
+        [FORM_FIELDS.IS_ACTIVE]: detailData?.isActive,
+        [FORM_FIELDS.PERMISSIONS]: detailData?.permissions,
       });
     }
-  }, [account, form, open]);
+  }, [detailData, form, open]);
 
   return (
     <AppDialog
@@ -99,7 +112,7 @@ export const UpdateAccountModal = ({
           </Button>
           <Button
             type="submit"
-            loading={isLoading}
+            loading={updateLoading}
             onClick={() => form.submit()}
           >
             Cập nhật
@@ -107,7 +120,12 @@ export const UpdateAccountModal = ({
         </>
       }
     >
-      <Form form={form} layout="vertical" onFinish={handleUpdateProfile}>
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleUpdateProfile}
+        disabled={isLoading}
+      >
         <Form.Item
           name={FORM_FIELDS.DISPLAY_NAME}
           label={FORM_LABELS[FORM_FIELDS.DISPLAY_NAME]}
@@ -145,6 +163,22 @@ export const UpdateAccountModal = ({
             }}
             placeholder={FORM_LABELS[FORM_FIELDS.ROLE]}
             options={USER_ROLES_OPTIONS}
+          />
+        </Form.Item>
+
+        <Form.Item
+          name={FORM_FIELDS.PERMISSIONS}
+          label={FORM_LABELS[FORM_FIELDS.PERMISSIONS]}
+          rules={FORM_VALIDATIONS[FORM_FIELDS.PERMISSIONS]}
+        >
+          <Select
+            classNames={{
+              popup: {
+                root: 'pointer-events-auto',
+              },
+            }}
+            placeholder={FORM_LABELS[FORM_FIELDS.PERMISSIONS]}
+            options={USER_PERMISSIONS_OPTIONS}
           />
         </Form.Item>
 

@@ -200,12 +200,15 @@ export type TUpdateFlightPayload = TCreateFlightPayload & {
 };
 export type TUpdateFlightResponse = TCreateFlightResponse;
 
+type TFlightActionVisibleContext = {
+  can: (action: TFlightDetailAction) => boolean;
+};
+
 export type TFlightDetailActionConfig = {
   label: string;
   icon: ReactElement;
-  manualRender?: boolean;
+  visible: (ctx: TFlightActionVisibleContext) => boolean;
   danger?: boolean;
-  priority: number;
 };
 
 export type TFlightBookingListItem = {
@@ -234,7 +237,10 @@ export type TFlightBookingListItem = {
   lastTicketDate: string;
   createdAt: string;
   updatedAt: string;
+  allowedStatuses: TFlightBookingStatus[];
+  allowedActions: TFlightBookingAction[];
   transactionCode: string; //Mã định dạng flight booking => dùng cho search
+  flightTransactionCode: string;
 };
 
 export type TGetFlightStaticsResponse = {
@@ -253,6 +259,7 @@ export type TGetFlightBookingListRequestParams = TPaginationRequest & {
   flightId?: string;
   flightDate?: string;
   transactionCode?: string;
+  merchantCode?: string;
 };
 
 export type TGetFlightBookingListResponse = {
@@ -303,6 +310,9 @@ export type TGetFlightBookingDetailResponse = {
   updatedAt?: string;
   passengers: Array<TGetFlightBookingDetailPassenger>;
   transactionCode: string; //Mã định dạng flight booking => dùng cho search
+  allowedStatuses: TFlightBookingStatus[];
+  allowedActions: TFlightBookingAction[];
+  flightTransactionCode?: string;
 };
 
 export type TFlightDetailLogItem = {
@@ -427,4 +437,15 @@ export type TCreateFlightBookingPayload = {
     phone: string;
     email: string;
   };
+};
+
+type TFlightBookingActionVisibleContext = {
+  can: (action: TFlightBookingAction) => boolean;
+};
+
+export type TFlightBookingActionConfig = {
+  label: string;
+  icon: ReactElement;
+  visible: (ctx: TFlightBookingActionVisibleContext) => boolean;
+  danger?: boolean;
 };

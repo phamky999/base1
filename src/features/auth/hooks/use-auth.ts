@@ -4,7 +4,8 @@ import { getAuthToken } from '@/lib/utils';
 import { skipToken } from '@reduxjs/toolkit/query';
 
 export const useAuth = () => {
-  const hasToken = !!getAuthToken(TOKEN.ACCESS_TOKEN);
+  const hasToken =
+    !!getAuthToken(TOKEN.ACCESS_TOKEN) || !!getAuthToken(TOKEN.REFRESH_TOKEN);
 
   const queryArg = !hasToken ? skipToken : undefined;
   const { data, isLoading, isError } = useGetCurrentUserQuery(queryArg);

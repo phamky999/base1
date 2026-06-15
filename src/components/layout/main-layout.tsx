@@ -1,5 +1,6 @@
 import { AppScreenLoader } from '@/components/app-ui/app-screen-loader';
 import { MainLayoutHeader } from '@/components/layout/main-layout-header';
+import { MainLayoutPreload } from '@/components/layout/main-layout-preload';
 import { MainLayoutSidebar } from '@/components/layout/main-layout-sidebar';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { useAuth } from '@/features/auth/hooks/use-auth';
@@ -36,7 +37,7 @@ export const MainLayout = ({ children }: { children?: React.ReactNode }) => {
 const MainLayoutInner = ({ children }: { children?: React.ReactNode }) => {
   const { isLoading } = useAuth();
 
-  if (isLoading) return <AppScreenLoader />;
+  if (isLoading) return <MainLayoutPreload />;
 
   return (
     <>
@@ -58,7 +59,7 @@ const MainLayoutInner = ({ children }: { children?: React.ReactNode }) => {
           )}
         >
           <MainLayoutHeader />
-          <div className="min-h-svh flex-1 bg-(--main-background) p-4 py-4! md:p-2 md:pt-6!">
+          <div className="min-h-svh flex-1 bg-(--main-background) p-4 py-4! md:p-2">
             <Suspense fallback={<AppScreenLoader isFullScreen={false} />}>
               <div className="mx-auto max-w-412">{children ?? <Outlet />}</div>
             </Suspense>

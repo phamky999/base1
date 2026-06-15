@@ -14,7 +14,7 @@ export const PassengerSection = () => {
 
       <Form.List name={FORM_FIELDS.PASSENGERS}>
         {(fields, { add, remove }) => (
-          <div className="space-y-6">
+          <div className="space-y-4">
             {fields.map((field, idx) => (
               <PassengerItem
                 key={field.key}

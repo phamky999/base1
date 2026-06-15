@@ -15,9 +15,9 @@ type UploadFileStepProps = {
 
 export const UploadFileStep = ({ handleBeforeUpload }: UploadFileStepProps) => {
   return (
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-8">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-8">
       {/* Left: Drag & Drop Zone */}
-      <div className="space-y-6 lg:col-span-5">
+      <div className="space-y-4 lg:col-span-5">
         <div className="card overflow-hidden lg:p-6">
           <div className="flex items-center gap-2 border-b pb-4 text-base leading-none font-bold">
             <UploadCloudIcon className="size-5 text-primary" />
@@ -71,7 +71,7 @@ export const UploadFileStep = ({ handleBeforeUpload }: UploadFileStepProps) => {
       </div>
 
       {/* Right: Instructions & Guidelines */}
-      <div className="space-y-6 lg:col-span-3">
+      <div className="space-y-4 lg:col-span-3">
         <div className="card overflow-hidden lg:p-6">
           <div className="flex items-center gap-2 border-b pb-4 text-base leading-none font-bold">
             <HelpCircleIcon className="size-5 text-primary" /> Hướng dẫn nhập

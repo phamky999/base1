@@ -1,4 +1,3 @@
-import { normalizeQueryParamValue } from '@/components/app-ui/app-filter/helper';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { FlightDetailDrawer } from '@/features/flight-management/components/flight/flight-detail-drawer';
@@ -43,13 +42,11 @@ export const BookingFlightInfo = ({
 }) => {
   const [isDetailDrawerOpen, setIsDetailDrawerOpen] = useState(false);
 
-  const normalizeFlightId = normalizeQueryParamValue(flightId);
-
-  const queryArg = !normalizeFlightId ? skipToken : String(normalizeFlightId);
+  const queryArg = !flightId ? skipToken : String(flightId);
 
   const { data, isFetching } = useGetFlightDetailQuery(queryArg);
 
-  if (!normalizeFlightId) return null;
+  if (!flightId) return null;
 
   const detail = data?.data;
 

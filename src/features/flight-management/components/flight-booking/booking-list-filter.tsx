@@ -12,6 +12,7 @@ const ADVANCE_FILTER_KEYS = [
   'endPoint',
   'flightDate',
   'bookingCode',
+  'merchantCode',
 ];
 
 const statusFilterOptions = Object.values(FLIGHT_BOOKING_STATUS).map(value => ({
@@ -38,6 +39,13 @@ export const FlightBookingListFilter = () => {
           keys: ADVANCE_FILTER_KEYS,
           elements: (
             <>
+              <Form.Item
+                name="merchantCode"
+                label="Mã kênh bán"
+                className="mb-3"
+              >
+                <Input placeholder="Mã kênh bán" />
+              </Form.Item>
               <Form.Item name="bookingCode" label="Mã đặt chỗ" className="mb-3">
                 <Input placeholder="Mã đặt chỗ" />
               </Form.Item>

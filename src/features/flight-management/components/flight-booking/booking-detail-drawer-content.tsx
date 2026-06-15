@@ -32,9 +32,12 @@ export const BookingDetailDrawerContent = ({
               className="rounded-lg shadow-xs"
               column={isMobile ? 1 : 2}
             >
-              <Descriptions.Item label="Mã đặt chỗ">
-                <span className="font-semibold">{detail.bookingCode}</span>
+              <Descriptions.Item label="Mã đơn hàng">
+                <span className="font-semibold">
+                  {detail?.transactionCode ?? 'Không rõ'}
+                </span>
               </Descriptions.Item>
+
               <Descriptions.Item label="Trạng thái">
                 <Tag
                   color={FLIGHT_BOOKING_STATUS_COLOR[detail.status]}
@@ -42,6 +45,15 @@ export const BookingDetailDrawerContent = ({
                 >
                   {FLIGHT_BOOKING_STATUS_LABEL[detail.status]}
                 </Tag>
+              </Descriptions.Item>
+
+              <Descriptions.Item label="Mã đặt chỗ">
+                <span className="font-semibold">{detail.bookingCode}</span>
+              </Descriptions.Item>
+              <Descriptions.Item label="Mã chuyến bay">
+                <span className="font-semibold">
+                  {detail?.flightTransactionCode ?? 'Không rõ'}
+                </span>
               </Descriptions.Item>
               <Descriptions.Item label="Chuyến bay">
                 <div className="space-y-0.5">

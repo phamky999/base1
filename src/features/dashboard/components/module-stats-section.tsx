@@ -14,7 +14,7 @@ const chartData = [
 
 export const ModuleStatsSection = () => {
   return (
-    <div className="grid gap-6 md:grid-cols-3">
+    <div className="grid gap-4 md:grid-cols-3">
       <ModuleStatsCard
         key="flight"
         title="Chuyến bay"

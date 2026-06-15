@@ -50,7 +50,7 @@ export const EmailConfig = () => {
 
   return (
     <div className="rounded-lg border bg-card p-6 shadow-xs">
-      <div className="mb-6">
+      <div className="mb-4">
         <h2 className="text-lg leading-none font-semibold tracking-tight">
           Cấu hình Email
         </h2>

@@ -4,14 +4,66 @@ import {
   FORM_FIELDS,
   FORM_LABELS,
   FORM_VALIDATIONS,
+  SEGMENT_FIELDS,
 } from '@/features/flight-management/components/flight/flight-form/flight-form.schema';
+import { upperCaseValue } from '@/lib/helpers/string';
+import type { ObjectType } from '@/lib/types';
+import { Regex } from '@/lib/validations';
 import { Col, Form, Input, Row } from 'antd';
 
 type GeneralInfoSectionProps = {
   className?: string;
+  isCreate?: boolean;
 };
 
-export const GeneralInfoSection = ({ className }: GeneralInfoSectionProps) => {
+const { useFormInstance } = Form;
+
+export const GeneralInfoSection = ({
+  className,
+  isCreate = true,
+}: GeneralInfoSectionProps) => {
+  const form = useFormInstance();
+
+  const mapAirlineCodeToSegments = (item: ObjectType, airlineCode: string) => {
+    if (!item?.[SEGMENT_FIELDS.AIRLINE_CODE]) {
+      return {
+        ...item,
+        [SEGMENT_FIELDS.AIRLINE_CODE]: airlineCode,
+      };
+    }
+    return item;
+  };
+
+  const handleAirlineBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    if (!isCreate) return;
+
+    if (!Regex.AIRLINE_CODE.test(e.target.value)) return;
+
+    const departureSegments = form.getFieldValue(
+      FORM_FIELDS.DEPARTURE_SEGMENTS
+    );
+    const returnSegments = form.getFieldValue(FORM_FIELDS.RETURN_SEGMENTS);
+
+    const departureSegmentsWithAirline = departureSegments.map(
+      (item: ObjectType) => mapAirlineCodeToSegments(item, e.target.value)
+    );
+
+    const returnSegmentsWithAirline = returnSegments.map((item: ObjectType) =>
+      mapAirlineCodeToSegments(item, e.target.value)
+    );
+
+    form.setFields([
+      {
+        name: FORM_FIELDS.DEPARTURE_SEGMENTS,
+        value: departureSegmentsWithAirline,
+      },
+      {
+        name: FORM_FIELDS.RETURN_SEGMENTS,
+        value: returnSegmentsWithAirline,
+      },
+    ]);
+  };
+
   return (
     <section className={className}>
       <h3 className="mb-4 text-base font-semibold">Cấu hình chung</h3>
@@ -22,6 +74,9 @@ export const GeneralInfoSection = ({ className }: GeneralInfoSectionProps) => {
             name={FORM_FIELDS.AIRLINE_CODE}
             label={FORM_LABELS[FORM_FIELDS.AIRLINE_CODE]}
             rules={FORM_VALIDATIONS[FORM_FIELDS.AIRLINE_CODE]}
+            autoCompleteProps={{
+              onBlur: handleAirlineBlur,
+            }}
           />
         </Col>
 
@@ -30,8 +85,9 @@ export const GeneralInfoSection = ({ className }: GeneralInfoSectionProps) => {
             name={FORM_FIELDS.BOOKING_CODE}
             label={FORM_LABELS[FORM_FIELDS.BOOKING_CODE]}
             rules={FORM_VALIDATIONS[FORM_FIELDS.BOOKING_CODE]}
+            normalize={upperCaseValue}
           >
-            <Input placeholder="VD: FPQXJ6" />
+            <Input placeholder="VD: FPQXJ6" maxLength={6} />
           </Form.Item>
         </Col>
 

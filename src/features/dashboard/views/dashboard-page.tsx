@@ -1,61 +1,62 @@
 import { PageHelmet } from '@/components/app-ui/app-helmet';
+import { AppTable } from '@/components/app-ui/app-table';
 import { Button } from '@/components/ui/button';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from '@/components/ui/carousel';
-import { ModuleCard } from '@/features/dashboard/components/module-card';
 import { WelcomeCard } from '@/features/dashboard/components/welcome-card';
+import {
+  FLIGHT_BOOKING_STATUS,
+  FLIGHT_BOOKING_STATUS_COLOR,
+  FLIGHT_BOOKING_STATUS_LABEL,
+} from '@/features/flight-management/constants';
 import { flightManagementPaths } from '@/features/flight-management/routes';
+import { merchantManagementPaths } from '@/features/merchant-management/routes';
 import { systemManagementPaths } from '@/features/system-management/routes';
 import {
   formatCompactNumber,
   formatDisplayedNumber,
 } from '@/lib/helpers/number';
+import { formatDisplayCurrency } from '@/lib/helpers/string';
+import { cn } from '@/lib/utils';
+import { Tag } from 'antd';
 import {
   BanknoteIcon,
-  ClipboardListIcon,
-  ClipboardPlus,
   ClipboardPlusIcon,
   CloudUploadIcon,
-  MapIcon,
+  MonitorCogIcon,
   PackageIcon,
-  PlaneIcon,
   ReceiptIcon,
-  ShoppingCartIcon,
+  SquareKanbanIcon,
+  SquareUserIcon,
   TicketCheckIcon,
   TicketPlusIcon,
-  TicketsPlaneIcon,
-  UsersIcon,
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-const modules = [
-  {
-    title: 'Kho vé máy bay',
-    description: 'Quản lý chuyến bay, lịch trình  và tình trạng đặt chỗ',
-    icon: PlaneIcon,
-    iconBg: 'bg-blue-50 dark:bg-blue-950',
-    iconColor: 'text-blue-600 dark:text-blue-400',
-    viewListPath: flightManagementPaths.flightList.fullPath,
-    createPath: flightManagementPaths.createFlight.fullPath,
-    viewBookingPath: flightManagementPaths.bookingList.fullPath,
-    isReleased: true,
-    createBtnLabel: 'Tạo chuyến bay',
-  },
-  {
-    title: 'Kho tour',
-    description: 'Quản lý tour du lịch, lịch trình  và tình trạng đặt tour',
-    icon: MapIcon,
-    iconBg: 'bg-green-50 dark:bg-green-950',
-    iconColor: 'text-green-600 dark:text-green-400',
-    viewListPath: '#',
-    createPath: '#',
-    viewBookingPath: '#',
-    isReleased: false,
-    createBtnLabel: 'Tạo tour',
-  },
-];
+// const modules = [
+//   {
+//     title: 'Kho vé máy bay',
+//     description: 'Quản lý chuyến bay, lịch trình  và tình trạng đặt chỗ',
+//     icon: PlaneIcon,
+//     iconBg: 'bg-blue-50 dark:bg-blue-950',
+//     iconColor: 'text-blue-600 dark:text-blue-400',
+//     viewListPath: flightManagementPaths.flightList.fullPath,
+//     createPath: flightManagementPaths.createFlight.fullPath,
+//     viewBookingPath: flightManagementPaths.bookingList.fullPath,
+//     isReleased: true,
+//     createBtnLabel: 'Tạo chuyến bay',
+//   },
+//   {
+//     title: 'Kho tour',
+//     description: 'Quản lý tour du lịch, lịch trình  và tình trạng đặt tour',
+//     icon: MapIcon,
+//     iconBg: 'bg-green-50 dark:bg-green-950',
+//     iconColor: 'text-green-600 dark:text-green-400',
+//     viewListPath: '#',
+//     createPath: '#',
+//     viewBookingPath: '#',
+//     isReleased: false,
+//     createBtnLabel: 'Tạo tour',
+//   },
+// ];
 
 const statCards = [
   {
@@ -102,24 +103,25 @@ const quickTasks = [
     icon: TicketPlusIcon,
   },
   {
-    label: 'Danh sách chuyến bay',
-    path: flightManagementPaths.flightList.fullPath,
-    icon: TicketsPlaneIcon,
-  },
-  {
     label: 'Tạo đơn hàng vé máy bay',
     path: flightManagementPaths.createBooking.fullPath,
     icon: ClipboardPlusIcon,
   },
   {
-    label: 'Danh sách đơn hàng vé máy bay',
-    path: flightManagementPaths.bookingList.fullPath,
-    icon: ClipboardListIcon,
+    label: 'Tạo bộ điều kiện vé',
+    path: `${flightManagementPaths.ticketConditions.fullPath}?action=create`,
+    icon: SquareKanbanIcon,
+    iconClassname: '-rotate-90',
   },
   {
-    label: 'Danh sách tài khoản',
-    path: systemManagementPaths.accountList.fullPath,
-    icon: UsersIcon,
+    label: 'Tạo kênh bán',
+    path: `${merchantManagementPaths.merchantList.fullPath}?action=create`,
+    icon: MonitorCogIcon,
+  },
+  {
+    label: 'Tạo tài khoản',
+    path: `${systemManagementPaths.accountList.fullPath}?action=create`,
+    icon: SquareUserIcon,
   },
 ];
 
@@ -128,35 +130,35 @@ const recentOrders = [
     code: 'DH-20240601',
     customer: 'Nguyễn Văn A',
     date: '01/06/2024',
-    status: 'completed',
+    status: FLIGHT_BOOKING_STATUS.HOLD,
     total: 12500000,
   },
   {
     code: 'DH-20240602',
     customer: 'Trần Thị B',
     date: '31/05/2024',
-    status: 'pending',
+    status: FLIGHT_BOOKING_STATUS.ISSUED,
     total: 5800000,
   },
   {
     code: 'DH-20240603',
     customer: 'Lê Văn C',
     date: '30/05/2024',
-    status: 'completed',
+    status: FLIGHT_BOOKING_STATUS.CANCELLED,
     total: 9200000,
   },
   {
     code: 'DH-20240604',
     customer: 'Phạm Thị D',
     date: '29/05/2024',
-    status: 'cancelled',
+    status: FLIGHT_BOOKING_STATUS.ISSUED,
     total: 3400000,
   },
   {
     code: 'DH-20240605',
     customer: 'Hoàng Văn E',
     date: '28/05/2024',
-    status: 'completed',
+    status: FLIGHT_BOOKING_STATUS.ISSUED,
     total: 16700000,
   },
 ];
@@ -192,18 +194,6 @@ const expiringFlights = [
   },
 ];
 
-const statusMap: Record<
-  string,
-  {
-    label: string;
-    variant: 'default' | 'secondary' | 'destructive' | 'outline';
-  }
-> = {
-  completed: { label: 'Hoàn thành', variant: 'default' },
-  pending: { label: 'Chờ thanh toán', variant: 'secondary' },
-  cancelled: { label: 'Đã hủy', variant: 'destructive' },
-};
-
 export const DashboardPage = () => {
   return (
     <>
@@ -212,7 +202,7 @@ export const DashboardPage = () => {
       <div className="space-y-4">
         <WelcomeCard />
 
-        {/* <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {statCards.map(card => {
             const Icon = card.icon;
             return (
@@ -247,115 +237,111 @@ export const DashboardPage = () => {
             const Icon = task.icon;
             return (
               <div className="card h-auto w-full cursor-pointer p-0 hover:bg-muted">
-                <a
+                <Link
                   key={index}
-                  href={task.path}
+                  to={task.path}
                   className="flex w-full cursor-pointer flex-col items-center gap-2 px-2 py-4 text-sm font-medium"
                 >
                   <div className="p-2">
-                    <Icon className="size-5 text-primary" />
+                    <Icon
+                      className={cn('size-5 text-primary', task?.iconClassname)}
+                    />
                   </div>
 
                   <span className="block w-full text-center break-normal">
                     {task.label}
                   </span>
-                </a>
+                </Link>
               </div>
             );
           })}
-        </div> */}
+        </div>
 
-        {/* 
-        <div className="grid grid-cols-1 gap-6">
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
           <div className="card">
-            <h3 className="mb-3 text-sm font-semibold">Đơn hàng gần nhất</h3>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Mã đơn</TableHead>
-                  <TableHead>Khách hàng</TableHead>
-                  <TableHead>Ngày tạo</TableHead>
-                  <TableHead>Trạng thái</TableHead>
-                  <TableHead className="text-right">Tổng tiền</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {recentOrders.map(order => (
-                  <TableRow key={order.code}>
-                    <TableCell className="font-medium">{order.code}</TableCell>
-                    <TableCell>{order.customer}</TableCell>
-                    <TableCell>{order.date}</TableCell>
-                    <TableCell>
-                      <Badge variant={statusMap[order.status].variant}>
-                        {statusMap[order.status].label}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {formatDisplayCurrency(order.total)}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <div className="mb-4 flex flex-wrap justify-between gap-4">
+              <h3 className="text-base font-semibold">Đơn hàng gần đây</h3>
+
+              <Link to={flightManagementPaths.bookingList.fullPath}>
+                <Button variant={'link'}>Xem tất cả</Button>
+              </Link>
+            </div>
+            <AppTable
+              dataSource={recentOrders}
+              rowKey="code"
+              pagination={false}
+              columns={[
+                { title: 'Đơn hàng', dataIndex: 'code' },
+                { title: 'Khách hàng', dataIndex: 'customer' },
+                { title: 'Ngày tạo', dataIndex: 'date' },
+                {
+                  title: 'Trạng thái',
+                  render: (_, record) => (
+                    <Tag
+                      variant="outlined"
+                      className="px-2.5 py-0.5"
+                      color={FLIGHT_BOOKING_STATUS_COLOR[record.status]}
+                    >
+                      {FLIGHT_BOOKING_STATUS_LABEL[record.status]}
+                    </Tag>
+                  ),
+                },
+                {
+                  title: 'Tổng tiền',
+                  align: 'right',
+                  render: (_, record) => (
+                    <span className="font-semibold tabular-nums">
+                      {formatDisplayCurrency(record.total)}
+                    </span>
+                  ),
+                },
+              ]}
+              className="rounded-none! border-none! shadow-none!"
+            />
           </div>
 
           <div className="card">
-            <h3 className="mb-3 text-sm font-semibold">
-              Chuyến bay sắp khởi hành còn chỗ
-            </h3>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Mã bay</TableHead>
-                  <TableHead>Chặng</TableHead>
-                  <TableHead>Ngày bay</TableHead>
-                  <TableHead>Còn trống</TableHead>
-                  <TableHead>Tổng số</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {expiringFlights.map(flight => (
-                  <TableRow key={flight.code}>
-                    <TableCell className="font-medium">{flight.code}</TableCell>
-                    <TableCell>{flight.route}</TableCell>
-                    <TableCell>{flight.departure}</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          flight.available < 10 ? 'destructive' : 'secondary'
-                        }
-                      >
-                        {flight.available}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{flight.total}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </div> */}
+            <div className="mb-4 flex flex-wrap justify-between gap-4">
+              <h3 className="text-base font-semibold">
+                Chuyến bay sắp khởi hành còn chỗ
+              </h3>
 
-        <Carousel className="w-full" opts={{ align: 'start', loop: true }}>
-          <CarouselContent>
-            {modules.map(module => (
-              <CarouselItem key={module.title} className="md:basis-1/2">
-                <ModuleCard
-                  title={module.title}
-                  description={module.description}
-                  icon={module.icon}
-                  iconBg={module.iconBg}
-                  iconColor={module.iconColor}
-                  viewListPath={module.viewListPath}
-                  createPath={module.createPath}
-                  viewBookingPath={module.viewBookingPath}
-                  isReleased={module.isReleased}
-                  createBtnLabel={module.createBtnLabel}
-                />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        </Carousel>
+              <Link to={flightManagementPaths.flightList.fullPath}>
+                <Button variant={'link'}>Xem tất cả</Button>
+              </Link>
+            </div>
+            <AppTable
+              dataSource={expiringFlights}
+              rowKey="code"
+              pagination={false}
+              columns={[
+                { title: 'Mã chuyến bay', dataIndex: 'code' },
+                { title: 'Hành trình', dataIndex: 'route' },
+                { title: 'Ngày bay', dataIndex: 'departure' },
+                { title: 'Số ghế còn trống', dataIndex: 'available' },
+              ]}
+              className="rounded-none! border-none! shadow-none!"
+            />
+          </div>
+        </div>
+
+        {/* <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {modules.map((module, index) => (
+            <ModuleCard
+              key={index}
+              title={module.title}
+              description={module.description}
+              icon={module.icon}
+              iconBg={module.iconBg}
+              iconColor={module.iconColor}
+              viewListPath={module.viewListPath}
+              createPath={module.createPath}
+              viewBookingPath={module.viewBookingPath}
+              isReleased={module.isReleased}
+              createBtnLabel={module.createBtnLabel}
+            />
+          ))}
+        </div> */}
       </div>
     </>
   );

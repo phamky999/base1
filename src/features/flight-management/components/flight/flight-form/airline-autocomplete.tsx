@@ -1,7 +1,7 @@
 import { useGetAirlinesQuery } from '@/features/flight-management/query';
 import { useDebounceSearch } from '@/hooks/use-debounce-search';
 import { upperCaseValue } from '@/lib/helpers/string';
-import { AutoComplete, Form } from 'antd';
+import { AutoComplete, Form, type AutoCompleteProps } from 'antd';
 import type { Rule } from 'antd/es/form';
 import { useMemo } from 'react';
 
@@ -11,6 +11,7 @@ type AirlineAutocompleteProps = {
   rules?: Rule[];
   placeholder?: string;
   priorityCodes?: string[];
+  autoCompleteProps?: AutoCompleteProps;
 };
 
 const PRIORITY_CODES = ['VN', 'VJ', '9G', 'QH', 'VU', 'BL', '0V'];
@@ -21,6 +22,7 @@ export const AirlineAutocomplete = ({
   rules,
   placeholder,
   priorityCodes = PRIORITY_CODES,
+  autoCompleteProps,
 }: AirlineAutocompleteProps) => {
   const { data: listAirlineData } = useGetAirlinesQuery();
 
@@ -90,6 +92,7 @@ export const AirlineAutocomplete = ({
         allowClear
         className="w-full"
         placeholder={placeholder || 'VD: VN '}
+        {...autoCompleteProps}
       />
     </Form.Item>
   );

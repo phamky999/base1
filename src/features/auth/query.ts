@@ -1,7 +1,11 @@
 import { baseApi } from '@/app/redux/baseApi';
-import { invalidatesTags, QUERY_TAGS } from '@/app/redux/constants';
 import type { QueryResponse } from '@/app/redux/types';
 import { setCurrentUser } from '@/features/auth/slice';
+import {
+  userDetailInvalidateTags,
+  userDetailProvideTags,
+} from '@/features/auth/query.helpers';
+import { AUTH_MANAGEMENT_TAGS } from '@/features/auth/query.tags';
 import type {
   TRefreshAuthTokenResponse,
   TUserInfo,
@@ -13,7 +17,7 @@ const endpoint = '/Identity';
 
 export const authQueryApi = baseApi
   .enhanceEndpoints({
-    addTagTypes: [QUERY_TAGS.USER_DETAIL],
+    addTagTypes: Object.values(AUTH_MANAGEMENT_TAGS),
   })
   .injectEndpoints({
     endpoints: builder => ({
@@ -34,7 +38,7 @@ export const authQueryApi = baseApi
           method: 'GET',
         }),
 
-        providesTags: [QUERY_TAGS.USER_DETAIL],
+        providesTags: (_, error) => userDetailProvideTags(error),
 
         async onQueryStarted(_, { dispatch, queryFulfilled }) {
           try {
@@ -57,7 +61,7 @@ export const authQueryApi = baseApi
           body: payload,
         }),
 
-        invalidatesTags: invalidatesTags([QUERY_TAGS.USER_DETAIL]),
+        invalidatesTags: (_, error) => userDetailInvalidateTags(error),
       }),
 
       UpdateCurrentUserPassword: builder.mutation<
@@ -73,7 +77,7 @@ export const authQueryApi = baseApi
           body: payload,
         }),
 
-        invalidatesTags: invalidatesTags([QUERY_TAGS.USER_DETAIL]),
+        invalidatesTags: (_, error) => userDetailInvalidateTags(error),
       }),
 
       refreshAuthToken: builder.mutation<

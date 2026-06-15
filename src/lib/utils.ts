@@ -39,7 +39,7 @@ export const setAuthToken = (
   expiration?: number
 ) => {
   Cookies.set(tokenType, token, {
-    expires: expiration ? (expiration - 60) / 3600 / 24 : 0,
+    expires: new Date(Date.now() + ((expiration ?? 86400) - 60) * 1000),
   });
 };
 

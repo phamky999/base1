@@ -145,6 +145,7 @@ export const FlightBookingForm = () => {
             documentNationality: p.documentNationality,
             documentIssuingCountry: p.documentIssuingCountry,
           })),
+          flightTransactionCode: selectedFlight?.transactionCode,
         };
 
         setPreviewDetail(detailResponse as TGetFlightBookingDetailResponse);
@@ -195,7 +196,7 @@ export const FlightBookingForm = () => {
           },
         }}
       >
-        <div className="space-y-6">
+        <div className="space-y-4">
           <FlightSelectionSection
             selectedFlight={selectedFlight}
             setSelectedFlight={setSelectedFlight}

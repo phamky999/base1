@@ -81,11 +81,11 @@ export const PassengerItem = ({
           <Col span={24} md={12} lg={5}>
             <Form.Item
               name={[fieldName, PASSENGER_FIELDS.LAST_NAME]}
-              label="Họ và tên đệm"
+              label="Họ"
               rules={FORM_VALIDATIONS.passenger[PASSENGER_FIELDS.LAST_NAME]}
               normalize={upperCaseValue}
             >
-              <Input placeholder="VD: NGUYEN VAN" />
+              <Input placeholder="VD: NGUYEN" />
             </Form.Item>
           </Col>
           <Col span={24} md={12} lg={5}>
@@ -95,7 +95,7 @@ export const PassengerItem = ({
               rules={FORM_VALIDATIONS.passenger[PASSENGER_FIELDS.FIRST_NAME]}
               normalize={upperCaseValue}
             >
-              <Input placeholder="VD: MINH" />
+              <Input placeholder="VD: VAN MINH" />
             </Form.Item>
           </Col>
 

@@ -246,7 +246,7 @@ export const FlightList = ({
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <FlightListFilter showFilters={!showInSelectFlightDrawer} />
 
       {!showInSelectFlightDrawer && (

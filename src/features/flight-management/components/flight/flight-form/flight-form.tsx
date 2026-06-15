@@ -1,4 +1,3 @@
-import { normalizeQueryParamValue } from '@/components/app-ui/app-filter/helper';
 import { Button } from '@/components/ui/button';
 import {
   FORM_FIELDS,
@@ -19,7 +18,6 @@ import type {
 import { FLIGHT_DATE_TIME_FORMAT } from '@/lib/date/constants';
 import dayjs from '@/lib/date/dayjs-config';
 import type { ObjectType } from '@/lib/types';
-import { Regex } from '@/lib/validations';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { Form, Skeleton } from 'antd';
 import type { Dayjs } from 'dayjs';
@@ -35,11 +33,6 @@ type FlightFormProps = {
   id?: string;
   actionType: 'create' | 'edit';
 };
-
-const SEGMENT_FIELD_KEYS = [
-  FORM_FIELDS.DEPARTURE_SEGMENTS,
-  FORM_FIELDS.RETURN_SEGMENTS,
-] as const;
 
 const formatSegmentToFormValue = (segment: TFlightSegment) => {
   return {
@@ -67,9 +60,7 @@ export const FlightForm = ({ id, actionType }: FlightFormProps) => {
 
   const [form] = Form.useForm();
 
-  const normalizeId = normalizeQueryParamValue(id);
-
-  const queryArg = !normalizeId ? skipToken : String(normalizeId);
+  const queryArg = !id ? skipToken : String(id);
 
   const { data, isFetching } = useGetFlightDetailQuery(queryArg);
 
@@ -151,42 +142,6 @@ export const FlightForm = ({ id, actionType }: FlightFormProps) => {
     changedValues: Partial<ObjectType>,
     allValues: ObjectType
   ) => {
-    // AIRLINE CODE SYNC
-    if (
-      !isEditForm &&
-      Object.prototype.hasOwnProperty.call(
-        changedValues,
-        FORM_FIELDS.AIRLINE_CODE
-      )
-    ) {
-      const airlineCode = allValues?.[FORM_FIELDS.AIRLINE_CODE];
-
-      if (Regex.AIRLINE_CODE.test(airlineCode)) {
-        SEGMENT_FIELD_KEYS.forEach(fieldKey => {
-          const segments = allValues?.[fieldKey];
-
-          if (!Array.isArray(segments)) {
-            return;
-          }
-
-          const nextSegments = segments.map((segment: ObjectType) => {
-            const currentAirlineCode = segment?.[SEGMENT_FIELDS.AIRLINE_CODE];
-
-            if (currentAirlineCode) {
-              return segment;
-            }
-
-            return {
-              ...segment,
-              [SEGMENT_FIELDS.AIRLINE_CODE]: airlineCode,
-            };
-          });
-
-          form.setFieldValue(fieldKey, nextSegments);
-        });
-      }
-    }
-
     // ROUND TRIP SYNC
     const itineraryType = allValues?.[FORM_FIELDS.ITINERARY_TYPE];
 
@@ -276,8 +231,8 @@ export const FlightForm = ({ id, actionType }: FlightFormProps) => {
           },
         })}
       >
-        <div className="space-y-6">
-          <GeneralInfoSection className="card" />
+        <div className="space-y-4">
+          <GeneralInfoSection className="card" isCreate={!isEditForm} />
 
           <SegmentsSection className="card" isCreate={!isEditForm} />
 

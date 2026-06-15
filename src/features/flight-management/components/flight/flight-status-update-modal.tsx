@@ -1,6 +1,8 @@
-import { AppDialog } from '@/components/app-ui/app-dialog';
-import { Button } from '@/components/ui/button';
+import { StatusUpdateModal } from '@/features/flight-management/components/common/status-update-modal';
 import {
+  FLIGHT_DETAIL_ACTION,
+  FLIGHT_DETAIL_ACTION_LABEL,
+  FLIGHT_STATUS,
   FLIGHT_STATUS_COLOR,
   FLIGHT_STATUS_LABEL,
 } from '@/features/flight-management/constants';
@@ -15,10 +17,8 @@ import type {
   TFlightListItem,
   TFlightStatus,
 } from '@/features/flight-management/types';
-import { Form, Input, Tag } from 'antd';
-import { PlaneIcon } from 'lucide-react';
-import { useMemo, useState } from 'react';
-import { toast } from 'sonner';
+import { Form } from 'antd';
+import { useMemo } from 'react';
 
 type FlightStatusUpdateModalProps = {
   open: boolean;
@@ -40,49 +40,33 @@ export const FlightStatusUpdateModal = ({
   const [cancelFlightFn] = useCancelFlightMutation();
   const [reopenFlightFn] = useReopenFlightMutation();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const actionToStatus = useMemo(() => {
+    return {
+      [FLIGHT_DETAIL_ACTION.PUBLISH]: FLIGHT_STATUS.ACTIVE,
+      [FLIGHT_DETAIL_ACTION.CLOSE]: FLIGHT_STATUS.CLOSED,
+      [FLIGHT_DETAIL_ACTION.CANCEL]: FLIGHT_STATUS.CANCELLED,
+      [FLIGHT_DETAIL_ACTION.REOPEN]: FLIGHT_STATUS.ACTIVE,
+    };
+  }, []);
 
-  const newStatus = useMemo((): TFlightStatus => {
-    switch (action) {
-      case 'PUBLISH':
-        return 'ACTIVE';
-      case 'CLOSE':
-        return 'CLOSED';
-      case 'CANCEL':
-        return 'CANCELLED';
-      case 'REOPEN':
-        return 'ACTIVE';
-      default:
-        return flight?.status;
-    }
-  }, [action, flight?.status]);
-
-  const updateMutationConfig = useMemo(() => {
-    switch (action) {
-      case 'PUBLISH':
-        return {
-          fn: publishFlightFn,
-          actionLabel: 'Mở bán',
-        };
-      case 'CLOSE':
-        return {
-          fn: closeFlightFn,
-          actionLabel: 'Đóng bán',
-        };
-      case 'CANCEL':
-        return {
-          fn: cancelFlightFn,
-          actionLabel: 'Hủy',
-        };
-      case 'REOPEN':
-        return {
-          fn: reopenFlightFn,
-          actionLabel: 'Mở bán lại',
-        };
-      default:
-        return null;
-    }
-  }, [action, cancelFlightFn, closeFlightFn, publishFlightFn, reopenFlightFn]);
+  const mutationConfig = {
+    [FLIGHT_DETAIL_ACTION.PUBLISH]: {
+      mutationFn: publishFlightFn,
+      actionLabel: FLIGHT_DETAIL_ACTION_LABEL.PUBLISH,
+    },
+    [FLIGHT_DETAIL_ACTION.CLOSE]: {
+      mutationFn: closeFlightFn,
+      actionLabel: FLIGHT_DETAIL_ACTION_LABEL.CLOSE,
+    },
+    [FLIGHT_DETAIL_ACTION.CANCEL]: {
+      mutationFn: cancelFlightFn,
+      actionLabel: FLIGHT_DETAIL_ACTION_LABEL.CANCEL,
+    },
+    [FLIGHT_DETAIL_ACTION.REOPEN]: {
+      mutationFn: reopenFlightFn,
+      actionLabel: FLIGHT_DETAIL_ACTION_LABEL.REOPEN,
+    },
+  };
 
   const handleOpenChange = (o: boolean) => {
     if (!o) {
@@ -91,101 +75,17 @@ export const FlightStatusUpdateModal = ({
     onOpenChange(o);
   };
 
-  const onFinish = async (values: { remark: string }) => {
-    if (!updateMutationConfig) {
-      return;
-    }
-    try {
-      setIsLoading(true);
-      await updateMutationConfig.fn({
-        id: flight.id,
-        remark: values.remark,
-      });
-      toast.success(
-        `${updateMutationConfig.actionLabel} chuyến bay ${flight?.bookingCode} thành công`
-      );
-      handleOpenChange(false);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
-    <AppDialog
+    <StatusUpdateModal<TFlightStatus, TFlightDetailAction>
       open={open}
       onOpenChange={handleOpenChange}
-      dialogContentClassName="sm:max-w-sm"
-      title={
-        <>
-          <PlaneIcon className="size-5 text-primary" />
-          <span>{updateMutationConfig?.actionLabel} chuyến bay</span>
-        </>
-      }
-      description={
-        <>
-          {updateMutationConfig?.actionLabel} chuyến bay{' '}
-          <span className="font-semibold text-primary">
-            {flight?.bookingCode}
-          </span>
-        </>
-      }
-      footer={
-        <>
-          <Button
-            type="reset"
-            variant="outline"
-            onClick={() => handleOpenChange(false)}
-          >
-            Đóng
-          </Button>
-          <Button
-            type="submit"
-            loading={isLoading}
-            onClick={() => form.submit()}
-          >
-            Cập nhật
-          </Button>
-        </>
-      }
-    >
-      <Form form={form} layout="vertical" onFinish={onFinish}>
-        <Form.Item label="Thay đổi trạng thái">
-          <div className="flex items-center gap-2">
-            <Tag
-              className="px-2 py-0.5"
-              color={FLIGHT_STATUS_COLOR[flight.status]}
-              variant="outlined"
-            >
-              {FLIGHT_STATUS_LABEL[flight.status]}
-            </Tag>
-            <span>→</span>
-            <Tag
-              className="px-2 py-0.5"
-              color={FLIGHT_STATUS_COLOR[newStatus]}
-              variant="outlined"
-            >
-              {FLIGHT_STATUS_LABEL[newStatus]}
-            </Tag>
-          </div>
-        </Form.Item>
-        <div>
-          <Form.Item
-            name="remark"
-            label="Remark"
-            rules={[
-              {
-                required: true,
-                whitespace: true,
-                message: 'Remark không được để trống',
-              },
-            ]}
-          >
-            <Input placeholder={'Remark'} />
-          </Form.Item>
-        </div>
-      </Form>
-    </AppDialog>
+      action={action}
+      entity={flight}
+      actionToStatus={actionToStatus}
+      mutationConfig={mutationConfig}
+      statusLabel={FLIGHT_STATUS_LABEL}
+      statusColor={FLIGHT_STATUS_COLOR}
+      entityLabel="chuyến bay"
+    />
   );
 };

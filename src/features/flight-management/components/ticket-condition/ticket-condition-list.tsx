@@ -98,7 +98,7 @@ export const TicketConditionList = () => {
 
   return (
     <>
-      <div className="space-y-6">
+      <div className="space-y-4">
         <AppTable
           rowKey={record => record.id}
           columns={columns}

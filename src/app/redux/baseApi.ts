@@ -34,10 +34,12 @@ const baseQuery = fetchBaseQuery({
 
 const handleLogout = (api: BaseQueryApi) => {
   clearAuthToken();
-  api.dispatch(baseApi.util.resetApiState());
-  api.dispatch({
-    type: 'auth/logout',
-  });
+
+  if (typeof window !== 'undefined') {
+    window.location.href = '/auth/login';
+  } else {
+    api.dispatch({ type: 'auth/logout' });
+  }
 };
 
 const baseQueryWithInterceptor: BaseQueryFn<
@@ -50,7 +52,9 @@ const baseQueryWithInterceptor: BaseQueryFn<
 
   const shouldHandleError = !customConfig?.skipGlobalErrorHandler;
 
-  await mutex.waitForUnlock();
+  if (mutex.isLocked()) {
+    await mutex.waitForUnlock();
+  }
 
   const apiEndpoint = (args as FetchArgs)?.url;
   let result = await baseQuery(args, api, extraOptions);

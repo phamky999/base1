@@ -49,10 +49,11 @@ export const FlightBookingListPage = () => {
           </Button>
         }
       />
-      <div className="space-y-6">
+      <div className="space-y-4">
         <FlightBookingListFilter />
-        {!!flightId && <BookingFlightInfo flightId={flightId} />}
-        {/* <FlightBookingStatistics /> */}
+        {!!flightId && (
+          <BookingFlightInfo flightId={(flightId ?? '') as string} />
+        )}
         <FlightBookingList />
       </div>
     </>

@@ -9,7 +9,10 @@ export const FlightCreatePage = () => {
     <>
       <PageHelmet title="Tạo chuyến bay | Danh sách chuyến bay" />
       <AppPageHeader title="Tạo chuyến bay" />
-      <FlightForm actionType="create" id={queryParams['duplicateId']} />
+      <FlightForm
+        actionType="create"
+        id={(queryParams['duplicateId'] ?? '') as string}
+      />
     </>
   );
 };

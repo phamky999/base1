@@ -12,7 +12,7 @@ export const AppPageHeader = ({
   addon,
 }: AppPageHeaderProps) => {
   return (
-    <div className="mb-6 space-y-1">
+    <div className="mb-4 space-y-1">
       <div className="flex flex-row flex-wrap items-center justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-lg font-semibold lg:text-2xl">{title}</h1>

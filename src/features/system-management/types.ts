@@ -18,6 +18,10 @@ export type TAccountListItem = {
   isActive: boolean;
 };
 
+export type TAccountDetail = TAccountListItem & {
+  permissions: TUserPermission;
+};
+
 export type TGetAccountListResponse = {
   users: TAccountListItem[];
 };

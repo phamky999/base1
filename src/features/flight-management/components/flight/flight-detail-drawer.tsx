@@ -1,6 +1,5 @@
 import { AppDateTimeLabel } from '@/components/app-ui/app-date-time-label';
 import { AppDrawer } from '@/components/app-ui/app-drawer';
-import { normalizeQueryParamValue } from '@/components/app-ui/app-filter/helper';
 import { AppTable } from '@/components/app-ui/app-table';
 import { useSidebar } from '@/components/ui/sidebar';
 import { FlightDetailActionGroups } from '@/features/flight-management/components/flight/flight-detail-action-groups';
@@ -34,9 +33,7 @@ export const FlightDetailDrawer = ({
 }: FlightDetailDrawerProps) => {
   const { isMobile } = useSidebar();
 
-  const normalizeFlightId = normalizeQueryParamValue(flightId);
-  const queryArg =
-    !normalizeFlightId || !open ? skipToken : String(normalizeFlightId);
+  const queryArg = !flightId || !open ? skipToken : String(flightId);
 
   const { data, isFetching } = useGetFlightDetailQuery(queryArg);
 
@@ -191,7 +188,10 @@ export const FlightDetailDrawer = ({
                 className="rounded-lg shadow-xs"
                 column={isMobile ? 1 : 2}
               >
-                <Descriptions.Item label="Mã đặt chỗ" span={isMobile ? 1 : 2}>
+                <Descriptions.Item label="Mã chuyến bay">
+                  <span className="font-bold">{detail.transactionCode}</span>
+                </Descriptions.Item>
+                <Descriptions.Item label="Mã đặt chỗ">
                   <span className="font-bold">{detail.bookingCode}</span>
                 </Descriptions.Item>
                 <Descriptions.Item label="Hãng hàng không">

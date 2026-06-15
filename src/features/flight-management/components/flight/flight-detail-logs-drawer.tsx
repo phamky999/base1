@@ -1,6 +1,5 @@
 import { AppDateTimeLabel } from '@/components/app-ui/app-date-time-label';
 import { AppDrawer } from '@/components/app-ui/app-drawer';
-import { normalizeQueryParamValue } from '@/components/app-ui/app-filter/helper';
 import {
   FLIGHT_DETAIL_ACTION_COLOR,
   FLIGHT_DETAIL_ACTION_LABEL,
@@ -20,9 +19,7 @@ export const FlightDetailLogsDrawer = ({
   open,
   onOpenChange,
 }: FlightDetailLogsDrawerProps) => {
-  const normalizeId = normalizeQueryParamValue(flightId);
-
-  const queryArg = !normalizeId || !open ? skipToken : String(normalizeId);
+  const queryArg = !flightId || !open ? skipToken : String(flightId);
 
   const { data, isFetching } = useGetFlightDetailLogsQuery(queryArg);
   const logs = data?.data;
@@ -48,7 +45,11 @@ export const FlightDetailLogsDrawer = ({
                   <div>
                     {!!log?.note && <p className="mb-1">{log.note}</p>}
 
-                    <p>Thay đổi bởi: {log.userName}</p>
+                    {!!log?.userName && (
+                      <p className="text-xs text-gray-500">
+                        Thực hiện bởi: {log.userName}
+                      </p>
+                    )}
                   </div>
                 </>
               ),

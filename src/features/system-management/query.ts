@@ -1,7 +1,16 @@
 import { baseApi } from '@/app/redux/baseApi';
-import { invalidatesTags, QUERY_TAGS } from '@/app/redux/constants';
 import type { QueryResponse } from '@/app/redux/types';
+import {
+  accountCreateInvalidateTags,
+  accountDetailProvideTags,
+  accountListProvideTags,
+  accountUpdateInvalidateTags,
+  emailConfigInvalidateTags,
+  emailConfigProvideTags,
+} from '@/features/system-management/query.helpers';
+import { SYSTEM_MANAGEMENT_TAGS } from '@/features/system-management/query.tags';
 import type {
+  TAccountDetail,
   TCreateAccountParams,
   TGetAccountListParams,
   TGetAccountListResponse,
@@ -15,11 +24,7 @@ const emailConfigEndpoint = '/Providers/EmailSettings';
 
 export const systemManagementQueryApi = baseApi
   .enhanceEndpoints({
-    addTagTypes: [
-      QUERY_TAGS.ACCOUNT_LIST,
-      QUERY_TAGS.ACCOUNT_DETAIL,
-      QUERY_TAGS.EMAIL_CONFIG,
-    ],
+    addTagTypes: Object.values(SYSTEM_MANAGEMENT_TAGS),
   })
   .injectEndpoints({
     endpoints: builder => ({
@@ -33,7 +38,16 @@ export const systemManagementQueryApi = baseApi
           params,
         }),
 
-        providesTags: [QUERY_TAGS.ACCOUNT_LIST],
+        providesTags: (result, error) => accountListProvideTags(result, error),
+      }),
+
+      GetAccountDetail: builder.query<QueryResponse<TAccountDetail>, string>({
+        query: id => ({
+          url: `${accountEndpoint}/${id}`,
+          method: 'GET',
+        }),
+
+        providesTags: (_, error, id) => accountDetailProvideTags(error, id),
       }),
 
       CreateAccount: builder.mutation<
@@ -46,7 +60,7 @@ export const systemManagementQueryApi = baseApi
           body: data,
         }),
 
-        invalidatesTags: invalidatesTags([QUERY_TAGS.ACCOUNT_LIST]),
+        invalidatesTags: (_, error) => accountCreateInvalidateTags(error),
       }),
 
       UpdateAccountPassword: builder.mutation<
@@ -70,7 +84,8 @@ export const systemManagementQueryApi = baseApi
           body: data,
         }),
 
-        invalidatesTags: invalidatesTags([QUERY_TAGS.ACCOUNT_LIST]),
+        invalidatesTags: (_, error, { id }) =>
+          accountUpdateInvalidateTags(error, id),
       }),
 
       GetEmailConfig: builder.query<
@@ -82,7 +97,7 @@ export const systemManagementQueryApi = baseApi
           method: 'GET',
         }),
 
-        providesTags: [QUERY_TAGS.EMAIL_CONFIG],
+        providesTags: (_, error) => emailConfigProvideTags(error),
       }),
 
       UpdateEmailConfig: builder.mutation<
@@ -95,13 +110,14 @@ export const systemManagementQueryApi = baseApi
           body: data,
         }),
 
-        invalidatesTags: invalidatesTags([QUERY_TAGS.EMAIL_CONFIG]),
+        invalidatesTags: (_, error) => emailConfigInvalidateTags(error),
       }),
     }),
   });
 
 export const {
   useGetAccountListQuery,
+  useGetAccountDetailQuery,
   useCreateAccountMutation,
   useUpdateAccountPasswordMutation,
   useUpdateAccountMutation,

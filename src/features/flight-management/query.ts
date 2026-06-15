@@ -1,6 +1,30 @@
 import { baseApi } from '@/app/redux/baseApi';
-import { invalidatesTags, QUERY_TAGS } from '@/app/redux/constants';
 import type { QueryResponse } from '@/app/redux/types';
+import {
+  flightBookingCreateInvalidateTags,
+  flightBookingDetailProvideTags,
+  flightBookingListProvideTags,
+  flightBookingLogsProvideTags,
+  flightBookingUpdateInvalidateTags,
+  flightDeleteInvalidateTags,
+  flightDetailProvideTags,
+  flightListInvalidateTags,
+  flightListProvideTags,
+  flightLogsProvideTags,
+  flightStatsProvideTags,
+  flightStatusChangeInvalidateTags,
+  flightUpdateInvalidateTags,
+  fareRuleCreateInvalidateTags,
+  fareRuleDeleteInvalidateTags,
+  fareRuleDetailProvideTags,
+  fareRulesProvideTags,
+  fareRuleUpdateInvalidateTags,
+} from '@/features/flight-management/query.helpers';
+import {
+  FLIGHT_BOOKING_MANAGEMENT_TAGS,
+  FLIGHT_MANAGEMENT_TAGS,
+  FLIGHT_TICKET_CONDITION_MANAGEMENT_TAGS,
+} from '@/features/flight-management/query.tags';
 import type {
   TAircraftItem,
   TAirlineItem,
@@ -76,11 +100,7 @@ export const flightMasterDataQueryApi = baseApi
 
 export const flightManagementQueryApi = baseApi
   .enhanceEndpoints({
-    addTagTypes: [
-      QUERY_TAGS.FLIGHT_LIST,
-      QUERY_TAGS.FLIGHT_DETAIL,
-      QUERY_TAGS.FLIGHT_DETAIL_LOGS,
-    ],
+    addTagTypes: Object.values(FLIGHT_MANAGEMENT_TAGS),
   })
   .injectEndpoints({
     endpoints: builder => ({
@@ -93,8 +113,7 @@ export const flightManagementQueryApi = baseApi
           method: 'GET',
           params,
         }),
-
-        providesTags: [QUERY_TAGS.FLIGHT_LIST],
+        providesTags: (result, error) => flightListProvideTags(result, error),
       }),
 
       GetFlightStatics: builder.query<
@@ -106,6 +125,8 @@ export const flightManagementQueryApi = baseApi
           method: 'GET',
           params,
         }),
+
+        providesTags: (_, error) => flightStatsProvideTags(error),
       }),
 
       GetFlightDetail: builder.query<
@@ -117,7 +138,7 @@ export const flightManagementQueryApi = baseApi
           method: 'GET',
         }),
 
-        providesTags: [QUERY_TAGS.FLIGHT_DETAIL],
+        providesTags: (_, error, id) => flightDetailProvideTags(error, id),
       }),
 
       GetFlightDetailLogs: builder.query<
@@ -128,7 +149,8 @@ export const flightManagementQueryApi = baseApi
           url: `${endpoint}/Flights/${id}/Logs`,
           method: 'GET',
         }),
-        providesTags: [QUERY_TAGS.FLIGHT_DETAIL_LOGS],
+
+        providesTags: (_, error, id) => flightLogsProvideTags(error, id),
       }),
 
       CreateFlight: builder.mutation<
@@ -144,7 +166,7 @@ export const flightManagementQueryApi = baseApi
           },
         }),
 
-        invalidatesTags: invalidatesTags([QUERY_TAGS.FLIGHT_LIST]),
+        invalidatesTags: (_, error) => flightListInvalidateTags(error),
       }),
 
       UpdateFlight: builder.mutation<
@@ -157,11 +179,8 @@ export const flightManagementQueryApi = baseApi
           body: restPayload,
         }),
 
-        invalidatesTags: invalidatesTags([
-          QUERY_TAGS.FLIGHT_LIST,
-          QUERY_TAGS.FLIGHT_DETAIL,
-          QUERY_TAGS.FLIGHT_DETAIL_LOGS,
-        ]),
+        invalidatesTags: (_, error, { id }) =>
+          flightUpdateInvalidateTags(error, id),
       }),
 
       PublishFlight: builder.mutation<
@@ -174,11 +193,8 @@ export const flightManagementQueryApi = baseApi
           body: rest,
         }),
 
-        invalidatesTags: invalidatesTags([
-          QUERY_TAGS.FLIGHT_LIST,
-          QUERY_TAGS.FLIGHT_DETAIL,
-          QUERY_TAGS.FLIGHT_DETAIL_LOGS,
-        ]),
+        invalidatesTags: (_, error, { id }) =>
+          flightStatusChangeInvalidateTags(error, id),
       }),
 
       CloseFlight: builder.mutation<
@@ -191,11 +207,8 @@ export const flightManagementQueryApi = baseApi
           body: rest,
         }),
 
-        invalidatesTags: invalidatesTags([
-          QUERY_TAGS.FLIGHT_LIST,
-          QUERY_TAGS.FLIGHT_DETAIL,
-          QUERY_TAGS.FLIGHT_DETAIL_LOGS,
-        ]),
+        invalidatesTags: (_, error, { id }) =>
+          flightStatusChangeInvalidateTags(error, id),
       }),
 
       CancelFlight: builder.mutation<
@@ -208,11 +221,8 @@ export const flightManagementQueryApi = baseApi
           body: rest,
         }),
 
-        invalidatesTags: invalidatesTags([
-          QUERY_TAGS.FLIGHT_LIST,
-          QUERY_TAGS.FLIGHT_DETAIL,
-          QUERY_TAGS.FLIGHT_DETAIL_LOGS,
-        ]),
+        invalidatesTags: (_, error, { id }) =>
+          flightStatusChangeInvalidateTags(error, id),
       }),
 
       ReopenFlight: builder.mutation<
@@ -225,11 +235,8 @@ export const flightManagementQueryApi = baseApi
           body: rest,
         }),
 
-        invalidatesTags: invalidatesTags([
-          QUERY_TAGS.FLIGHT_LIST,
-          QUERY_TAGS.FLIGHT_DETAIL,
-          QUERY_TAGS.FLIGHT_DETAIL_LOGS,
-        ]),
+        invalidatesTags: (_, error, { id }) =>
+          flightStatusChangeInvalidateTags(error, id),
       }),
 
       DeleteFlight: builder.mutation<void, string>({
@@ -238,10 +245,8 @@ export const flightManagementQueryApi = baseApi
           method: 'DELETE',
         }),
 
-        invalidatesTags: invalidatesTags([
-          QUERY_TAGS.FLIGHT_LIST,
-          QUERY_TAGS.FLIGHT_DETAIL,
-        ]),
+        invalidatesTags: (_, error, id) =>
+          flightDeleteInvalidateTags(error, id),
       }),
 
       SearchAirports: builder.query<
@@ -259,7 +264,7 @@ export const flightManagementQueryApi = baseApi
 
 export const flightBookingManagementQueryApi = baseApi
   .enhanceEndpoints({
-    addTagTypes: [QUERY_TAGS.FLIGHT_BOOKING_LIST],
+    addTagTypes: Object.values(FLIGHT_BOOKING_MANAGEMENT_TAGS),
   })
   .injectEndpoints({
     endpoints: builder => ({
@@ -272,7 +277,8 @@ export const flightBookingManagementQueryApi = baseApi
           method: 'GET',
           params,
         }),
-        providesTags: [QUERY_TAGS.FLIGHT_BOOKING_LIST],
+        providesTags: (result, error) =>
+          flightBookingListProvideTags(result, error),
       }),
 
       GetFlightBookingDetail: builder.query<
@@ -283,6 +289,9 @@ export const flightBookingManagementQueryApi = baseApi
           url: `${endpoint}/Bookings/${id}`,
           method: 'GET',
         }),
+
+        providesTags: (_, error, id) =>
+          flightBookingDetailProvideTags(error, id),
       }),
 
       GetFlightBookingDetailLogs: builder.query<
@@ -293,6 +302,8 @@ export const flightBookingManagementQueryApi = baseApi
           url: `${endpoint}/Bookings/${id}/Logs`,
           method: 'GET',
         }),
+        providesTags: (_, error, id) =>
+          flightBookingLogsProvideTags(error, id),
       }),
 
       CreateFlightBooking: builder.mutation<
@@ -305,14 +316,43 @@ export const flightBookingManagementQueryApi = baseApi
           body: payload,
         }),
 
-        invalidatesTags: invalidatesTags([QUERY_TAGS.FLIGHT_BOOKING_LIST]),
+        invalidatesTags: (_, error) =>
+          flightBookingCreateInvalidateTags(error),
+      }),
+
+      CancelBooking: builder.mutation<
+        QueryResponse<void>,
+        { id: string; remark: string }
+      >({
+        query: ({ id, ...rest }) => ({
+          url: `${endpoint}/Bookings/Cancel/${id}`,
+          method: 'PUT',
+          body: rest,
+        }),
+
+        invalidatesTags: (_, error, { id }) =>
+          flightBookingUpdateInvalidateTags(error, id),
+      }),
+
+      IssueBooking: builder.mutation<
+        QueryResponse<void>,
+        { id: string; remark: string }
+      >({
+        query: ({ id, ...rest }) => ({
+          url: `${endpoint}/Bookings/Issue/${id}`,
+          method: 'PUT',
+          body: rest,
+        }),
+
+        invalidatesTags: (_, error, { id }) =>
+          flightBookingUpdateInvalidateTags(error, id),
       }),
     }),
   });
 
 export const flightTicketConditionManagementQueryApi = baseApi
   .enhanceEndpoints({
-    addTagTypes: [QUERY_TAGS.FARE_RULES, QUERY_TAGS.FARE_RULE_DETAIL],
+    addTagTypes: Object.values(FLIGHT_TICKET_CONDITION_MANAGEMENT_TAGS),
   })
   .injectEndpoints({
     endpoints: builder => ({
@@ -322,7 +362,7 @@ export const flightTicketConditionManagementQueryApi = baseApi
           method: 'GET',
         }),
 
-        providesTags: [QUERY_TAGS.FARE_RULES],
+        providesTags: (result, error) => fareRulesProvideTags(result, error),
       }),
 
       GetFareRuleDetail: builder.query<
@@ -334,7 +374,7 @@ export const flightTicketConditionManagementQueryApi = baseApi
           method: 'GET',
         }),
 
-        providesTags: [QUERY_TAGS.FARE_RULE_DETAIL],
+        providesTags: (_, error, id) => fareRuleDetailProvideTags(error, id),
       }),
 
       CreateFareRule: builder.mutation<
@@ -347,7 +387,7 @@ export const flightTicketConditionManagementQueryApi = baseApi
           body: payload,
         }),
 
-        invalidatesTags: invalidatesTags([QUERY_TAGS.FARE_RULES]),
+        invalidatesTags: (_, error) => fareRuleCreateInvalidateTags(error),
       }),
 
       UpdateFareRule: builder.mutation<
@@ -360,10 +400,8 @@ export const flightTicketConditionManagementQueryApi = baseApi
           body: restPayload,
         }),
 
-        invalidatesTags: invalidatesTags([
-          QUERY_TAGS.FARE_RULES,
-          QUERY_TAGS.FARE_RULE_DETAIL,
-        ]),
+        invalidatesTags: (_, error, { id }) =>
+          fareRuleUpdateInvalidateTags(error, id),
       }),
 
       DeleteFareRule: builder.mutation<void, string>({
@@ -372,7 +410,8 @@ export const flightTicketConditionManagementQueryApi = baseApi
           method: 'DELETE',
         }),
 
-        invalidatesTags: invalidatesTags([QUERY_TAGS.FARE_RULES]),
+        invalidatesTags: (_, error, id) =>
+          fareRuleDeleteInvalidateTags(error, id),
       }),
     }),
   });
@@ -406,6 +445,8 @@ export const {
   useGetFlightBookingDetailQuery,
   useGetFlightBookingDetailLogsQuery,
   useCreateFlightBookingMutation,
+  useCancelBookingMutation,
+  useIssueBookingMutation,
 } = flightBookingManagementQueryApi;
 
 //fare rules

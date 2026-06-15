@@ -1,5 +1,3 @@
-import { store } from '@/app/redux/store';
-import { flightMasterDataQueryApi } from '@/features/flight-management/query';
 import { lazyNamedExport } from '@/lib/utils';
 import { generatePath, Navigate, type RouteObject } from 'react-router-dom';
 
@@ -80,23 +78,13 @@ export const flightManagementPaths = {
   },
 };
 
-const flightRouteLoader = async () => {
-  store.dispatch(flightMasterDataQueryApi.endpoints.GetAircrafts.initiate());
-  store.dispatch(flightMasterDataQueryApi.endpoints.GetAirlines.initiate());
-  store.dispatch(
-    flightMasterDataQueryApi.endpoints.GetAirlineClasses.initiate()
-  );
-
-  return null;
-};
-
 export const flightManagementRoutes: RouteObject[] = [
   {
     path: flightManagementPaths.root.path,
     handle: {
       crumb: () => 'Kho vé máy bay',
     },
-    loader: flightRouteLoader,
+
     children: [
       {
         index: true,

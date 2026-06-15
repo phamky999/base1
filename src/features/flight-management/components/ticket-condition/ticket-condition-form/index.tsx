@@ -1,5 +1,4 @@
 import { AppDrawer } from '@/components/app-ui/app-drawer';
-import { normalizeQueryParamValue } from '@/components/app-ui/app-filter/helper';
 import { Button } from '@/components/ui/button';
 import {
   useCreateFareRuleMutation,
@@ -16,12 +15,12 @@ import { skipToken } from '@reduxjs/toolkit/query';
 import { Form, Input, Skeleton } from 'antd';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
+import { RulesList } from './rules-list';
 import {
   FORM_FIELDS,
   FORM_LABELS,
   FORM_VALIDATIONS,
 } from './ticket-condition-form.schema';
-import { RulesList } from './rules-list';
 
 type TicketConditionFormProps = {
   selectedId: string | null;
@@ -40,9 +39,7 @@ export const TicketConditionForm = ({
 
   const [form] = Form.useForm();
 
-  const normalizeId = normalizeQueryParamValue(selectedId);
-
-  const queryArg = !normalizeId ? skipToken : String(normalizeId);
+  const queryArg = !selectedId ? skipToken : String(selectedId);
 
   const { data, isFetching } = useGetFareRuleDetailQuery(queryArg);
 

@@ -1,7 +1,9 @@
 import { AppDrawer } from '@/components/app-ui/app-drawer';
-import { normalizeQueryParamValue } from '@/components/app-ui/app-filter/helper';
+import { BookingDetailActionGroups } from '@/features/flight-management/components/flight-booking/booking-detail-action-groups';
 import { BookingDetailDrawerContent } from '@/features/flight-management/components/flight-booking/booking-detail-drawer-content';
+import { FLIGHT_BOOKING_ACTION } from '@/features/flight-management/constants';
 import { useGetFlightBookingDetailQuery } from '@/features/flight-management/query';
+import type { TGetFlightBookingDetailResponse } from '@/features/flight-management/types';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { Skeleton } from 'antd';
 
@@ -16,19 +18,23 @@ export const BookingDetailDrawer = ({
   open,
   onOpenChange,
 }: BookingDetailDrawerProps) => {
-  const normalizeId = normalizeQueryParamValue(bookingId);
-
-  const queryArg = !normalizeId || !open ? skipToken : String(normalizeId);
+  const queryArg = !bookingId || !open ? skipToken : String(bookingId);
 
   const { data, isFetching } = useGetFlightBookingDetailQuery(queryArg);
 
-  const detail = data?.data;
+  const detail = data?.data as TGetFlightBookingDetailResponse;
 
   return (
     <AppDrawer
       open={open}
       onOpenChange={onOpenChange}
       title="Thông tin đơn hàng"
+      headerAddon={
+        <BookingDetailActionGroups
+          booking={detail}
+          ignoredActions={[FLIGHT_BOOKING_ACTION.VIEW_DETAIL]}
+        />
+      }
     >
       <Skeleton loading={isFetching} active>
         <BookingDetailDrawerContent detail={detail} />
