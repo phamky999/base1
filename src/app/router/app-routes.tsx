@@ -4,6 +4,7 @@ import { authRoutes } from '@/features/auth/routes';
 import { flightManagementRoutes } from '@/features/flight-management/routes';
 import { merchantManagementRoutes } from '@/features/merchant-management/routes';
 import { systemManagementRoutes } from '@/features/system-management/routes';
+import { tourManagementRoutes } from '@/features/tour-management/routes';
 import { lazyNamedExport } from '@/lib/utils';
 import { createBrowserRouter } from 'react-router-dom';
 
@@ -33,6 +34,7 @@ export const appRoutes = createBrowserRouter([
       },
       // declare app features routes
       ...flightManagementRoutes,
+      ...tourManagementRoutes,
       ...merchantManagementRoutes,
       ...systemManagementRoutes,
     ],

@@ -1,11 +1,13 @@
 import { flightManagementPaths } from '@/features/flight-management/routes';
 import { merchantManagementPaths } from '@/features/merchant-management/routes';
 import { systemManagementPaths } from '@/features/system-management/routes';
+import { tourManagementPaths } from '@/features/tour-management/routes';
 import {
-  LayoutDashboard,
+  LayoutDashboardIcon,
+  MapIcon,
   MonitorCogIcon,
-  Settings,
-  TicketsPlane,
+  SettingsIcon,
+  TicketsPlaneIcon,
 } from 'lucide-react';
 
 type TBaseNavItem = {
@@ -47,11 +49,11 @@ export const sidebarData: TSidebarData = {
         {
           title: 'Trang chủ',
           url: '/',
-          icon: LayoutDashboard,
+          icon: LayoutDashboardIcon,
         },
         {
           title: 'Kho vé máy bay',
-          icon: TicketsPlane,
+          icon: TicketsPlaneIcon,
           items: [
             {
               title: 'Danh sách chuyến bay',
@@ -83,13 +85,27 @@ export const sidebarData: TSidebarData = {
           ],
         },
         {
+          title: 'Kho tour',
+          icon: MapIcon,
+          items: [
+            {
+              title: 'Danh sách tuyến tour',
+              url: tourManagementPaths.tourCategory.fullPath,
+            },
+            {
+              title: 'Danh sách tour',
+              url: tourManagementPaths.tourList.fullPath,
+            },
+          ],
+        },
+        {
           title: 'Quản lý kênh bán',
           icon: MonitorCogIcon,
           url: merchantManagementPaths.merchantList.fullPath,
         },
         {
           title: 'Cài đặt hệ thống',
-          icon: Settings,
+          icon: SettingsIcon,
           items: [
             {
               title: 'Cấu hình Email',
