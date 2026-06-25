@@ -1,15 +1,17 @@
-import { MOCK_TOUR_CATEGORIES } from '@/features/tour-management/mock-data';
+import { MOCK_TOUR_CATEGORIES, MOCK_TOURS } from '@/features/tour-management/mock-data';
 import type {
   TCategoryListItem,
+  TCreateTourPayload,
   TGetTourCategoryListParams,
+  TTour,
 } from '@/features/tour-management/types';
 import { useMemo, useState } from 'react';
 
 let mockCategories = [...MOCK_TOUR_CATEGORIES];
-let listeners: (() => void)[] = [];
+let categoryListeners: (() => void)[] = [];
 
-const notifyListeners = () => {
-  listeners.forEach(fn => fn());
+const notifyCategoryListeners = () => {
+  categoryListeners.forEach(fn => fn());
 };
 
 const generateId = () => Math.random().toString(36).substring(2, 11);
@@ -21,7 +23,7 @@ export const addCategory = (code: string, name: string) => {
     name,
   };
   mockCategories = [...mockCategories, newCategory];
-  notifyListeners();
+  notifyCategoryListeners();
   return newCategory;
 };
 
@@ -29,12 +31,12 @@ export const updateCategory = (id: string, code: string, name: string) => {
   mockCategories = mockCategories.map(item =>
     item.id === id ? { ...item, code, name } : item
   );
-  notifyListeners();
+  notifyCategoryListeners();
 };
 
 export const deleteCategory = (id: string) => {
   mockCategories = mockCategories.filter(item => item.id !== id);
-  notifyListeners();
+  notifyCategoryListeners();
 };
 
 export const useGetTourCategoryListQuery = (
@@ -44,9 +46,9 @@ export const useGetTourCategoryListQuery = (
 
   useMemo(() => {
     const listener = () => setTick(t => t + 1);
-    listeners = [...listeners, listener];
+    categoryListeners = [...categoryListeners, listener];
     return () => {
-      listeners = listeners.filter(fn => fn !== listener);
+      categoryListeners = categoryListeners.filter(fn => fn !== listener);
     };
   }, []);
 
@@ -79,5 +81,74 @@ export const useGetTourCategoryListQuery = (
 
 export const resetMockCategories = () => {
   mockCategories = [...MOCK_TOUR_CATEGORIES];
-  notifyListeners();
+  notifyCategoryListeners();
+};
+
+// --- Tour CRUD ---
+
+let mockTours = [...MOCK_TOURS];
+let tourListeners: (() => void)[] = [];
+
+const notifyTourListeners = () => {
+  tourListeners.forEach(fn => fn());
+};
+
+export const createTour = (payload: TCreateTourPayload) => {
+  const newTour: TTour = {
+    id: generateId(),
+    ...payload,
+    createdAt: new Date().toISOString(),
+  };
+  mockTours = [...mockTours, newTour];
+  notifyTourListeners();
+  return newTour;
+};
+
+export const useGetTourListQuery = (params?: { programName?: string }) => {
+  const [, setTick] = useState(0);
+
+  useMemo(() => {
+    const listener = () => setTick(t => t + 1);
+    tourListeners = [...tourListeners, listener];
+    return () => {
+      tourListeners = tourListeners.filter(fn => fn !== listener);
+    };
+  }, []);
+
+  let filtered = mockTours;
+
+  if (params?.programName) {
+    filtered = filtered.filter(item =>
+      item.programName
+        .toLowerCase()
+        .includes(params.programName!.toLowerCase())
+    );
+  }
+
+  return {
+    data: {
+      data: filtered,
+    },
+    isFetching: false,
+  };
+};
+
+export const useCreateTourMutation = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const mutateAsync = async ({
+    payload,
+  }: {
+    payload: TCreateTourPayload;
+  }) => {
+    setIsLoading(true);
+    try {
+      const newTour = createTour(payload);
+      return { data: newTour, unwrap: () => Promise.resolve(newTour) };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return [mutateAsync, { isLoading }] as const;
 };

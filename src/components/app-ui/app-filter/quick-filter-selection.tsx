@@ -19,7 +19,7 @@ import { DEFAULT_PAGE_INDEX, PAGINATION_QUERY_KEY } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { CheckIcon, PlusCircleIcon } from 'lucide-react';
 import { useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useQueryHandle } from '@/hooks/use-query-handle';
 
 type QuickFilterSelectionProps = {
   title?: string;
@@ -37,29 +37,29 @@ export const QuickFilterSelection = ({
   options,
   type = 'single',
 }: QuickFilterSelectionProps) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { queryParams, handleUpdateQuery } = useQueryHandle();
 
   const selectedValues = useMemo(() => {
-    return new Set(searchParams.getAll(filterKey));
-  }, [searchParams, filterKey]);
+    const value = queryParams[filterKey];
+    const arr = value == null ? [] : Array.isArray(value) ? value : [value];
+    return new Set(arr);
+  }, [queryParams, filterKey]);
 
   const handleSelect = (value: string) => {
-    const newParams = new URLSearchParams(searchParams);
-
     if (type === 'single') {
-      const currentValue = newParams.get(filterKey);
+      const currentValue = queryParams[filterKey];
 
-      newParams.delete(filterKey);
-
-      if (currentValue !== value) {
-        newParams.set(filterKey, value);
-      }
-
-      setSearchParams(newParams, { replace: true });
+      handleUpdateQuery({
+        [PAGINATION_QUERY_KEY.PAGE_INDEX]: DEFAULT_PAGE_INDEX,
+        [filterKey]: currentValue === value ? undefined : value,
+      });
       return;
     }
 
-    const currentFilters = new Set(newParams.getAll(filterKey));
+    const currentValue = queryParams[filterKey];
+    const currentFilters = new Set(
+      currentValue == null ? [] : Array.isArray(currentValue) ? currentValue : [currentValue]
+    );
 
     if (currentFilters.has(value)) {
       currentFilters.delete(value);
@@ -67,20 +67,19 @@ export const QuickFilterSelection = ({
       currentFilters.add(value);
     }
 
-    newParams.delete(filterKey);
-    currentFilters.forEach(val => {
-      newParams.append(filterKey, val);
+    const newValues = Array.from(currentFilters);
+
+    handleUpdateQuery({
+      [PAGINATION_QUERY_KEY.PAGE_INDEX]: DEFAULT_PAGE_INDEX,
+      [filterKey]: newValues.length > 0 ? newValues : undefined,
     });
-
-    newParams.set(PAGINATION_QUERY_KEY.PAGE_INDEX, String(DEFAULT_PAGE_INDEX));
-
-    setSearchParams(newParams, { replace: true });
   };
 
   const clearFilters = () => {
-    const newParams = new URLSearchParams(searchParams);
-    newParams.delete(filterKey);
-    setSearchParams(newParams, { replace: true });
+    handleUpdateQuery({
+      [PAGINATION_QUERY_KEY.PAGE_INDEX]: DEFAULT_PAGE_INDEX,
+      [filterKey]: undefined,
+    });
   };
 
   return (

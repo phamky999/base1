@@ -157,3 +157,14 @@ export const FLIGHT_ITINERARY_TYPE_OPTIONS = Object.values(
   value: item,
   label: FLIGHT_ITINERARY_TYPE_LABEL[item],
 }));
+
+export const FLIGHT_SORT_KEY = {
+  START_DATE: 'START_DATE',
+  CREATE_AT: 'CREATE_AT',
+  SEAT_AVAILABLE: 'SEAT_AVAILABLE',
+} as const;
+
+export const FLIGHT_BOOKING_SORT_KEY = {
+  START_DATE: 'START_DATE',
+  CREATED_AT: 'CREATED_AT',
+} as const;

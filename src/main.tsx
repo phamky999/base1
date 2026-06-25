@@ -3,6 +3,10 @@ import { createRoot } from 'react-dom/client';
 
 import { ThemeProvider } from '@/context/theme.tsx';
 import { App } from './App.tsx';
+
+import '@/lib/tiptap/styles/_variables.scss';
+import '@/lib/tiptap/styles/_keyframe-animations.scss';
+
 import './styles/index.css';
 import './styles/custom-antd.css';
 

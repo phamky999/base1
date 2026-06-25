@@ -7,7 +7,7 @@ import type { ObjectType } from '@/lib/types';
 import { Form, Popover } from 'antd';
 import { FunnelPlusIcon } from 'lucide-react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useQueryHandle } from '@/hooks/use-query-handle';
 
 type AdvanceFilterProps = {
   formElements: ReactNode;
@@ -22,18 +22,16 @@ export const AdvanceFilter = ({
 
   const [form] = Form.useForm();
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { queryParams, handleUpdateQuery } = useQueryHandle();
 
   const isFiltered = useMemo(() => {
-    return advanceFilterKeys.some(key => searchParams.has(key));
-  }, [searchParams, advanceFilterKeys]);
+    return advanceFilterKeys.some(key => key in queryParams);
+  }, [queryParams, advanceFilterKeys]);
 
   const onFinish = (values: ObjectType) => {
-    const newParams = new URLSearchParams(searchParams);
+    const processedValues: ObjectType = {};
 
     Object.entries(values).forEach(([key, value]) => {
-      newParams.delete(key);
-
       if (
         value !== undefined &&
         value !== null &&
@@ -41,36 +39,38 @@ export const AdvanceFilter = ({
         !(Array.isArray(value) && value.length === 0)
       ) {
         if (Array.isArray(value)) {
-          value.forEach(v => {
-            const formattedValue = dayjs.isDayjs(v)
-              ? v.format(DEFAULT_DATE_FORMAT)
-              : String(v);
-
-            newParams.append(key, formattedValue);
-          });
+          processedValues[key] = value.map(v =>
+            dayjs.isDayjs(v) ? v.format(DEFAULT_DATE_FORMAT) : String(v)
+          );
         } else if (dayjs.isDayjs(value)) {
-          newParams.set(key, value.format(DEFAULT_DATE_FORMAT));
+          processedValues[key] = value.format(DEFAULT_DATE_FORMAT);
         } else {
-          newParams.set(key, String(value));
+          processedValues[key] = String(value);
         }
+      } else {
+        processedValues[key] = undefined;
       }
     });
 
-    newParams.set(PAGINATION_QUERY_KEY.PAGE_INDEX, String(DEFAULT_PAGE_INDEX));
+    processedValues[PAGINATION_QUERY_KEY.PAGE_INDEX] = DEFAULT_PAGE_INDEX;
 
-    setSearchParams(newParams, { replace: true });
+    handleUpdateQuery(processedValues);
 
     setOpen(false);
   };
 
   const handleReset = () => {
-    const newParams = new URLSearchParams(searchParams);
+    const resetValues: ObjectType = {
+      [PAGINATION_QUERY_KEY.PAGE_INDEX]: DEFAULT_PAGE_INDEX,
+    };
 
-    advanceFilterKeys.forEach(key => newParams.delete(key));
+    advanceFilterKeys.forEach(key => {
+      resetValues[key] = undefined;
+    });
 
     form.resetFields();
 
-    setSearchParams(newParams, { replace: true });
+    handleUpdateQuery(resetValues);
 
     setOpen(false);
   };
@@ -81,17 +81,15 @@ export const AdvanceFilter = ({
     const values: ObjectType = {};
 
     advanceFilterKeys.forEach(key => {
-      const value = searchParams.getAll(key);
-
-      if (value.length > 0) {
-        values[key] = normalizeQueryParamValue(value);
+      if (key in queryParams) {
+        values[key] = normalizeQueryParamValue(queryParams[key]);
       } else {
         values[key] = undefined;
       }
     });
 
     form.setFieldsValue(values);
-  }, [searchParams, advanceFilterKeys, form, open]);
+  }, [queryParams, advanceFilterKeys, form, open]);
 
   return (
     <Popover

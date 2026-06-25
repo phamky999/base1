@@ -1,9 +1,9 @@
+import { useQueryHandle } from '@/hooks/use-query-handle';
 import { DEFAULT_PAGE_INDEX, PAGINATION_QUERY_KEY } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { Input } from 'antd';
 import { SearchIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
 
 type TQuickFilterSearchInputProps = {
   searchKey: string;
@@ -18,8 +18,8 @@ export const QuickFilterSearchInput = ({
   debounceMs = 500,
   inputClassName,
 }: TQuickFilterSearchInputProps) => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const searchValueFromUrl = searchParams.get(searchKey) || '';
+  const { queryParams, handleUpdateQuery } = useQueryHandle();
+  const searchValueFromUrl = queryParams[searchKey] != null ? String(queryParams[searchKey]) : '';
 
   const [inputValue, setInputValue] = useState(searchValueFromUrl);
 
@@ -36,27 +36,12 @@ export const QuickFilterSearchInput = ({
 
       if (trimmedValue === searchValueFromUrl) return;
 
-      setSearchParams(
-        prev => {
-          const newParams = new URLSearchParams(prev);
-
-          if (trimmedValue) {
-            newParams.set(searchKey, trimmedValue);
-          } else {
-            newParams.delete(searchKey);
-          }
-
-          newParams.set(
-            PAGINATION_QUERY_KEY.PAGE_INDEX,
-            String(DEFAULT_PAGE_INDEX)
-          );
-
-          return newParams;
-        },
-        { replace: true }
-      );
+      handleUpdateQuery({
+        [PAGINATION_QUERY_KEY.PAGE_INDEX]: DEFAULT_PAGE_INDEX,
+        [searchKey]: trimmedValue || undefined,
+      });
     },
-    [searchKey, setSearchParams, searchValueFromUrl]
+    [searchKey, handleUpdateQuery, searchValueFromUrl]
   );
 
   useEffect(() => {

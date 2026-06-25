@@ -2,26 +2,18 @@ import {
   DEFAULT_PAGE_INDEX,
   DEFAULT_PAGE_SIZE,
   PAGINATION_QUERY_KEY,
+  SORT_ORDER,
+  SORT_QUERY_KEY,
 } from '@/lib/constants';
+import { type ObjectType, type TPaginationQueryKey } from '@/lib/types';
+import { pick, pickBy } from 'lodash-es';
 import queryString from 'query-string';
 import { useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { type ObjectType, type TPaginationQueryKey } from '@/lib/types';
-import { pick, pickBy } from 'lodash-es';
 
-type QueryHandleProps = {
-  noPagination?: boolean;
-};
-
-export const useQueryHandle = <T extends ObjectType>(
-  props?: QueryHandleProps
-) => {
-  const { noPagination } = props || {};
-
+export const useQueryHandle = <T extends ObjectType>() => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  const pathName = location.pathname;
 
   const queryParams = useMemo(
     () => queryString.parse(location.search.replace('?', '')),
@@ -31,7 +23,12 @@ export const useQueryHandle = <T extends ObjectType>(
   const {
     [PAGINATION_QUERY_KEY.PAGE_INDEX]: pageIndex,
     [PAGINATION_QUERY_KEY.PAGE_SIZE]: pageSize,
-  } = queryParams;
+  } = queryParams || {};
+
+  const {
+    [SORT_QUERY_KEY.SORT_BY]: sortBy,
+    [SORT_QUERY_KEY.SORT_DIRECTION]: sortDirection,
+  } = queryParams || {};
 
   const paginationData = useMemo(
     (): Record<TPaginationQueryKey, number> => ({
@@ -45,69 +42,60 @@ export const useQueryHandle = <T extends ObjectType>(
     [pageIndex, pageSize]
   );
 
-  const handleChangeFilter = useCallback(
-    (values: T) => {
-      const queryPayload = queryString.stringify({
-        ...values,
-        ...(!noPagination && {
-          [PAGINATION_QUERY_KEY.PAGE_INDEX]: DEFAULT_PAGE_INDEX,
-          [PAGINATION_QUERY_KEY.PAGE_SIZE]:
-            paginationData[PAGINATION_QUERY_KEY.PAGE_SIZE],
-        }),
-      });
-      navigate(`${pathName}?${queryPayload}`, {
-        replace: true,
-      });
+  const sortData = useMemo(() => {
+    if (sortBy && sortDirection) {
+      return {
+        [SORT_QUERY_KEY.SORT_BY]: sortBy,
+        [SORT_QUERY_KEY.SORT_DIRECTION]: sortDirection,
+      };
+    }
+    return {};
+  }, [sortBy, sortDirection]);
+
+  const handleUpdateQuery = useCallback(
+    (payload: Record<string, unknown>) => {
+      const nextQuery = pickBy(
+        {
+          ...queryParams,
+          ...payload,
+        },
+        value => value !== undefined && value !== null && value !== ''
+      );
+
+      navigate(
+        {
+          pathname: location.pathname,
+          search: `?${queryString.stringify(nextQuery)}`,
+        },
+        {
+          replace: true,
+        }
+      );
     },
-    [navigate, noPagination, paginationData, pathName]
+    [navigate, location.pathname, queryParams]
   );
 
-  const handleClearFilter = useCallback(() => {
-    navigate(pathName, {
-      replace: true,
+  const handlePaginationChange = (page: number, pageSize?: number) => {
+    handleUpdateQuery({
+      [PAGINATION_QUERY_KEY.PAGE_INDEX]:
+        pageSize !== paginationData.pageSize ? DEFAULT_PAGE_INDEX : page,
+      [PAGINATION_QUERY_KEY.PAGE_SIZE]: pageSize || paginationData.pageSize,
     });
-  }, [navigate, pathName]);
-
-  const handleChangePageIndex = useCallback(
-    (index: number) => {
-      if (index === paginationData[PAGINATION_QUERY_KEY.PAGE_INDEX]) return;
-      const queryPayload = queryString.stringify({
-        ...queryParams,
-        [PAGINATION_QUERY_KEY.PAGE_INDEX]: index,
-      });
-      navigate(`${pathName}?${queryPayload}`, {
-        replace: true,
-      });
-    },
-    [navigate, paginationData, pathName, queryParams]
-  );
-
-  const handleChangePageSize = useCallback(
-    (size: number) => {
-      if (size === paginationData[PAGINATION_QUERY_KEY.PAGE_SIZE]) return;
-      const queryPayload = queryString.stringify({
-        ...queryParams,
-        [PAGINATION_QUERY_KEY.PAGE_INDEX]: DEFAULT_PAGE_INDEX,
-        [PAGINATION_QUERY_KEY.PAGE_SIZE]: size,
-      });
-      navigate(`${pathName}?${queryPayload}`, {
-        replace: true,
-      });
-    },
-    [navigate, paginationData, pathName, queryParams]
-  );
+  };
 
   const getApiQueryParamsFromUrlQuery = useCallback(
     ({
       keys,
       parser,
       noPagination = false,
+      noSort = false,
     }: {
       keys: (keyof T)[];
       parser?: {
         [K in keyof T]?: (value: unknown) => T[K];
       };
       noPagination?: boolean;
+      noSort?: boolean;
     }) => {
       const picked = pick(queryParams, keys) as T;
 
@@ -121,30 +109,56 @@ export const useQueryHandle = <T extends ObjectType>(
         return acc;
       }, {} as Partial<T>);
 
-      const cleanedParams = pickBy(
+      let cleanedParams = pickBy(
         parsed,
         value => value !== null && value !== undefined && value !== ''
       );
 
       if (!noPagination) {
-        return {
+        cleanedParams = {
           ...cleanedParams,
           ...paginationData,
         };
       }
 
+      if (!noSort) {
+        cleanedParams = {
+          ...cleanedParams,
+          ...sortData,
+        };
+      }
+
       return cleanedParams;
     },
-    [queryParams, paginationData]
+    [queryParams, paginationData, sortData]
   );
+
+  const handleTableSort = ({
+    order,
+    columnKey,
+  }: {
+    order?: string;
+    columnKey?: string;
+  }) => {
+    handleUpdateQuery({
+      [SORT_QUERY_KEY.SORT_BY]: columnKey,
+      [SORT_QUERY_KEY.SORT_DIRECTION]:
+        order === 'ascend'
+          ? SORT_ORDER.ASCENDING
+          : order === 'descend'
+            ? SORT_ORDER.DESCENDING
+            : undefined,
+      [PAGINATION_QUERY_KEY.PAGE_INDEX]: DEFAULT_PAGE_INDEX,
+    });
+  };
 
   return {
     pagination: paginationData,
     queryParams,
-    handleChangePageIndex,
-    handleChangePageSize,
-    handleChangeFilter,
-    handleClearFilter,
+    sortData,
+    handlePaginationChange,
     getApiQueryParamsFromUrlQuery,
+    handleTableSort,
+    handleUpdateQuery,
   };
 };

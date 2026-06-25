@@ -56,3 +56,13 @@ export const PASSENGER_TYPE_OPTIONS = [
     label: PASSENGER_TYPE_LABEL[PASSENGER_TYPE.INFANT],
   },
 ];
+
+export const SORT_ORDER = {
+  ASCENDING: 'ASCENDING',
+  DESCENDING: 'DESCENDING',
+} as const;
+
+export const SORT_QUERY_KEY = {
+  SORT_BY: 'sortBy',
+  SORT_DIRECTION: 'sortDirection',
+} as const;

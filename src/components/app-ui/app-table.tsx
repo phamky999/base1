@@ -19,11 +19,9 @@ export const AppTable = <T,>(props: AppTableProps<T>) => {
     className: classNameProps,
     ...restProps
   } = props || {};
-  const {
-    handleChangePageSize,
-    handleChangePageIndex,
-    pagination: queryPagination,
-  } = useQueryHandle();
+
+  const { handlePaginationChange, pagination: queryPagination } =
+    useQueryHandle();
 
   const tableScrollWidth = useMemo(() => {
     const hasWidthDefined = props?.columns?.some(col => col?.width != null);
@@ -70,10 +68,7 @@ export const AppTable = <T,>(props: AppTableProps<T>) => {
               pageSize: queryPagination[PAGINATION_QUERY_KEY.PAGE_SIZE],
               showSizeChanger: true,
               hideOnSinglePage: false,
-              onChange: (p, ps) => {
-                handleChangePageIndex(p);
-                handleChangePageSize(ps);
-              },
+              onChange: handlePaginationChange,
               ...paginationProps,
             }
       }

@@ -1,26 +1,24 @@
+import { useQueryHandle } from '@/hooks/use-query-handle';
 import { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
 
 type UseConsumeSearchParamsProps = {
   key: string;
   value?: string;
   onConsume: () => void;
-  replace?: boolean;
 };
 
 export const useConsumeSearchParams = ({
   key,
   value,
   onConsume,
-  replace = true,
 }: UseConsumeSearchParamsProps) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { queryParams, handleUpdateQuery } = useQueryHandle();
 
   useEffect(() => {
-    const currentValue = searchParams.get(key);
+    const currentValue = queryParams[key];
 
     const shouldConsume =
-      value === undefined ? currentValue !== null : currentValue === value;
+      value === undefined ? currentValue != null : currentValue === value;
 
     if (!shouldConsume) {
       return;
@@ -28,9 +26,6 @@ export const useConsumeSearchParams = ({
 
     onConsume();
 
-    const newParams = new URLSearchParams(searchParams);
-    newParams.delete(key);
-
-    setSearchParams(newParams, { replace });
-  }, [key, value, onConsume, searchParams, setSearchParams, replace]);
+    handleUpdateQuery({ [key]: undefined });
+  }, [key, value, onConsume, queryParams, handleUpdateQuery]);
 };

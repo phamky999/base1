@@ -2,9 +2,10 @@ import { AdvanceFilter } from '@/components/app-ui/app-filter/advance-filter';
 import { QuickFilterSelection } from '@/components/app-ui/app-filter/quick-filter-selection';
 import { QuickFilterSearchInput } from '@/components/app-ui/app-filter/search-input';
 import { Button } from '@/components/ui/button';
+import { DEFAULT_PAGE_INDEX, PAGINATION_QUERY_KEY } from '@/lib/constants';
+import { useQueryHandle } from '@/hooks/use-query-handle';
 import { XIcon } from 'lucide-react';
 import { type ReactNode } from 'react';
-import { useSearchParams } from 'react-router-dom';
 
 type AppFilterProps = {
   searchField?: {
@@ -33,22 +34,27 @@ export const AppFilter = ({
   advanceFilter,
   showAdvanceFilterOnly = false,
 }: AppFilterProps) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { queryParams, handleUpdateQuery } = useQueryHandle();
 
   const searchKey = searchField?.key ?? 'keyword';
 
-  const hasSearch = !!searchParams.get(searchKey);
+  const hasSearch = searchKey in queryParams;
 
-  const hasFacetedFilter = filters.some(f => searchParams.has(f.filterKey));
+  const hasFacetedFilter = filters.some(f => f.filterKey in queryParams);
 
   const isFiltered = hasSearch || hasFacetedFilter;
 
   const handleReset = () => {
-    const newParams = new URLSearchParams(searchParams);
-    newParams.delete(searchKey);
-    filters.forEach(f => newParams.delete(f.filterKey));
+    const resetValues: Record<string, unknown> = {
+      [PAGINATION_QUERY_KEY.PAGE_INDEX]: DEFAULT_PAGE_INDEX,
+      [searchKey]: undefined,
+    };
 
-    setSearchParams(newParams, { replace: true });
+    filters.forEach(f => {
+      resetValues[f.filterKey] = undefined;
+    });
+
+    handleUpdateQuery(resetValues);
   };
 
   const advanceFilterComponent = advanceFilter ? (

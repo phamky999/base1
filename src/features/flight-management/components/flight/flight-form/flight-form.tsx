@@ -241,7 +241,7 @@ export const FlightForm = ({ id, actionType }: FlightFormProps) => {
           <FareRulesSection className="card" />
         </div>
 
-        <div className="card sticky bottom-0 z-1 mt-6 flex items-center justify-between gap-4 bg-card">
+        <div className="card sticky bottom-0 z-1 mt-4 flex items-center justify-between gap-4 bg-card">
           <Button
             type="button"
             variant="outline"

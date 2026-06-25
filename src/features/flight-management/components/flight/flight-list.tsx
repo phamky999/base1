@@ -6,6 +6,7 @@ import { FlightListFilter } from '@/features/flight-management/components/flight
 import { FlightStatistics } from '@/features/flight-management/components/flight/flight-statistics';
 import {
   FLIGHT_ITINERARY_TYPE,
+  FLIGHT_SORT_KEY,
   FLIGHT_STATUS,
   FLIGHT_STATUS_COLOR,
   FLIGHT_STATUS_LABEL,
@@ -46,8 +47,12 @@ export const FlightList = ({
   const [selectedFlightId, setSelectedFlightId] = useState<string>();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const { getApiQueryParamsFromUrlQuery, pagination } =
-    useQueryHandle<TGetFlightListRequestParams>();
+  const {
+    handleTableSort,
+    getApiQueryParamsFromUrlQuery,
+    pagination,
+    sortData,
+  } = useQueryHandle<TGetFlightListRequestParams>();
 
   const params = getApiQueryParamsFromUrlQuery({
     keys: [
@@ -60,11 +65,13 @@ export const FlightList = ({
       'transactionCode',
     ],
     noPagination: true,
+    noSort: true,
   }) as TGetFlightListRequestParams;
 
   const { data, isFetching } = useGetFlightListQuery(
     {
       ...params,
+      ...sortData,
       ...(showFlightActiveOnly && { status: FLIGHT_STATUS.ACTIVE }),
       ...pagination,
     } as TGetFlightListRequestParams,
@@ -147,7 +154,8 @@ export const FlightList = ({
       {
         title: 'Thời gian bay',
         width: 200,
-        key: 'flight_time',
+        key: FLIGHT_SORT_KEY.START_DATE,
+        sorter: true,
         render: (record: TFlightListItem) => (
           <div className="space-y-0.5">
             <div className="flex items-center gap-1.5">
@@ -169,7 +177,8 @@ export const FlightList = ({
       {
         title: 'Số lượng ghế',
         width: 120,
-        key: 'flight_seat',
+        key: FLIGHT_SORT_KEY.SEAT_AVAILABLE,
+        sorter: true,
         render: (record: TFlightListItem) => (
           <div className="space-y-1">
             <div className="flex items-center justify-start gap-1">
@@ -187,6 +196,15 @@ export const FlightList = ({
               </Tag>
             )}
           </div>
+        ),
+      },
+      {
+        title: 'Ngày tạo',
+        width: 180,
+        key: FLIGHT_SORT_KEY.CREATE_AT,
+        sorter: true,
+        render: (record: TFlightListItem) => (
+          <AppDateTimeLabel value={record?.createdAt} showTime={false} />
         ),
       },
       {
@@ -270,6 +288,16 @@ export const FlightList = ({
             onClick: () => handleViewDetail(record),
             className: 'cursor-pointer',
           };
+        }}
+        onChange={(_, __, sorter, extra) => {
+          if (extra.action === 'sort') {
+            const { order, columnKey } = (sorter || {}) as {
+              order?: string;
+              columnKey?: string;
+            };
+
+            handleTableSort({ order, columnKey });
+          }
         }}
       />
 

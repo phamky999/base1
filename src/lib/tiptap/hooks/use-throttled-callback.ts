@@ -1,0 +1,40 @@
+/* eslint-disable react-hooks/use-memo */
+import { throttle } from 'lodash-es';
+import { useUnmount } from '@/lib/tiptap/hooks/use-unmount';
+import { useMemo } from 'react';
+
+interface ThrottleSettings {
+  leading?: boolean | undefined;
+  trailing?: boolean | undefined;
+}
+
+const defaultOptions: ThrottleSettings = {
+  leading: false,
+  trailing: true,
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function useThrottledCallback<T extends (...args: any[]) => any>(
+  fn: T,
+  wait = 250,
+  dependencies: React.DependencyList = [],
+  options: ThrottleSettings = defaultOptions
+): {
+  (this: ThisParameterType<T>, ...args: Parameters<T>): ReturnType<T>;
+  cancel: () => void;
+  flush: () => void;
+} {
+  const handler = useMemo(
+    () => throttle<T>(fn, wait, options),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    dependencies
+  );
+
+  useUnmount(() => {
+    handler.cancel();
+  });
+
+  return handler;
+}
+
+export default useThrottledCallback;

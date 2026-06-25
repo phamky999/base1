@@ -3,6 +3,7 @@ import { AppTable } from '@/components/app-ui/app-table';
 import { AppTooltip } from '@/components/app-ui/app-tooltip';
 import { BookingDetailActionGroups } from '@/features/flight-management/components/flight-booking/booking-detail-action-groups';
 import {
+  FLIGHT_BOOKING_SORT_KEY,
   FLIGHT_BOOKING_STATUS_COLOR,
   FLIGHT_BOOKING_STATUS_LABEL,
 } from '@/features/flight-management/constants';
@@ -20,13 +21,17 @@ import { useMemo, useState } from 'react';
 import { BookingDetailDrawer } from './booking-detail-drawer';
 
 export const FlightBookingList = () => {
-  const { getApiQueryParamsFromUrlQuery } =
-    useQueryHandle<TGetFlightBookingListRequestParams>();
+  const {
+    getApiQueryParamsFromUrlQuery,
+    handleTableSort,
+    pagination,
+    sortData,
+  } = useQueryHandle<TGetFlightBookingListRequestParams>();
 
   const [selectedId, setSelectedId] = useState<string>();
   const [isDetailDrawerOpen, setIsDetailDrawerOpen] = useState(false);
 
-  const queryParams = getApiQueryParamsFromUrlQuery({
+  const filterParams = getApiQueryParamsFromUrlQuery({
     keys: [
       'status',
       'airlineCode',
@@ -38,11 +43,15 @@ export const FlightBookingList = () => {
       'transactionCode',
       'merchantCode',
     ],
-  });
+    noPagination: true,
+    noSort: true,
+  }) as TGetFlightBookingListRequestParams;
 
-  const { data, isFetching } = useGetFlightBookingListQuery(
-    queryParams as TGetFlightBookingListRequestParams
-  );
+  const { data, isFetching } = useGetFlightBookingListQuery({
+    ...filterParams,
+    ...sortData,
+    ...pagination,
+  } as TGetFlightBookingListRequestParams);
 
   const handleRowClick = (record: TFlightBookingListItem) => {
     setSelectedId(record.id);
@@ -89,8 +98,9 @@ export const FlightBookingList = () => {
       },
       {
         title: 'Thời gian bay',
-        width: 170,
-        key: 'flight_time',
+        width: 200,
+        key: FLIGHT_BOOKING_SORT_KEY.START_DATE,
+        sorter: true,
         render: (record: TFlightBookingListItem) => (
           <div className="space-y-0.5">
             <div className="flex items-center gap-1.5">
@@ -151,12 +161,12 @@ export const FlightBookingList = () => {
       },
 
       {
-        title: 'Ngày đặt',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
-        width: 160,
-        render: (value: string) => (
-          <AppDateTimeLabel value={value} showTime={true} />
+        title: 'Ngày tạo',
+        width: 180,
+        key: FLIGHT_BOOKING_SORT_KEY.CREATED_AT,
+        sorter: true,
+        render: (record: TFlightBookingListItem) => (
+          <AppDateTimeLabel value={record?.createdAt} showTime={false} />
         ),
       },
 
@@ -224,6 +234,16 @@ export const FlightBookingList = () => {
           onClick: () => handleRowClick(record),
           className: 'cursor-pointer',
         })}
+        onChange={(_, __, sorter, extra) => {
+          if (extra.action === 'sort') {
+            const { order, columnKey } = (sorter || {}) as {
+              order?: string;
+              columnKey?: string;
+            };
+
+            handleTableSort({ order, columnKey });
+          }
+        }}
       />
       <BookingDetailDrawer
         bookingId={selectedId}
