@@ -35,6 +35,7 @@ import type {
   TCreateFlightResponse,
   TFlightBookingLogItem,
   TFlightDetailLogItem,
+  TFlightScheduleUpdatePayload,
   TGetAirlineClassesResponse,
   TGetFareRuleDetailResponse,
   TGetFareRulesResponse,
@@ -249,6 +250,20 @@ export const flightManagementQueryApi = baseApi
           flightDeleteInvalidateTags(error, id),
       }),
 
+      ScheduleUpdate: builder.mutation<
+        QueryResponse<void>,
+        { id: string; payload: TFlightScheduleUpdatePayload }
+      >({
+        query: ({ id, payload }) => ({
+          url: `${endpoint}/Flights/ScheduleChange/${id}`,
+          method: 'PUT',
+          body: { ...payload },
+        }),
+
+        invalidatesTags: (_, error, { id }) =>
+          flightUpdateInvalidateTags(error, id),
+      }),
+
       SearchAirports: builder.query<
         QueryResponse<TAirportItem[]>,
         { keyword: string }
@@ -302,8 +317,7 @@ export const flightBookingManagementQueryApi = baseApi
           url: `${endpoint}/Bookings/${id}/Logs`,
           method: 'GET',
         }),
-        providesTags: (_, error, id) =>
-          flightBookingLogsProvideTags(error, id),
+        providesTags: (_, error, id) => flightBookingLogsProvideTags(error, id),
       }),
 
       CreateFlightBooking: builder.mutation<
@@ -316,8 +330,7 @@ export const flightBookingManagementQueryApi = baseApi
           body: payload,
         }),
 
-        invalidatesTags: (_, error) =>
-          flightBookingCreateInvalidateTags(error),
+        invalidatesTags: (_, error) => flightBookingCreateInvalidateTags(error),
       }),
 
       CancelBooking: builder.mutation<
@@ -437,6 +450,7 @@ export const {
   useCancelFlightMutation,
   useReopenFlightMutation,
   useDeleteFlightMutation,
+  useScheduleUpdateMutation,
 } = flightManagementQueryApi;
 
 //booking

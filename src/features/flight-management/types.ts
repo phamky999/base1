@@ -449,3 +449,13 @@ export type TFlightBookingActionConfig = {
   visible: (ctx: TFlightBookingActionVisibleContext) => boolean;
   danger?: boolean;
 };
+
+export type TFlightScheduleUpdatePayload = {
+  remark: string;
+  segments: Array<{
+    segmentId: string;
+    startDate: string; // 'DD/MM/YYYY HH:mm:ss'
+    endDate: string; // 'DD/MM/YYYY HH:mm:ss'
+    duration: number;
+  }>;
+};

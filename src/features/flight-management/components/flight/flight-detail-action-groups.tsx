@@ -2,6 +2,7 @@ import { AppConfirmModal } from '@/components/app-ui/app-confirm-modal';
 import { ActionGroups } from '@/features/flight-management/components/common/action-groups';
 import { FlightDetailDrawer } from '@/features/flight-management/components/flight/flight-detail-drawer';
 import { FlightDetailLogsDrawer } from '@/features/flight-management/components/flight/flight-detail-logs-drawer';
+import { FlightScheduleUpdateDrawer } from '@/features/flight-management/components/flight/flight-schedule-update-drawer';
 import { FlightStatusUpdateModal } from '@/features/flight-management/components/flight/flight-status-update-modal';
 import {
   FLIGHT_DETAIL_ACTION,
@@ -21,6 +22,7 @@ import {
   CopyIcon,
   EyeIcon,
   HistoryIcon,
+  PlaneIcon,
   SquarePenIcon,
   TicketCheckIcon,
   TicketXIcon,
@@ -64,7 +66,11 @@ const FLIGHT_DETAIL_ACTION_CONFIG: Partial<
     icon: <HistoryIcon className="size-4" />,
     visible: ({ can }) => can(FLIGHT_DETAIL_ACTION.VIEW_LOGS),
   },
-
+  [FLIGHT_DETAIL_ACTION.SCHEDULE_CHANGE]: {
+    label: FLIGHT_DETAIL_ACTION_LABEL[FLIGHT_DETAIL_ACTION.SCHEDULE_CHANGE],
+    icon: <PlaneIcon className="size-4" />,
+    visible: ({ can }) => can(FLIGHT_DETAIL_ACTION.SCHEDULE_CHANGE),
+  },
   [FLIGHT_DETAIL_ACTION.PUBLISH]: {
     label: FLIGHT_DETAIL_ACTION_LABEL[FLIGHT_DETAIL_ACTION.PUBLISH],
     icon: <TicketCheckIcon className="size-4" />,
@@ -103,6 +109,8 @@ export const FlightDetailActionGroups = ({
 
   const [isLogDrawerOpen, setIsLogDrawerOpen] = useState(false);
   const [isDetailDrawerOpen, setIsDetailDrawerOpen] = useState(false);
+  const [isScheduleUpdateDrawerOpen, setIsScheduleUpdateDrawerOpen] =
+    useState(false);
 
   const [isConfirmDeleteDrawerOpen, setIsConfirmDeleteDrawerOpen] =
     useState(false);
@@ -182,6 +190,10 @@ export const FlightDetailActionGroups = ({
       return handleNavigateToAddEditPage();
     if (key === FLIGHT_DETAIL_ACTION.DELETE)
       return setIsConfirmDeleteDrawerOpen(true);
+
+    if (key === FLIGHT_DETAIL_ACTION.SCHEDULE_CHANGE)
+      return setIsScheduleUpdateDrawerOpen(true);
+
     setSelectedAction(key);
   };
 
@@ -215,6 +227,13 @@ export const FlightDetailActionGroups = ({
         flightId={flight?.id}
         open={isDetailDrawerOpen}
         onOpenChange={setIsDetailDrawerOpen}
+      />
+
+      <FlightScheduleUpdateDrawer
+        flightId={flight?.id}
+        transactionCode={flight?.transactionCode}
+        open={isScheduleUpdateDrawerOpen}
+        onOpenChange={setIsScheduleUpdateDrawerOpen}
       />
 
       <AppConfirmModal
