@@ -72,7 +72,7 @@ export const FlightInventoryUpdateDrawer = ({
     <AppDrawer
       open={open}
       onOpenChange={handleOpenChange}
-      title={`Cập nhật số chỗ & giá${transactionCode ? ` - ${transactionCode}` : ''}`}
+      title={`Cập nhật số ghế & giá${transactionCode ? ` - ${transactionCode}` : ''}`}
       footer={
         <div className="flex w-full items-center justify-end gap-4">
           <DrawerClose asChild>
@@ -109,10 +109,10 @@ export const FlightInventoryUpdateDrawer = ({
 
             <Form.Item
               name="seatTotal"
-              label="Tổng số chỗ"
-              rules={[{ required: true, message: 'Nhập tổng số chỗ' }]}
+              label="Tổng số ghế"
+              rules={[{ required: true, message: 'Nhập tổng số ghế' }]}
             >
-              <Input placeholder="Tổng số chỗ" />
+              <Input placeholder="Tổng số ghế" />
             </Form.Item>
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">

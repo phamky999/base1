@@ -67,7 +67,7 @@ export const FLIGHT_DETAIL_ACTION_LABEL = {
   [FLIGHT_DETAIL_ACTION.REOPEN]: 'Mở bán lại',
   [FLIGHT_DETAIL_ACTION.CANCEL]: 'Hủy chuyến bay',
   [FLIGHT_DETAIL_ACTION.SCHEDULE_CHANGE]: 'Đổi lịch bay',
-  [FLIGHT_DETAIL_ACTION.UPDATE_INVENTORY]: 'Cập nhật số chỗ & giá',
+  [FLIGHT_DETAIL_ACTION.UPDATE_INVENTORY]: 'Cập nhật số ghế & giá',
 
   //front-end
   [FLIGHT_DETAIL_ACTION.VIEW_BOOKING_LIST]: 'Xem danh sách đơn hàng',
