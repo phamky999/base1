@@ -7,7 +7,7 @@ export const TOUR_TYPE: Record<string, TTourType> = {
   MULTI_DAY: 'MULTI_DAY',
 } as const;
 
-export const TOUR_TYPE_LABEL: Record<TTourType, string> = {
+export const TOUR_TYPE_LABEL = {
   [TOUR_TYPE.DAILY]: 'Hàng ngày',
   [TOUR_TYPE.WEEKLY]: 'Hàng tuần',
   [TOUR_TYPE.SINGLE_DAY]: 'Ngày',

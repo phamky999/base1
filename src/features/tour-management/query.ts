@@ -1,4 +1,7 @@
-import { MOCK_TOUR_CATEGORIES, MOCK_TOURS } from '@/features/tour-management/mock-data';
+import {
+  MOCK_TOUR_CATEGORIES,
+  MOCK_TOURS,
+} from '@/features/tour-management/mock-data';
 import type {
   TCategoryListItem,
   TCreateTourPayload,
@@ -46,6 +49,7 @@ export const useGetTourCategoryListQuery = (
 
   useMemo(() => {
     const listener = () => setTick(t => t + 1);
+    // eslint-disable-next-line react-hooks/globals
     categoryListeners = [...categoryListeners, listener];
     return () => {
       categoryListeners = categoryListeners.filter(fn => fn !== listener);
@@ -109,6 +113,7 @@ export const useGetTourListQuery = (params?: { programName?: string }) => {
 
   useMemo(() => {
     const listener = () => setTick(t => t + 1);
+    // eslint-disable-next-line react-hooks/globals
     tourListeners = [...tourListeners, listener];
     return () => {
       tourListeners = tourListeners.filter(fn => fn !== listener);
@@ -119,9 +124,7 @@ export const useGetTourListQuery = (params?: { programName?: string }) => {
 
   if (params?.programName) {
     filtered = filtered.filter(item =>
-      item.programName
-        .toLowerCase()
-        .includes(params.programName!.toLowerCase())
+      item.programName.toLowerCase().includes(params.programName!.toLowerCase())
     );
   }
 
@@ -136,11 +139,7 @@ export const useGetTourListQuery = (params?: { programName?: string }) => {
 export const useCreateTourMutation = () => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const mutateAsync = async ({
-    payload,
-  }: {
-    payload: TCreateTourPayload;
-  }) => {
+  const mutateAsync = async ({ payload }: { payload: TCreateTourPayload }) => {
     setIsLoading(true);
     try {
       const newTour = createTour(payload);

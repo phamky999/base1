@@ -459,3 +459,11 @@ export type TFlightScheduleUpdatePayload = {
     duration: number;
   }>;
 };
+
+export type TUpdateInventoryPayload = {
+  remark: string;
+  seatTotal: string;
+  priceAdult: number;
+  priceChild: number;
+  priceInfant: number;
+};

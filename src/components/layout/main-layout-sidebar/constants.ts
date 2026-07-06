@@ -84,20 +84,25 @@ export const sidebarData: TSidebarData = {
             },
           ],
         },
-        {
-          title: 'Kho tour',
-          icon: MapIcon,
-          items: [
-            {
-              title: 'Danh sách tuyến tour',
-              url: tourManagementPaths.tourCategory.fullPath,
-            },
-            {
-              title: 'Danh sách tour',
-              url: tourManagementPaths.tourList.fullPath,
-            },
-          ],
-        },
+        ...(import.meta.env.DEV
+          ? [
+              {
+                title: 'Kho tour',
+                icon: MapIcon,
+                items: [
+                  {
+                    title: 'Danh sách tuyến tour',
+                    url: tourManagementPaths.tourCategory.fullPath,
+                  },
+                  {
+                    title: 'Danh sách tour',
+                    url: tourManagementPaths.tourList.fullPath,
+                  },
+                ],
+              },
+            ]
+          : []),
+
         {
           title: 'Quản lý kênh bán',
           icon: MonitorCogIcon,

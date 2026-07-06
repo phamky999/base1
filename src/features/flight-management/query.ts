@@ -49,6 +49,7 @@ import type {
   TUpdateFareRulePayload,
   TUpdateFlightPayload,
   TUpdateFlightResponse,
+  TUpdateInventoryPayload,
 } from '@/features/flight-management/types';
 
 const endpoint = '/FlightInventory';
@@ -264,6 +265,20 @@ export const flightManagementQueryApi = baseApi
           flightUpdateInvalidateTags(error, id),
       }),
 
+      UpdateInventory: builder.mutation<
+        QueryResponse<void>,
+        { id: string; payload: TUpdateInventoryPayload }
+      >({
+        query: ({ id, payload }) => ({
+          url: `${endpoint}/Flights/UpdateInventory/${id}`,
+          method: 'PUT',
+          body: { ...payload },
+        }),
+
+        invalidatesTags: (_, error, { id }) =>
+          flightUpdateInvalidateTags(error, id),
+      }),
+
       SearchAirports: builder.query<
         QueryResponse<TAirportItem[]>,
         { keyword: string }
@@ -451,6 +466,7 @@ export const {
   useReopenFlightMutation,
   useDeleteFlightMutation,
   useScheduleUpdateMutation,
+  useUpdateInventoryMutation,
 } = flightManagementQueryApi;
 
 //booking

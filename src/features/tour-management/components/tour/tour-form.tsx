@@ -21,7 +21,8 @@ export const TourForm = () => {
     if (isSubmitting) return;
 
     try {
-      await createTourMutationFn({ payload: values }).unwrap();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (createTourMutationFn({ payload: values }) as any).unwrap();
       toast.success('Tạo tour thành công');
       navigate(tourManagementPaths.tourList.fullPath);
     } catch (error) {

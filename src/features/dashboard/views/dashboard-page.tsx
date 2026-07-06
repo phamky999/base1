@@ -173,128 +173,140 @@ export const DashboardPage = () => {
       <div className="space-y-4">
         <WelcomeCard />
 
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {statCards.map(card => {
-            const Icon = card.icon;
-            return (
-              <div key={card.label} className="card flex flex-col gap-2 p-3">
-                <div className="flex items-center justify-between">
-                  <div className="rounded-sm bg-muted p-2">
-                    <Icon className="size-5 text-primary" />
-                  </div>
-                  <span
-                    className={`font-semibold ${card.trendUp ? 'text-green-500' : 'text-red-500'}`}
+        {import.meta.env.DEV && (
+          <>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+              {statCards.map(card => {
+                const Icon = card.icon;
+                return (
+                  <div
+                    key={card.label}
+                    className="card flex flex-col gap-2 p-3"
                   >
-                    {card.trend}
-                  </span>
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">
-                    {card.format === 'compact'
-                      ? formatCompactNumber(card.value)
-                      : card.suffix
-                        ? `${formatDisplayedNumber(card.value)}${card.suffix}`
-                        : formatDisplayedNumber(card.value)}
-                  </p>
-                  <p className="text-xs text-muted-foreground">{card.label}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
-          {quickTasks.map((task, index) => {
-            const Icon = task.icon;
-            return (
-              <div className="card h-auto w-full cursor-pointer p-0 hover:bg-muted">
-                <Link
-                  key={index}
-                  to={task.path}
-                  className="flex w-full cursor-pointer flex-col items-center gap-2 px-2 py-4 text-sm font-medium"
-                >
-                  <div className="p-2">
-                    <Icon
-                      className={cn('size-5 text-primary', task?.iconClassname)}
-                    />
+                    <div className="flex items-center justify-between">
+                      <div className="rounded-sm bg-muted p-2">
+                        <Icon className="size-5 text-primary" />
+                      </div>
+                      <span
+                        className={`font-semibold ${card.trendUp ? 'text-green-500' : 'text-red-500'}`}
+                      >
+                        {card.trend}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold">
+                        {card.format === 'compact'
+                          ? formatCompactNumber(card.value)
+                          : card.suffix
+                            ? `${formatDisplayedNumber(card.value)}${card.suffix}`
+                            : formatDisplayedNumber(card.value)}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {card.label}
+                      </p>
+                    </div>
                   </div>
-
-                  <span className="block w-full text-center break-normal">
-                    {task.label}
-                  </span>
-                </Link>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-          <div className="card">
-            <div className="mb-4 flex flex-wrap justify-between gap-4">
-              <h3 className="text-base font-semibold">Đơn hàng gần đây</h3>
-
-              <Link to={flightManagementPaths.bookingList.fullPath}>
-                <Button variant={'link'}>Xem tất cả</Button>
-              </Link>
+                );
+              })}
             </div>
-            <AppTable
-              dataSource={recentOrders}
-              rowKey="code"
-              pagination={false}
-              columns={[
-                { title: 'Đơn hàng', dataIndex: 'code' },
-                { title: 'Khách hàng', dataIndex: 'customer' },
-                { title: 'Ngày tạo', dataIndex: 'date' },
-                {
-                  title: 'Trạng thái',
-                  render: (_, record) => (
-                    <Tag
-                      variant="outlined"
-                      className="px-2.5 py-0.5"
-                      color={FLIGHT_BOOKING_STATUS_COLOR[record.status]}
+
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
+              {quickTasks.map((task, index) => {
+                const Icon = task.icon;
+                return (
+                  <div className="card h-auto w-full cursor-pointer p-0 hover:bg-muted">
+                    <Link
+                      key={index}
+                      to={task.path}
+                      className="flex w-full cursor-pointer flex-col items-center gap-2 px-2 py-4 text-sm font-medium"
                     >
-                      {FLIGHT_BOOKING_STATUS_LABEL[record.status]}
-                    </Tag>
-                  ),
-                },
-                {
-                  title: 'Tổng tiền',
-                  align: 'right',
-                  render: (_, record) => (
-                    <span className="font-semibold tabular-nums">
-                      {formatDisplayCurrency(record.total)}
-                    </span>
-                  ),
-                },
-              ]}
-              className="rounded-none! border-none! shadow-none!"
-            />
-          </div>
+                      <div className="p-2">
+                        <Icon
+                          className={cn(
+                            'size-5 text-primary',
+                            task?.iconClassname
+                          )}
+                        />
+                      </div>
 
-          <div className="card">
-            <div className="mb-4 flex flex-wrap justify-between gap-4">
-              <h3 className="text-base font-semibold">
-                Chuyến bay sắp khởi hành còn chỗ
-              </h3>
-
-              <Link to={flightManagementPaths.flightList.fullPath}>
-                <Button variant={'link'}>Xem tất cả</Button>
-              </Link>
+                      <span className="block w-full text-center break-normal">
+                        {task.label}
+                      </span>
+                    </Link>
+                  </div>
+                );
+              })}
             </div>
-            <AppTable
-              dataSource={expiringFlights}
-              rowKey="code"
-              pagination={false}
-              columns={[
-                { title: 'Mã chuyến bay', dataIndex: 'code' },
-                { title: 'Hành trình', dataIndex: 'route' },
-                { title: 'Ngày bay', dataIndex: 'departure' },
-                { title: 'Số ghế còn trống', dataIndex: 'available' },
-              ]}
-              className="rounded-none! border-none! shadow-none!"
-            />
-          </div>
-        </div>
+
+            <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+              <div className="card">
+                <div className="mb-4 flex flex-wrap justify-between gap-4">
+                  <h3 className="text-base font-semibold">Đơn hàng gần đây</h3>
+
+                  <Link to={flightManagementPaths.bookingList.fullPath}>
+                    <Button variant={'link'}>Xem tất cả</Button>
+                  </Link>
+                </div>
+                <AppTable
+                  dataSource={recentOrders}
+                  rowKey="code"
+                  pagination={false}
+                  columns={[
+                    { title: 'Đơn hàng', dataIndex: 'code' },
+                    { title: 'Khách hàng', dataIndex: 'customer' },
+                    { title: 'Ngày tạo', dataIndex: 'date' },
+                    {
+                      title: 'Trạng thái',
+                      render: (_, record) => (
+                        <Tag
+                          variant="outlined"
+                          className="px-2.5 py-0.5"
+                          color={FLIGHT_BOOKING_STATUS_COLOR[record.status]}
+                        >
+                          {FLIGHT_BOOKING_STATUS_LABEL[record.status]}
+                        </Tag>
+                      ),
+                    },
+                    {
+                      title: 'Tổng tiền',
+                      align: 'right',
+                      render: (_, record) => (
+                        <span className="font-semibold tabular-nums">
+                          {formatDisplayCurrency(record.total)}
+                        </span>
+                      ),
+                    },
+                  ]}
+                  className="rounded-none! border-none! shadow-none!"
+                />
+              </div>
+
+              <div className="card">
+                <div className="mb-4 flex flex-wrap justify-between gap-4">
+                  <h3 className="text-base font-semibold">
+                    Chuyến bay sắp khởi hành còn chỗ
+                  </h3>
+
+                  <Link to={flightManagementPaths.flightList.fullPath}>
+                    <Button variant={'link'}>Xem tất cả</Button>
+                  </Link>
+                </div>
+                <AppTable
+                  dataSource={expiringFlights}
+                  rowKey="code"
+                  pagination={false}
+                  columns={[
+                    { title: 'Mã chuyến bay', dataIndex: 'code' },
+                    { title: 'Hành trình', dataIndex: 'route' },
+                    { title: 'Ngày bay', dataIndex: 'departure' },
+                    { title: 'Số ghế còn trống', dataIndex: 'available' },
+                  ]}
+                  className="rounded-none! border-none! shadow-none!"
+                />
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </>
   );
