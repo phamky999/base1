@@ -1,4 +1,3 @@
-import { AppCard } from '@/components/app-ui/app-card';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -97,23 +96,11 @@ export const FareRulesSection = ({ className }: FareRulesSectionProps) => {
         <Form.List name={FORM_FIELDS.FARE_RULES}>
           {(fields, { add, remove }) => (
             <>
-              <div className="mb-4 space-y-4">
-                {fields.map(({ key, name, ...restField }, index) => (
-                  <AppCard
-                    key={key}
-                    title={`Điều kiện ${index + 1}`}
-                    headerAction={
-                      <Button
-                        variant="destructive"
-                        size="icon-sm"
-                        onClick={() => remove(name)}
-                      >
-                        <Trash2Icon />
-                      </Button>
-                    }
-                  >
-                    <Row gutter={20}>
-                      <Col span={24} xl={8}>
+              <div>
+                {fields.map(({ key, name, ...restField }) => (
+                  <div key={key} className="flex items-end gap-5">
+                    <Row gutter={20} className="flex-1">
+                      <Col span={12} xl={10}>
                         <Form.Item
                           {...restField}
                           name={[name, FARE_RULE_FIELDS.TYPE]}
@@ -127,10 +114,11 @@ export const FareRulesSection = ({ className }: FareRulesSectionProps) => {
                               FARE_RULE_FIELD_LABELS[FARE_RULE_FIELDS.TYPE]
                             }
                             options={FARE_RULE_TYPE_OPTIONS}
+                            className="h-8"
                           />
                         </Form.Item>
                       </Col>
-                      <Col span={24} xl={16}>
+                      <Col span={12} xl={14}>
                         <Form.Item
                           {...restField}
                           name={[name, FARE_RULE_FIELDS.TEXT]}
@@ -143,11 +131,19 @@ export const FareRulesSection = ({ className }: FareRulesSectionProps) => {
                             placeholder={
                               FARE_RULE_FIELD_LABELS[FARE_RULE_FIELDS.TEXT]
                             }
+                            className="h-8"
                           />
                         </Form.Item>
                       </Col>
                     </Row>
-                  </AppCard>
+                    <Button
+                      variant="destructive"
+                      className="mb-5 h-8 w-8 shrink-0"
+                      onClick={() => remove(name)}
+                    >
+                      <Trash2Icon />
+                    </Button>
+                  </div>
                 ))}
               </div>
 
