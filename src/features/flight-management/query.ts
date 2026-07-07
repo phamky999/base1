@@ -50,6 +50,7 @@ import type {
   TUpdateFlightPayload,
   TUpdateFlightResponse,
   TUpdateInventoryPayload,
+  TUpdateRulesPayload,
 } from '@/features/flight-management/types';
 
 const endpoint = '/FlightInventory';
@@ -279,6 +280,20 @@ export const flightManagementQueryApi = baseApi
           flightUpdateInvalidateTags(error, id),
       }),
 
+      UpdateRules: builder.mutation<
+        QueryResponse<void>,
+        { id: string; payload: TUpdateRulesPayload }
+      >({
+        query: ({ id, payload }) => ({
+          url: `${endpoint}/Flights/UpdateRules/${id}`,
+          method: 'PUT',
+          body: { ...payload },
+        }),
+
+        invalidatesTags: (_, error, { id }) =>
+          flightUpdateInvalidateTags(error, id),
+      }),
+
       SearchAirports: builder.query<
         QueryResponse<TAirportItem[]>,
         { keyword: string }
@@ -467,6 +482,7 @@ export const {
   useDeleteFlightMutation,
   useScheduleUpdateMutation,
   useUpdateInventoryMutation,
+  useUpdateRulesMutation,
 } = flightManagementQueryApi;
 
 //booking

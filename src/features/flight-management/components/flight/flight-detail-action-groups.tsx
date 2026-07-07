@@ -4,6 +4,7 @@ import { FlightDetailDrawer } from '@/features/flight-management/components/flig
 import { FlightDetailLogsDrawer } from '@/features/flight-management/components/flight/flight-detail-logs-drawer';
 import { FlightScheduleUpdateDrawer } from '@/features/flight-management/components/flight/flight-schedule-update-drawer';
 import { FlightInventoryUpdateDrawer } from '@/features/flight-management/components/flight/flight-inventory-update-drawer';
+import { FlightRulesUpdateDrawer } from '@/features/flight-management/components/flight/flight-rules-update-drawer';
 import { FlightStatusUpdateModal } from '@/features/flight-management/components/flight/flight-status-update-modal';
 import {
   FLIGHT_DETAIL_ACTION,
@@ -29,6 +30,7 @@ import {
   TicketXIcon,
   Trash2Icon,
   ClipboardPenLineIcon,
+  FileTextIcon,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -78,6 +80,11 @@ const FLIGHT_DETAIL_ACTION_CONFIG: Partial<
     icon: <ClipboardPenLineIcon className="size-4" />,
     visible: ({ can }) => can(FLIGHT_DETAIL_ACTION.UPDATE_INVENTORY),
   },
+  [FLIGHT_DETAIL_ACTION.UPDATE_RULES]: {
+    label: FLIGHT_DETAIL_ACTION_LABEL[FLIGHT_DETAIL_ACTION.UPDATE_RULES],
+    icon: <FileTextIcon className="size-4" />,
+    visible: ({ can }) => can(FLIGHT_DETAIL_ACTION.UPDATE_RULES),
+  },
   [FLIGHT_DETAIL_ACTION.PUBLISH]: {
     label: FLIGHT_DETAIL_ACTION_LABEL[FLIGHT_DETAIL_ACTION.PUBLISH],
     icon: <TicketCheckIcon className="size-4" />,
@@ -119,6 +126,8 @@ export const FlightDetailActionGroups = ({
   const [isScheduleUpdateDrawerOpen, setIsScheduleUpdateDrawerOpen] =
     useState(false);
   const [isInventoryUpdateDrawerOpen, setIsInventoryUpdateDrawerOpen] =
+    useState(false);
+  const [isRulesUpdateDrawerOpen, setIsRulesUpdateDrawerOpen] =
     useState(false);
 
   const [isConfirmDeleteDrawerOpen, setIsConfirmDeleteDrawerOpen] =
@@ -206,6 +215,9 @@ export const FlightDetailActionGroups = ({
     if (key === FLIGHT_DETAIL_ACTION.UPDATE_INVENTORY)
       return setIsInventoryUpdateDrawerOpen(true);
 
+    if (key === FLIGHT_DETAIL_ACTION.UPDATE_RULES)
+      return setIsRulesUpdateDrawerOpen(true);
+
     setSelectedAction(key);
   };
 
@@ -253,6 +265,13 @@ export const FlightDetailActionGroups = ({
         transactionCode={flight?.transactionCode}
         open={isInventoryUpdateDrawerOpen}
         onOpenChange={setIsInventoryUpdateDrawerOpen}
+      />
+
+      <FlightRulesUpdateDrawer
+        flightId={flight?.id}
+        transactionCode={flight?.transactionCode}
+        open={isRulesUpdateDrawerOpen}
+        onOpenChange={setIsRulesUpdateDrawerOpen}
       />
 
       <AppConfirmModal

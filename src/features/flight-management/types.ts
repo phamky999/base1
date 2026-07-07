@@ -467,3 +467,12 @@ export type TUpdateInventoryPayload = {
   priceChild: number;
   priceInfant: number;
 };
+
+export type TUpdateRulesPayload = {
+  remark: string;
+  fareRules: Array<{
+    type: TFareRuleType;
+    text: string;
+  }>;
+};
+
